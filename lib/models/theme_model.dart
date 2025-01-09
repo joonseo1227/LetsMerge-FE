@@ -7,6 +7,8 @@ class ThemeModel {
     colorScheme: ColorScheme.fromSeed(seedColor: blue60),
     useMaterial3: true,
     scaffoldBackgroundColor: grey10,
+    splashColor: Colors.transparent,
+    highlightColor: Colors.transparent,
     appBarTheme: const AppBarTheme(
       scrolledUnderElevation: 0,
       backgroundColor: grey10,
@@ -34,5 +36,37 @@ class ThemeModel {
     ),
   );
 
-  static final darkTheme = ThemeData();
+  static final darkTheme = ThemeData(
+    fontFamily: 'Pretendard',
+    colorScheme: ColorScheme.fromSeed(seedColor: blue50),
+    useMaterial3: true,
+    scaffoldBackgroundColor: black,
+    splashColor: Colors.transparent,
+    highlightColor: Colors.transparent,
+    appBarTheme: const AppBarTheme(
+      scrolledUnderElevation: 0,
+      backgroundColor: grey10,
+      toolbarHeight: 80,
+      centerTitle: false,
+      titleTextStyle: TextStyle(
+        color: grey10,
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: black,
+      elevation: 0,
+      selectedItemColor: grey10,
+      unselectedItemColor: grey60,
+      selectedLabelStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+      ),
+      unselectedLabelStyle: TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w500,
+      ),
+    ),
+  );
 }

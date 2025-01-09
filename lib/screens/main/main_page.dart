@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:letsmerge/screens/main/dev_tab.dart';
 import 'package:letsmerge/screens/main/home_tab.dart';
 import 'package:letsmerge/screens/main/notification_tab.dart';
 
@@ -22,6 +23,7 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     List<Widget> _pages = <Widget>[
       HomeTab(),
+      DevTab(),
       NotificationTab(),
     ];
 
@@ -37,6 +39,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: '홈',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.code),
+            label: 'Dev',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),
