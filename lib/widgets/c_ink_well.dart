@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class CInkWell extends StatefulWidget {
   final Widget child;
-  final Function onPressed;
+  final Function onTap;
   final double shrinkScale;
 
   const CInkWell({
     super.key,
     required this.child,
-    required this.onPressed,
+    required this.onTap,
     this.shrinkScale = 0.98,
   });
 
@@ -51,7 +51,7 @@ class _CInkWellState extends State<CInkWell>
       setState(() => _isPressed = false);
       _animationController.reverse();
     });
-    widget.onPressed();
+    widget.onTap();
   }
 
   void _onTapCancel() {

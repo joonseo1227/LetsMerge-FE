@@ -24,7 +24,8 @@ class ThemeModel {
       backgroundColor: grey10,
       elevation: 0,
       selectedItemColor: grey100,
-      unselectedItemColor: grey50,
+      unselectedItemColor: grey40,
+      type: BottomNavigationBarType.fixed,
       selectedLabelStyle: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w500,
@@ -58,7 +59,8 @@ class ThemeModel {
       backgroundColor: black,
       elevation: 0,
       selectedItemColor: grey10,
-      unselectedItemColor: grey60,
+      unselectedItemColor: grey70,
+      type: BottomNavigationBarType.fixed,
       selectedLabelStyle: TextStyle(
         fontSize: 12,
         fontWeight: FontWeight.w500,
