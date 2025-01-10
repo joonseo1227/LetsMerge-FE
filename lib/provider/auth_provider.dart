@@ -38,7 +38,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
   }
 
   // 이메일 및 암호로 회원가입 + 이름 설정
-  Future<void> signUpWithEmail(String email, String password, String nickname) async {
+  Future<void> signUpWithEmail(String email, String password, String name) async {
     try {
       final firebase_auth.UserCredential result =
       await _auth.createUserWithEmailAndPassword(
@@ -47,7 +47,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
       );
       final firebaseUser = result.user;
       if (firebaseUser != null) {
-        await firebaseUser.updateDisplayName(nickname);
+        await firebaseUser.updateDisplayName(name);
         await firebaseUser.reload();
         state = UserDTO.fromFirebaseUser(firebaseUser);
       }
@@ -69,11 +69,11 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
   }
 
   // 이름 업데이트
-  Future<void> updateNickname(String nickname) async {
+  Future<void> updateName(String name) async {
     try {
       final firebaseUser = _auth.currentUser;
       if (firebaseUser != null) {
-        await firebaseUser.updateDisplayName(nickname);
+        await firebaseUser.updateDisplayName(name);
         await firebaseUser.reload();
         state = UserDTO.fromFirebaseUser(firebaseUser);
       }

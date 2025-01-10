@@ -12,12 +12,12 @@ class SignUpPage extends ConsumerStatefulWidget {
 }
 
 class _SignUpPageState extends ConsumerState<SignUpPage> {
-  final _nicknameController = TextEditingController();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
 
-  String? _nicknameError;
+  String? _nameError;
   String? _emailError;
   String? _passwordError;
   String? _confirmPasswordError;
@@ -26,7 +26,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   // 에러 상태 초기화
   void _clearError() {
     setState(() {
-      _nicknameError = null;
+      _nameError = null;
       _emailError = null;
       _passwordError = null;
       _confirmPasswordError = null;
@@ -37,14 +37,14 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   bool _validate() {
     _clearError();
     setState(() {
-      _nicknameError = null;
+      _nameError = null;
       _emailError = null;
       _passwordError = null;
       _confirmPasswordError = null;
     });
 
-    if (_nicknameController.text.isEmpty) {
-      setState(() => _nicknameError = '이름을 입력하십시오.');
+    if (_nameController.text.isEmpty) {
+      setState(() => _nameError = '이름을 입력하십시오.');
       return false;
     }
     if (_emailController.text.isEmpty) {
@@ -73,11 +73,11 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     });
 
     try {
-      final nickname = _nicknameController.text.trim();
+      final name = _nameController.text.trim();
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
 
-      await authNotifier.signUpWithEmail(email, password, nickname);
+      await authNotifier.signUpWithEmail(email, password, name);
       Navigator.pop(context);
     } catch (e) {
       setState(() {
@@ -86,7 +86,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
         } else if (e.toString().contains('password')) {
           _passwordError = '암호를 확인하십시오.';
         } else {
-          _nicknameError = '다시 시도하십시오.';
+          _nameError = '다시 시도하십시오.';
         }
       });
     }
@@ -117,8 +117,8 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                 ),
                 CTextField(
                   label: '이름',
-                  controller: _nicknameController,
-                  errorText: _nicknameError,
+                  controller: _nameController,
+                  errorText: _nameError,
                   hint: '홍길동',
                 ),
                 const SizedBox(
@@ -171,7 +171,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
   @override
   void dispose() {
-    _nicknameController.dispose();
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
