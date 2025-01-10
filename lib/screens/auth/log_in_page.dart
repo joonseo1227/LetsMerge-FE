@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:letsmerge/config/color.dart';
+import 'package:letsmerge/widgets/c_text_field.dart';
 
 class LogInPage extends StatelessWidget {
   const LogInPage({super.key});
@@ -14,25 +16,25 @@ class LogInPage extends StatelessWidget {
           padding: EdgeInsets.all(16),
           child: Column(
             children: [
-              TextField(
+              CTextField(
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: '이메일'
-                ),
+                label: '이메일',
+                hint: 'example@example.com',
+                backgroundColor: white,
               ),
               SizedBox(
                 height: 16,
               ),
-              TextField(
+              CTextField(
                 keyboardType: TextInputType.visiblePassword,
-                decoration: InputDecoration(
-                    hintText: '암호'
-                ),
+                obscureText: true,
+                label: '암호',
+                backgroundColor: white,
               ),
             ],
           ),
         ),
-      )
+      ),
     );
   }
 }
