@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "15000995615",
+    "project_id": "letsmerge-be",
+    "storage_bucket": "letsmerge-be.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:15000995615:android:d6ef85b2ff237a9de8522a",
+        "android_client_info": {
+          "package_name": "com.letsmerge.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBRMx7J24vzqbuC0lGn-l2d3R9xruP-D8s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
