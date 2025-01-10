@@ -3,6 +3,7 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/screens/auth/log_in_page.dart';
 import 'package:letsmerge/screens/auth/sign_up_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
+import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
 class DevPage extends StatelessWidget {
@@ -20,6 +21,87 @@ class DevPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              CButton(
+                label: 'Default Button',
+                onTap: () {
+                  debugPrint('Default Button Clicked');
+                },
+              ),
+              SizedBox(height: 16),
+              CButton(
+                style: CButtonStyle.primary,
+                label: 'Primary Button',
+                icon: Icons.home,
+                width: 300,
+                onTap: () {
+                  debugPrint('Primary Button Clicked');
+                },
+              ),
+              SizedBox(height: 16),
+              CButton(
+                style: CButtonStyle.secondary,
+                icon: Icons.settings,
+                size: CButtonSize.medium,
+                onTap: () {
+                  debugPrint('Secondary Button Clicked');
+                },
+              ),
+              SizedBox(height: 16),
+              CButton(
+                style: CButtonStyle.tertiary,
+                label: 'Tertiary Button',
+                icon: Icons.info,
+                size: CButtonSize.medium,
+                onTap: () {
+                  debugPrint('Tertiary Button Clicked');
+                },
+              ),
+              SizedBox(height: 16),
+              CButton(
+                style: CButtonStyle.danger,
+                label: 'Danger Button',
+                size: CButtonSize.x2Large,
+                onTap: () {
+                  debugPrint('Danger Button Clicked');
+                },
+              ),
+              SizedBox(height: 16),
+              CButton(
+                style: CButtonStyle.ghost,
+                label: 'Ghost Button',
+                onTap: () {
+                  debugPrint('Ghost Button Clicked');
+                },
+              ),
+              SizedBox(height: 16),
+              CButton(
+                style: CButtonStyle.primary,
+                label: 'Small Button',
+                size: CButtonSize.small,
+                onTap: () {
+                  debugPrint('Small Button Clicked');
+                },
+              ),
+              SizedBox(height: 16),
+              CButton(
+                style: CButtonStyle.secondary,
+                label: 'Extra Large Button',
+                size: CButtonSize.extraLarge,
+                onTap: () {
+                  debugPrint('Extra Large Button Clicked');
+                },
+              ),
+              SizedBox(height: 16),
+              CButton(
+                style: CButtonStyle.tertiary,
+                label: 'Custom Width',
+                icon: Icons.star,
+                width: 250,
+                onTap: () {
+                  debugPrint('Custom Width Button Clicked');
+                },
+              ),
+              SizedBox(height: 16),
               CInkWell(
                 onTap: () {
                   Navigator.of(context).push(

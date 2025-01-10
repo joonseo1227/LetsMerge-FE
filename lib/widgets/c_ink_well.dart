@@ -2,14 +2,19 @@ import 'package:flutter/material.dart';
 
 class CInkWell extends StatefulWidget {
   final Widget child;
-  final Function onTap;
+
+  /// 버튼을 눌렀을 때 실행될 함수
+  /// null일 경우 비활성화 상태로 동작
+  final VoidCallback? onTap;
+
+  /// 버튼을 눌렀을 때의 축소 비율 (기본값: 0.9)
   final double shrinkScale;
 
   const CInkWell({
     super.key,
     required this.child,
-    required this.onTap,
-    this.shrinkScale = 0.98,
+    this.onTap,
+    this.shrinkScale = 0.9,
   });
 
   @override
@@ -42,23 +47,29 @@ class _CInkWellState extends State<CInkWell>
   }
 
   void _onTapDown(TapDownDetails _) {
-    setState(() => _isPressed = true);
-    _animationController.forward();
+    if (widget.onTap != null) {
+      setState(() => _isPressed = true);
+      _animationController.forward();
+    }
   }
 
   void _onTapUp(TapUpDetails _) {
-    Future.delayed(Duration(milliseconds: 150), () {
-      setState(() => _isPressed = false);
-      _animationController.reverse();
-    });
-    widget.onTap();
+    if (widget.onTap != null) {
+      Future.delayed(Duration(milliseconds: 150), () {
+        setState(() => _isPressed = false);
+        _animationController.reverse();
+      });
+      widget.onTap?.call();
+    }
   }
 
   void _onTapCancel() {
-    Future.delayed(Duration(milliseconds: 150), () {
-      setState(() => _isPressed = false);
-      _animationController.reverse();
-    });
+    if (widget.onTap != null) {
+      Future.delayed(Duration(milliseconds: 150), () {
+        setState(() => _isPressed = false);
+        _animationController.reverse();
+      });
+    }
   }
 
   @override
