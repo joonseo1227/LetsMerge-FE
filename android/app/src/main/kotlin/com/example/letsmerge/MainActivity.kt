@@ -1,4 +1,4 @@
-package com.example.letsmerge
+package com.letsmerge.app
 
 import io.flutter.embedding.android.FlutterActivity
 

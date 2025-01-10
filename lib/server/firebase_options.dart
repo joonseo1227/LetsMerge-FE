@@ -63,7 +63,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '15000995615',
     projectId: 'letsmerge-be',
     storageBucket: 'letsmerge-be.firebasestorage.app',
-    iosBundleId: 'com.example.letsmerge',
+    iosBundleId: 'com.letsmerge.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -72,7 +72,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '15000995615',
     projectId: 'letsmerge-be',
     storageBucket: 'letsmerge-be.firebasestorage.app',
-    iosBundleId: 'com.example.letsmerge',
+    iosBundleId: 'com.letsmerge.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
