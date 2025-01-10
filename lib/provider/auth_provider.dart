@@ -1,33 +1,36 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:letsmerge/models/user_model.dart';
 
-final authProvider = StateNotifierProvider<AuthNotifier, User?>((ref) {
+final authProvider = StateNotifierProvider<AuthNotifier, UserDTO?>((ref) {
   return AuthNotifier();
 });
 
-class AuthNotifier extends StateNotifier<User?> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+class AuthNotifier extends StateNotifier<UserDTO?> {
+  final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
 
   AuthNotifier() : super(null) {
     _initializeUser();
-    _auth.authStateChanges().listen((user) {
-      state = user;
+    _auth.authStateChanges().listen((firebaseUser) {
+      state = firebaseUser != null ? UserDTO.fromFirebaseUser(firebaseUser) : null;
     });
   }
 
   // 현재 사용자 초기화
   void _initializeUser() {
-    state = _auth.currentUser;
+    final firebaseUser = _auth.currentUser;
+    state = firebaseUser != null ? UserDTO.fromFirebaseUser(firebaseUser) : null;
   }
 
   // 이메일 및 비밀번호로 로그인
   Future<void> signInWithEmail(String email, String password) async {
     try {
-      final UserCredential result = await _auth.signInWithEmailAndPassword(
+      final firebase_auth.UserCredential result =
+      await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      state = result.user;
+      state = UserDTO.fromFirebaseUser(result.user!);
     } catch (e) {
       print('로그인 실패: $e');
       rethrow;
@@ -37,15 +40,16 @@ class AuthNotifier extends StateNotifier<User?> {
   // 이메일 및 비밀번호로 회원가입 + 닉네임 설정
   Future<void> signUpWithEmail(String email, String password, String nickname) async {
     try {
-      final UserCredential result = await _auth.createUserWithEmailAndPassword(
+      final firebase_auth.UserCredential result =
+      await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
-      final user = result.user;
-      if (user != null) {
-        await user.updateDisplayName(nickname);
-        await user.reload();
-        state = _auth.currentUser;
+      final firebaseUser = result.user;
+      if (firebaseUser != null) {
+        await firebaseUser.updateDisplayName(nickname);
+        await firebaseUser.reload();
+        state = UserDTO.fromFirebaseUser(firebaseUser);
       }
     } catch (e) {
       print('회원가입 실패: $e');
@@ -67,33 +71,14 @@ class AuthNotifier extends StateNotifier<User?> {
   // 닉네임 업데이트
   Future<void> updateNickname(String nickname) async {
     try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        await user.updateDisplayName(nickname);
-        await user.reload();
-        state = _auth.currentUser;
+      final firebaseUser = _auth.currentUser;
+      if (firebaseUser != null) {
+        await firebaseUser.updateDisplayName(nickname);
+        await firebaseUser.reload();
+        state = UserDTO.fromFirebaseUser(firebaseUser);
       }
     } catch (e) {
       print('닉네임 업데이트 실패: $e');
-      rethrow;
-    }
-  }
-
-  // 회원탈퇴 (이메일 재인증 후 삭제)
-  Future<void> deleteAccount(String email, String password) async {
-    try {
-      final user = _auth.currentUser;
-      if (user != null) {
-        final AuthCredential credential = EmailAuthProvider.credential(
-          email: email,
-          password: password,
-        );
-        await user.reauthenticateWithCredential(credential);
-        await user.delete();
-        state = null;
-      }
-    } catch (e) {
-      print('회원탈퇴 실패: $e');
       rethrow;
     }
   }
