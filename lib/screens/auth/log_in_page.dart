@@ -9,9 +9,30 @@ class LogInPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('로그인'),
       ),
-      body: Center(
-        child: const Text('로그인'),
-      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            children: [
+              TextField(
+                keyboardType: TextInputType.emailAddress,
+                decoration: InputDecoration(
+                  hintText: '이메일'
+                ),
+              ),
+              SizedBox(
+                height: 16,
+              ),
+              TextField(
+                keyboardType: TextInputType.visiblePassword,
+                decoration: InputDecoration(
+                    hintText: '암호'
+                ),
+              ),
+            ],
+          ),
+        ),
+      )
     );
   }
 }
