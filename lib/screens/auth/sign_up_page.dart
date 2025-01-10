@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
-import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
 class SignUpPage extends ConsumerStatefulWidget {
@@ -45,20 +44,20 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     });
 
     if (_nicknameController.text.isEmpty) {
-      setState(() => _nicknameError = '닉네임을 입력해주세요.');
+      setState(() => _nicknameError = '이름을 입력하십시오.');
       return false;
     }
     if (_emailController.text.isEmpty) {
-      setState(() => _emailError = '이메일을 입력해주세요.');
+      setState(() => _emailError = '이메일을 입력하십시오.');
       return false;
     }
     if (_passwordController.text.isEmpty ||
         _passwordController.text.length < 6) {
-      setState(() => _passwordError = '비밀번호는 6자 이상이어야 합니다.');
+      setState(() => _passwordError = '암호는 6자 이상이어야 합니다.');
       return false;
     }
     if (_confirmPasswordController.text != _passwordController.text) {
-      setState(() => _confirmPasswordError = '비밀번호가 일치하지 않습니다.');
+      setState(() => _confirmPasswordError = '암호가 일치하지 않습니다.');
       return false;
     }
 
@@ -85,9 +84,9 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
         if (e.toString().contains('email')) {
           _emailError = '유효하지 않은 이메일이거나 이미 사용 중입니다.';
         } else if (e.toString().contains('password')) {
-          _passwordError = '비밀번호를 다시 확인해주세요.';
+          _passwordError = '암호를 확인하십시오.';
         } else {
-          _nicknameError = '다시 시도해주세요.';
+          _nicknameError = '다시 시도하십시오.';
         }
       });
     }
@@ -102,65 +101,66 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
+            padding: EdgeInsets.all(16),
             child: Column(
               children: [
-                const SizedBox(height: 50),
-                Container(
-                  width: 100,
-                  height: 100,
-                  child: Image.asset("assets/imgs/logo_black.png"),
+                const SizedBox(
+                  height: 80,
                 ),
-                const SizedBox(height: 50),
+                SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Image.asset('assets/imgs/logo_black.png'),
+                ),
+                const SizedBox(
+                  height: 80,
+                ),
                 CTextField(
-                  label: "닉네임",
+                  label: '이름',
                   controller: _nicknameController,
                   errorText: _nicknameError,
+                  hint: '홍길동',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(
+                  height: 16,
+                ),
                 CTextField(
-                  label: "이메일",
+                  label: '이메일',
                   controller: _emailController,
                   errorText: _emailError,
                   keyboardType: TextInputType.emailAddress,
+                  hint: 'example@example.com',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(
+                  height: 16,
+                ),
                 CTextField(
-                  label: "비밀번호",
+                  label: '암호',
                   controller: _passwordController,
                   errorText: _passwordError,
+                  keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(
+                  height: 16,
+                ),
                 CTextField(
-                  label: "비밀번호 확인",
+                  label: '암호 재입력',
                   controller: _confirmPasswordController,
                   errorText: _confirmPasswordError,
+                  keyboardType: TextInputType.visiblePassword,
                   obscureText: true,
                 ),
-                const SizedBox(height: 24),
-                CInkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    decoration: const ShapeDecoration(
-                      color: Colors.white,
-                      shape: StadiumBorder(),
-                    ),
-                    child: const Text(
-                      '회원가입',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+                const SizedBox(
+                  height: 24,
+                ),
+                CButton(
                   onTap: () {
                     _signUp();
                   },
+                  label: '회원 가입',
+                  width: double.maxFinite,
                 ),
-                const SizedBox(height: 50),
               ],
             ),
           ),

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
-import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
 class LogInPage extends ConsumerStatefulWidget {
@@ -33,11 +32,11 @@ class _LogInPageState extends ConsumerState<LogInPage> {
     _clearError();
 
     if (_emailController.text.isEmpty) {
-      setState(() => _emailError = '이메일을 입력해주세요.');
+      setState(() => _emailError = '이메일을 입력하십시오.');
       return false;
     }
     if (_passwordController.text.isEmpty) {
-      setState(() => _passwordError = '비밀번호를 입력해주세요.');
+      setState(() => _passwordError = '암호를 입력하십시오.');
       return false;
     }
 
@@ -64,11 +63,11 @@ class _LogInPageState extends ConsumerState<LogInPage> {
         if (e.toString().contains('user-not-found')) {
           _emailError = '등록되지 않은 이메일입니다.';
         } else if (e.toString().contains('invalid-email')) {
-          _emailError = '이메일 형식을 확인해주세요.';
+          _emailError = '이메일 형식을 확인하십시오.';
         } else if (e.toString().contains('wrong-password')) {
-          _passwordError = '비밀번호가 틀렸습니다.';
+          _passwordError = '일치하지 않는 암호입니다.';
         } else {
-          _emailError = '로그인에 실패했습니다. 다시 시도해주세요.';
+          _emailError = '이메일 또는 암호를 확인하십시오.';
         }
       });
     }
@@ -83,52 +82,46 @@ class _LogInPageState extends ConsumerState<LogInPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 50),
+            padding: EdgeInsets.all(16),
             child: Column(
               children: [
-                const SizedBox(height: 50),
-                Container(
-                  width: 100,
-                  height: 100,
-                  child: Image.asset("assets/imgs/logo_black.png"),
+                const SizedBox(
+                  height: 80,
                 ),
-                const SizedBox(height: 50),
+                SizedBox(
+                  width: 80,
+                  height: 80,
+                  child: Image.asset('assets/imgs/logo_black.png'),
+                ),
+                const SizedBox(
+                  height: 80,
+                ),
                 CTextField(
-                  label: "이메일",
+                  label: '이메일',
                   controller: _emailController,
                   errorText: _emailError,
                   keyboardType: TextInputType.emailAddress,
+                  hint: 'example@example.com',
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(
+                  height: 16,
+                ),
                 CTextField(
-                  label: "비밀번호",
+                  label: '암호',
                   controller: _passwordController,
                   errorText: _passwordError,
                   obscureText: true,
                 ),
-                const SizedBox(height: 24),
-                CInkWell(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 10, horizontal: 20),
-                    decoration: const ShapeDecoration(
-                      color: Colors.white,
-                      shape: StadiumBorder(),
-                    ),
-                    child: const Text(
-                      '로그인',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+                const SizedBox(
+                  height: 24,
+                ),
+                CButton(
                   onTap: () {
                     _login();
                   },
+                  label: '로그인',
+                  width: double.maxFinite,
                 ),
-                const SizedBox(height: 50),
               ],
             ),
           ),

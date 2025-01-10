@@ -78,7 +78,7 @@ class _CTextFieldState extends State<CTextField> {
                 color: grey40,
               ),
               filled: true,
-              fillColor: widget.backgroundColor ?? grey10,
+              fillColor: widget.backgroundColor ?? white,
               enabledBorder: UnderlineInputBorder(
                 borderRadius: BorderRadius.circular(0),
                 borderSide: BorderSide(
@@ -95,11 +95,11 @@ class _CTextFieldState extends State<CTextField> {
               ),
               suffixIcon: widget.controller?.text.isNotEmpty ?? false
                   ? IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () {
-                  widget.controller?.clear();
-                },
-              )
+                      icon: const Icon(Icons.clear),
+                      onPressed: () {
+                        widget.controller?.clear();
+                      },
+                    )
                   : null,
             ),
           ),
@@ -131,7 +131,7 @@ class _CTextFieldState extends State<CTextField> {
   }
 
   Color _getFocusBorderColor() {
-    return _hasFocus ? blue50 : grey60;
+    return _hasFocus ? blue60 : grey60;
   }
 }
 
@@ -190,7 +190,7 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
             color: grey40,
           ),
           filled: true,
-          fillColor: widget.backgroundColor ?? grey10,
+          fillColor: widget.backgroundColor ?? white,
           enabledBorder: UnderlineInputBorder(
             borderRadius: BorderRadius.circular(0),
             borderSide: BorderSide(
@@ -205,14 +205,17 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
               width: 2,
             ),
           ),
-          prefixIcon: Icon(Icons.search, color: _hasFocus ? blue50 : grey60),
+          prefixIcon: Icon(
+            Icons.search,
+            color: _hasFocus ? blue60 : grey60,
+          ),
           suffixIcon: widget.controller?.text.isNotEmpty ?? false
               ? IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () {
-              widget.controller?.clear();
-            },
-          )
+                  icon: const Icon(Icons.clear),
+                  onPressed: () {
+                    widget.controller?.clear();
+                  },
+                )
               : null,
         ),
         onSubmitted: widget.onSubmitted,
@@ -225,6 +228,6 @@ class _CustomSearchBarState extends State<CustomSearchBar> {
   }
 
   Color _getFocusBorderColor() {
-    return _hasFocus ? blue50 : grey60;
+    return _hasFocus ? blue60 : grey60;
   }
 }

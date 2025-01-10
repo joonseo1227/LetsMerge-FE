@@ -22,7 +22,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
     state = firebaseUser != null ? UserDTO.fromFirebaseUser(firebaseUser) : null;
   }
 
-  // 이메일 및 비밀번호로 로그인
+  // 이메일 및 암호로 로그인
   Future<void> signInWithEmail(String email, String password) async {
     try {
       final firebase_auth.UserCredential result =
@@ -37,7 +37,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
     }
   }
 
-  // 이메일 및 비밀번호로 회원가입 + 닉네임 설정
+  // 이메일 및 암호로 회원가입 + 이름 설정
   Future<void> signUpWithEmail(String email, String password, String nickname) async {
     try {
       final firebase_auth.UserCredential result =
@@ -68,7 +68,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
     }
   }
 
-  // 닉네임 업데이트
+  // 이름 업데이트
   Future<void> updateNickname(String nickname) async {
     try {
       final firebaseUser = _auth.currentUser;
@@ -78,7 +78,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
         state = UserDTO.fromFirebaseUser(firebaseUser);
       }
     } catch (e) {
-      print('닉네임 업데이트 실패: $e');
+      print('이름 업데이트 실패: $e');
       rethrow;
     }
   }
