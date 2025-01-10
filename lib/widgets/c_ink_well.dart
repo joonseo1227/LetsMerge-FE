@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
+///
+/// [CInkWell] 위젯
+///
+/// 커스텀 InkWell 위젯으로 버튼을 눌렀을 때 크기가 축소되는 효과를 제공합니다.
+///
+/// Parameter:
+/// - [child]: 위젯 내부에 표시될 자식 위젯
+/// - [onTap]: 버튼을 눌렀을 때 실행될 함수 (optional, null일 경우 비활성화 상태)
+/// - [shrinkScale]: 버튼을 눌렀을 때의 축소 비율 (default: 0.9)
+///
 class CInkWell extends StatefulWidget {
   final Widget child;
-
-  /// 버튼을 눌렀을 때 실행될 함수
-  /// null일 경우 비활성화 상태로 동작
   final VoidCallback? onTap;
-
-  /// 버튼을 눌렀을 때의 축소 비율 (기본값: 0.9)
   final double shrinkScale;
 
   const CInkWell({
@@ -30,12 +35,14 @@ class _CInkWellState extends State<CInkWell>
   @override
   void initState() {
     super.initState();
+    // 애니메이션 컨트롤러 초기화
     _animationController = AnimationController(
-      duration: Duration(milliseconds: 150),
-      reverseDuration: Duration(milliseconds: 150),
+      duration: const Duration(milliseconds: 150),
+      reverseDuration: const Duration(milliseconds: 150),
       vsync: this,
     );
 
+    // 축소 효과를 위한 애니메이션 초기화
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: widget.shrinkScale,
@@ -46,6 +53,7 @@ class _CInkWellState extends State<CInkWell>
     ));
   }
 
+  /// 버튼이 눌릴 때 호출되는 함수
   void _onTapDown(TapDownDetails _) {
     if (widget.onTap != null) {
       setState(() => _isPressed = true);
@@ -53,9 +61,11 @@ class _CInkWellState extends State<CInkWell>
     }
   }
 
+  /// 버튼을 뗄 때 호출되는 함수
   void _onTapUp(TapUpDetails _) {
     if (widget.onTap != null) {
-      Future.delayed(Duration(milliseconds: 150), () {
+      // 눌림 상태 해제 및 콜백 실행
+      Future.delayed(const Duration(milliseconds: 150), () {
         setState(() => _isPressed = false);
         _animationController.reverse();
       });
@@ -63,9 +73,10 @@ class _CInkWellState extends State<CInkWell>
     }
   }
 
+  /// 눌림이 취소될 때 호출되는 함수
   void _onTapCancel() {
     if (widget.onTap != null) {
-      Future.delayed(Duration(milliseconds: 150), () {
+      Future.delayed(const Duration(milliseconds: 150), () {
         setState(() => _isPressed = false);
         _animationController.reverse();
       });
@@ -78,11 +89,13 @@ class _CInkWellState extends State<CInkWell>
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
+      // 크기 축소 애니메이션
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: AnimatedOpacity(
-          duration: Duration(milliseconds: 150),
+          duration: const Duration(milliseconds: 150),
           curve: Curves.easeInOut,
+          // 버튼 눌림 시 투명도 조절
           opacity: _isPressed ? 0.4 : 1.0,
           child: widget.child,
         ),
@@ -92,6 +105,7 @@ class _CInkWellState extends State<CInkWell>
 
   @override
   void dispose() {
+    // 애니메이션 컨트롤러 해제
     _animationController.dispose();
     super.dispose();
   }

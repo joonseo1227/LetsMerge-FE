@@ -12,21 +12,23 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
   AuthNotifier() : super(null) {
     _initializeUser();
     _auth.authStateChanges().listen((firebaseUser) {
-      state = firebaseUser != null ? UserDTO.fromFirebaseUser(firebaseUser) : null;
+      state =
+          firebaseUser != null ? UserDTO.fromFirebaseUser(firebaseUser) : null;
     });
   }
 
   // 현재 사용자 초기화
   void _initializeUser() {
     final firebaseUser = _auth.currentUser;
-    state = firebaseUser != null ? UserDTO.fromFirebaseUser(firebaseUser) : null;
+    state =
+        firebaseUser != null ? UserDTO.fromFirebaseUser(firebaseUser) : null;
   }
 
   // 이메일 및 암호로 로그인
   Future<void> signInWithEmail(String email, String password) async {
     try {
       final firebase_auth.UserCredential result =
-      await _auth.signInWithEmailAndPassword(
+          await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -38,10 +40,11 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
   }
 
   // 이메일 및 암호로 회원가입 + 이름 설정
-  Future<void> signUpWithEmail(String email, String password, String name) async {
+  Future<void> signUpWithEmail(
+      String email, String password, String name) async {
     try {
       final firebase_auth.UserCredential result =
-      await _auth.createUserWithEmailAndPassword(
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
