@@ -5,9 +5,17 @@ import 'package:letsmerge/screens/auth/sign_up_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_switch.dart';
 
-class DevPage extends StatelessWidget {
+class DevPage extends StatefulWidget {
   const DevPage({super.key});
+
+  @override
+  State<DevPage> createState() => _DevPageState();
+}
+
+class _DevPageState extends State<DevPage> {
+  bool isSwitched = false;
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +29,15 @@ class DevPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              CSwitch(
+                value: isSwitched,
+                onChanged: (value) {
+                  setState(() {
+                    isSwitched = value;
+                  });
+                },
+              ),
+              SizedBox(height: 16),
               CButton(
                 label: 'Default Button',
                 onTap: () {
