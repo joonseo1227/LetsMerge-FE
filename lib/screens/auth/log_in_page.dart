@@ -14,10 +14,25 @@ class LogInPage extends ConsumerStatefulWidget {
 class _LogInPageState extends ConsumerState<LogInPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final ValueNotifier<bool> _isButtonEnabled = ValueNotifier(false);
 
   String? _emailError;
   String? _passwordError;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController.addListener(_updateButtonState);
+    _passwordController.addListener(_updateButtonState);
+  }
+
+  // 버튼 활성화 상태 업데이트
+  void _updateButtonState() {
+    final isEmailNotEmpty = _emailController.text.trim().isNotEmpty;
+    final isPasswordNotEmpty = _passwordController.text.trim().isNotEmpty;
+    _isButtonEnabled.value = isEmailNotEmpty && isPasswordNotEmpty;
+  }
 
   // 에러 상태 초기화
   void _clearError() {
@@ -126,12 +141,15 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                 const SizedBox(
                   height: 24,
                 ),
-                CButton(
-                  onTap: () {
-                    _login();
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isButtonEnabled,
+                  builder: (context, isEnabled, child) {
+                    return CButton(
+                      onTap: isEnabled ? _login : null,
+                      label: '로그인',
+                      width: double.maxFinite,
+                    );
                   },
-                  label: '로그인',
-                  width: double.maxFinite,
                 ),
               ],
             ),
@@ -145,6 +163,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _isButtonEnabled.dispose();
     super.dispose();
   }
 }

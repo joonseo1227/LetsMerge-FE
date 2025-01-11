@@ -16,12 +16,36 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final ValueNotifier<bool> _isButtonEnabled = ValueNotifier(false);
 
   String? _nameError;
   String? _emailError;
   String? _passwordError;
   String? _confirmPasswordError;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController.addListener(_updateButtonState);
+    _emailController.addListener(_updateButtonState);
+    _passwordController.addListener(_updateButtonState);
+    _confirmPasswordController.addListener(_updateButtonState);
+  }
+
+  // 버튼 활성화 상태 업데이트
+  void _updateButtonState() {
+    final isNameNotEmpty = _nameController.text.trim().isNotEmpty;
+    final isEmailNotEmpty = _emailController.text.trim().isNotEmpty;
+    final isPasswordNotEmpty = _passwordController.text.trim().isNotEmpty;
+    final isConfirmPasswordNotEmpty =
+        _confirmPasswordController.text.trim().isNotEmpty;
+
+    _isButtonEnabled.value = isNameNotEmpty &&
+        isEmailNotEmpty &&
+        isPasswordNotEmpty &&
+        isConfirmPasswordNotEmpty;
+  }
 
   // 에러 상태 초기화
   void _clearError() {
@@ -33,15 +57,9 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     });
   }
 
-  //유효성 검사
+  // 유효성 검사
   bool _validate() {
     _clearError();
-    setState(() {
-      _nameError = null;
-      _emailError = null;
-      _passwordError = null;
-      _confirmPasswordError = null;
-    });
 
     if (_nameController.text.isEmpty) {
       setState(() => _nameError = '이름을 입력하십시오.');
@@ -61,13 +79,14 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       return false;
     }
 
-    return true; // 모든 유효성 검사를 통과한 경우
+    return true;
   }
 
   Future<void> _signUp() async {
     final authNotifier = ref.read(authProvider.notifier);
 
     if (!_validate()) return;
+
     setState(() {
       _isLoading = true;
     });
@@ -165,12 +184,15 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                 const SizedBox(
                   height: 24,
                 ),
-                CButton(
-                  onTap: () {
-                    _signUp();
+                ValueListenableBuilder<bool>(
+                  valueListenable: _isButtonEnabled,
+                  builder: (context, isEnabled, child) {
+                    return CButton(
+                      onTap: isEnabled ? _signUp : null,
+                      label: '회원 가입',
+                      width: double.maxFinite,
+                    );
                   },
-                  label: '회원 가입',
-                  width: double.maxFinite,
                 ),
               ],
             ),
@@ -186,6 +208,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _isButtonEnabled.dispose();
     super.dispose();
   }
 }
