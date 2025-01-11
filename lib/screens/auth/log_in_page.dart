@@ -84,6 +84,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
           child: Padding(
             padding: EdgeInsets.all(16),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
                   height: 80,
@@ -92,6 +93,16 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                   width: 80,
                   height: 80,
                   child: Image.asset('assets/imgs/logo_black.png'),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  'Let\'s Merge 시작하기',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
                 const SizedBox(
                   height: 80,
