@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
@@ -116,6 +118,8 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -140,6 +144,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w700,
+                    color: ThemeModel.text(isDarkMode),
                   ),
                 ),
                 const SizedBox(

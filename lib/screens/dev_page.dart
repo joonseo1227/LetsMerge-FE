@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
+import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/auth/log_in_page.dart';
 import 'package:letsmerge/screens/auth/sign_up_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
+import 'package:letsmerge/widgets/c_tag.dart';
 
-class DevPage extends StatefulWidget {
+class DevPage extends ConsumerStatefulWidget {
   const DevPage({super.key});
 
   @override
-  State<DevPage> createState() => _DevPageState();
+  ConsumerState<DevPage> createState() => _DevPageState();
 }
 
-class _DevPageState extends State<DevPage> {
+class _DevPageState extends ConsumerState<DevPage> {
   bool isSwitched = false;
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('DEV'),
@@ -47,7 +53,7 @@ class _DevPageState extends State<DevPage> {
               ),
               SizedBox(height: 16),
               CButton(
-                style: CButtonStyle.primary,
+                style: CButtonStyle.primary(isDarkMode),
                 label: 'Primary Button',
                 icon: Icons.home,
                 width: 300,
@@ -57,7 +63,7 @@ class _DevPageState extends State<DevPage> {
               ),
               SizedBox(height: 16),
               CButton(
-                style: CButtonStyle.secondary,
+                style: CButtonStyle.secondary(isDarkMode),
                 icon: Icons.settings,
                 size: CButtonSize.medium,
                 onTap: () {
@@ -66,7 +72,7 @@ class _DevPageState extends State<DevPage> {
               ),
               SizedBox(height: 16),
               CButton(
-                style: CButtonStyle.tertiary,
+                style: CButtonStyle.tertiary(isDarkMode),
                 label: 'Tertiary Button',
                 icon: Icons.info,
                 size: CButtonSize.medium,
@@ -76,7 +82,7 @@ class _DevPageState extends State<DevPage> {
               ),
               SizedBox(height: 16),
               CButton(
-                style: CButtonStyle.danger,
+                style: CButtonStyle.danger(isDarkMode),
                 label: 'Danger Button',
                 size: CButtonSize.x2Large,
                 onTap: () {
@@ -85,7 +91,7 @@ class _DevPageState extends State<DevPage> {
               ),
               SizedBox(height: 16),
               CButton(
-                style: CButtonStyle.ghost,
+                style: CButtonStyle.ghost(isDarkMode),
                 label: 'Ghost Button',
                 onTap: () {
                   debugPrint('Ghost Button Clicked');
@@ -93,7 +99,7 @@ class _DevPageState extends State<DevPage> {
               ),
               SizedBox(height: 16),
               CButton(
-                style: CButtonStyle.primary,
+                style: CButtonStyle.primary(isDarkMode),
                 label: 'Small Button',
                 size: CButtonSize.small,
                 onTap: () {
@@ -102,7 +108,7 @@ class _DevPageState extends State<DevPage> {
               ),
               SizedBox(height: 16),
               CButton(
-                style: CButtonStyle.secondary,
+                style: CButtonStyle.secondary(isDarkMode),
                 label: 'Extra Large Button',
                 size: CButtonSize.extraLarge,
                 onTap: () {
@@ -111,7 +117,7 @@ class _DevPageState extends State<DevPage> {
               ),
               SizedBox(height: 16),
               CButton(
-                style: CButtonStyle.tertiary,
+                style: CButtonStyle.tertiary(isDarkMode),
                 label: 'Custom Width',
                 icon: Icons.star,
                 width: 250,
@@ -129,7 +135,7 @@ class _DevPageState extends State<DevPage> {
                   );
                 },
                 child: Container(
-                  color: white,
+                  color: ThemeModel.surface(isDarkMode),
                   height: 120,
                   padding: EdgeInsets.all(16),
                   child: Column(
@@ -140,32 +146,21 @@ class _DevPageState extends State<DevPage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: grey100,
+                          color: ThemeModel.text(isDarkMode),
                         ),
                       ),
                       Spacer(),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Container(
-                            padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                            decoration: ShapeDecoration(
-                              color: blue20,
-                              shape: StadiumBorder(),
-                            ),
-                            child: Text(
-                              'DEV',
-                              style: TextStyle(
-                                color: blue70,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                          CTag(
+                            text: 'DEV',
+                            color: TagColor.blue,
                           ),
                           Spacer(),
                           Icon(
                             Icons.navigate_next,
-                            color: grey100,
+                            color: ThemeModel.text(isDarkMode),
                           ),
                         ],
                       ),
@@ -185,7 +180,7 @@ class _DevPageState extends State<DevPage> {
                   );
                 },
                 child: Container(
-                  color: white,
+                  color: ThemeModel.surface(isDarkMode),
                   height: 120,
                   padding: EdgeInsets.all(16),
                   child: Column(
@@ -196,32 +191,21 @@ class _DevPageState extends State<DevPage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: grey100,
+                          color: ThemeModel.text(isDarkMode),
                         ),
                       ),
                       Spacer(),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Container(
-                            padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                            decoration: ShapeDecoration(
-                              color: blue20,
-                              shape: StadiumBorder(),
-                            ),
-                            child: Text(
-                              'DEV',
-                              style: TextStyle(
-                                color: blue70,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                          CTag(
+                            text: 'DEV',
+                            color: TagColor.blue,
                           ),
                           Spacer(),
                           Icon(
                             Icons.navigate_next,
-                            color: grey100,
+                            color: ThemeModel.text(isDarkMode),
                           ),
                         ],
                       ),
@@ -241,7 +225,7 @@ class _DevPageState extends State<DevPage> {
                   );
                 },
                 child: Container(
-                  color: white,
+                  color: ThemeModel.surface(isDarkMode),
                   height: 120,
                   padding: EdgeInsets.all(16),
                   child: Column(
@@ -252,32 +236,21 @@ class _DevPageState extends State<DevPage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: grey100,
+                          color: ThemeModel.text(isDarkMode),
                         ),
                       ),
                       Spacer(),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Container(
-                            padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                            decoration: ShapeDecoration(
-                              color: blue20,
-                              shape: StadiumBorder(),
-                            ),
-                            child: Text(
-                              'DEV',
-                              style: TextStyle(
-                                color: blue70,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                          CTag(
+                            text: 'DEV',
+                            color: TagColor.blue,
                           ),
                           Spacer(),
                           Icon(
                             Icons.navigate_next,
-                            color: grey100,
+                            color: ThemeModel.text(isDarkMode),
                           ),
                         ],
                       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
@@ -27,7 +28,7 @@ class SettingsPage extends ConsumerWidget {
                   ref.read(themeProvider.notifier).toggleTheme();
                 },
                 child: Container(
-                  color: Theme.of(context).colorScheme.surface,
+                  color: ThemeModel.surface(isDarkMode),
                   padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
@@ -36,7 +37,7 @@ class SettingsPage extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w500,
-                          color: Theme.of(context).colorScheme.onSurface,
+                          color: ThemeModel.text(isDarkMode),
                         ),
                       ),
                       const Spacer(),

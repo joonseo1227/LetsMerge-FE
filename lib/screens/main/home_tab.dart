@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
+import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/dev_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_tag.dart';
 
-class HomeTab extends StatelessWidget {
+class HomeTab extends ConsumerStatefulWidget {
   const HomeTab({super.key});
 
   @override
+  ConsumerState<HomeTab> createState() => _HomeTabState();
+}
+
+class _HomeTabState extends ConsumerState<HomeTab> {
+  @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -22,12 +33,12 @@ class HomeTab extends StatelessWidget {
                   onTap: () {},
                   child: Container(
                     padding: EdgeInsets.all(16),
-                    color: white,
+                    color: ThemeModel.surface(isDarkMode),
                     child: Row(
                       children: [
                         Icon(
                           Icons.search,
-                          color: grey100,
+                          color: ThemeModel.text(isDarkMode),
                         ),
                         SizedBox(
                           width: 16,
@@ -37,7 +48,7 @@ class HomeTab extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: grey50,
+                            color: ThemeModel.sub3(isDarkMode),
                           ),
                         ),
                       ],
@@ -60,7 +71,7 @@ class HomeTab extends StatelessWidget {
                               Icon(
                                 Icons.home,
                                 size: 20,
-                                color: grey90,
+                                color: ThemeModel.sub5(isDarkMode),
                               ),
                               SizedBox(
                                 width: 4,
@@ -68,7 +79,7 @@ class HomeTab extends StatelessWidget {
                               Text(
                                 '집',
                                 style: TextStyle(
-                                  color: grey90,
+                                  color: ThemeModel.sub5(isDarkMode),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -81,7 +92,7 @@ class HomeTab extends StatelessWidget {
                         height: 16,
                         child: VerticalDivider(
                           thickness: 1,
-                          color: grey30,
+                          color: ThemeModel.sub2(isDarkMode),
                         ),
                       ),
                       CInkWell(
@@ -93,7 +104,7 @@ class HomeTab extends StatelessWidget {
                               Icon(
                                 Icons.apartment,
                                 size: 20,
-                                color: grey90,
+                                color: ThemeModel.sub5(isDarkMode),
                               ),
                               SizedBox(
                                 width: 4,
@@ -101,7 +112,7 @@ class HomeTab extends StatelessWidget {
                               Text(
                                 '회사',
                                 style: TextStyle(
-                                  color: grey90,
+                                  color: ThemeModel.sub5(isDarkMode),
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -114,7 +125,7 @@ class HomeTab extends StatelessWidget {
                         height: 16,
                         child: VerticalDivider(
                           thickness: 1,
-                          color: grey30,
+                          color: ThemeModel.sub2(isDarkMode),
                         ),
                       ),
                       CInkWell(
@@ -124,7 +135,7 @@ class HomeTab extends StatelessWidget {
                           child: Text(
                             '가천대학교 AI관',
                             style: TextStyle(
-                              color: grey90,
+                              color: ThemeModel.sub5(isDarkMode),
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
@@ -135,7 +146,7 @@ class HomeTab extends StatelessWidget {
                         height: 16,
                         child: VerticalDivider(
                           thickness: 1,
-                          color: grey30,
+                          color: ThemeModel.sub2(isDarkMode),
                         ),
                       ),
                       CInkWell(
@@ -145,7 +156,7 @@ class HomeTab extends StatelessWidget {
                           child: Text(
                             '가천대역 수인분당선',
                             style: TextStyle(
-                              color: grey90,
+                              color: ThemeModel.sub5(isDarkMode),
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
                             ),
@@ -169,7 +180,7 @@ class HomeTab extends StatelessWidget {
                     );
                   },
                   child: Container(
-                    color: white,
+                    color: ThemeModel.surface(isDarkMode),
                     height: 120,
                     padding: EdgeInsets.all(16),
                     child: Column(
@@ -180,32 +191,21 @@ class HomeTab extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: grey100,
+                            color: ThemeModel.text(isDarkMode),
                           ),
                         ),
                         Spacer(),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Container(
-                              padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                              decoration: ShapeDecoration(
-                                color: blue20,
-                                shape: StadiumBorder(),
-                              ),
-                              child: Text(
-                                'DEV',
-                                style: TextStyle(
-                                  color: blue70,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                            CTag(
+                              text: 'DEV',
+                              color: TagColor.blue,
                             ),
                             Spacer(),
                             Icon(
                               Icons.navigate_next,
-                              color: grey100,
+                              color: ThemeModel.text(isDarkMode),
                             ),
                           ],
                         ),
@@ -222,7 +222,7 @@ class HomeTab extends StatelessWidget {
                 CInkWell(
                   onTap: () {},
                   child: Container(
-                    color: white,
+                    color: ThemeModel.surface(isDarkMode),
                     height: 120,
                     padding: EdgeInsets.all(16),
                     child: Column(
@@ -233,32 +233,21 @@ class HomeTab extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,
-                            color: grey100,
+                            color: ThemeModel.text(isDarkMode),
                           ),
                         ),
                         Spacer(),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Container(
-                              padding: EdgeInsets.fromLTRB(8, 4, 8, 4),
-                              decoration: ShapeDecoration(
-                                color: green20,
-                                shape: StadiumBorder(),
-                              ),
-                              child: Text(
-                                'NEW',
-                                style: TextStyle(
-                                  color: green70,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                            CTag(
+                              text: 'NEW',
+                              color: TagColor.green,
                             ),
                             Spacer(),
                             Icon(
                               Icons.navigate_next,
-                              color: grey100,
+                              color: ThemeModel.text(isDarkMode),
                             ),
                           ],
                         ),

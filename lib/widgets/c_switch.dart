@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
+import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
 
 ///
 /// [CSwitch] 커스텀 스위치 위젯
@@ -8,7 +11,7 @@ import 'package:letsmerge/config/color.dart';
 /// - [onChanged]: 스위치 값이 변경되었을 때 실행되는 콜백 함수
 /// - [value]: 초기 스위치 상태 (true 또는 false)
 ///
-class CSwitch extends StatefulWidget {
+class CSwitch extends ConsumerStatefulWidget {
   final Function(bool value) onChanged; // 스위치 값 변경 콜백 함수
   final bool value; // 부모로부터 전달받는 스위치 상태
 
@@ -22,9 +25,11 @@ class CSwitch extends StatefulWidget {
   _CSwitchState createState() => _CSwitchState();
 }
 
-class _CSwitchState extends State<CSwitch> {
+class _CSwitchState extends ConsumerState<CSwitch> {
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+
     return GestureDetector(
       onTap: () {
         // 스위치 상태를 반전하고 부모에게 알림
@@ -39,7 +44,9 @@ class _CSwitchState extends State<CSwitch> {
             height: 32,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(32), // 둥근 모서리 처리
-              color: widget.value ? blue60 : grey30, // 부모 상태에 따라 색상 변경
+              color: widget.value
+                  ? ThemeModel.highlight(isDarkMode)
+                  : ThemeModel.sub2(isDarkMode), // 부모 상태에 따라 색상 변경
             ),
           ),
           // 스위치 핸들 (슬라이더)

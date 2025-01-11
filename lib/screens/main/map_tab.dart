@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
+import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
-class MapTab extends StatelessWidget {
+class MapTab extends ConsumerStatefulWidget {
   const MapTab({super.key});
 
   @override
+  ConsumerState<MapTab> createState() => _MapTabState();
+}
+
+class _MapTabState extends ConsumerState<MapTab> {
+  @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+
     return Scaffold(
       body: Stack(
         children: [
@@ -46,8 +56,8 @@ class MapTab extends StatelessWidget {
                     ),
                     // 실제 내용을 담는 Container
                     Container(
-                      decoration: const BoxDecoration(
-                        color: white,
+                      decoration: BoxDecoration(
+                        color: ThemeModel.surface(isDarkMode),
                       ),
                       child: Column(
                         children: [
@@ -58,7 +68,7 @@ class MapTab extends StatelessWidget {
                               vertical: 8,
                             ),
                             decoration: ShapeDecoration(
-                              color: grey20,
+                              color: ThemeModel.sub2(isDarkMode),
                               shape: StadiumBorder(),
                             ),
                           ),
@@ -72,8 +82,16 @@ class MapTab extends StatelessWidget {
                                     debugPrint('옵션 $index 클릭됨');
                                   },
                                   child: ListTile(
-                                    leading: const Icon(Icons.place),
-                                    title: Text('옵션 $index'),
+                                    leading: Icon(
+                                      Icons.place,
+                                      color: ThemeModel.text(isDarkMode),
+                                    ),
+                                    title: Text(
+                                      '옵션 $index',
+                                      style: TextStyle(
+                                        color: ThemeModel.text(isDarkMode),
+                                      ),
+                                    ),
                                   ),
                                 );
                               },

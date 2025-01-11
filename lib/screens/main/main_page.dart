@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:letsmerge/screens/dev_page.dart';
 import 'package:letsmerge/screens/main/home_tab.dart';
 import 'package:letsmerge/screens/main/map_tab.dart';
 import 'package:letsmerge/screens/main/notification_tab.dart';

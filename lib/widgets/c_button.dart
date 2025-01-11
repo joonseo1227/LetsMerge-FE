@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
+import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
 /// 버튼 크기를 정의하는 enum
@@ -25,44 +28,54 @@ class CButtonStyle {
     this.border,
   });
 
-  /// 기본 스타일 (Primary 스타일)
-  static const CButtonStyle primary = CButtonStyle(
-    backgroundColor: blue60,
-    labelColor: white,
-    iconColor: white,
-  );
+  /// Primary 스타일
+  factory CButtonStyle.primary(bool isDarkMode) {
+    return CButtonStyle(
+      backgroundColor: ThemeModel.highlight(isDarkMode),
+      labelColor: white,
+      iconColor: white,
+    );
+  }
 
   /// Secondary 스타일
-  static const CButtonStyle secondary = CButtonStyle(
-    backgroundColor: grey80,
-    labelColor: white,
-    iconColor: white,
-  );
+  factory CButtonStyle.secondary(bool isDarkMode) {
+    return CButtonStyle(
+      backgroundColor: grey80,
+      labelColor: white,
+      iconColor: white,
+    );
+  }
 
   /// Tertiary 스타일
-  static const CButtonStyle tertiary = CButtonStyle(
-    backgroundColor: Colors.transparent,
-    labelColor: blue60,
-    iconColor: blue60,
-    border: BorderSide(
-      color: blue60,
-      width: 1,
-    ),
-  );
+  factory CButtonStyle.tertiary(bool isDarkMode) {
+    return CButtonStyle(
+      backgroundColor: Colors.transparent,
+      labelColor: ThemeModel.highlight(isDarkMode),
+      iconColor: ThemeModel.highlight(isDarkMode),
+      border: BorderSide(
+        color: ThemeModel.highlight(isDarkMode),
+        width: 1,
+      ),
+    );
+  }
 
   /// Danger 스타일
-  static const CButtonStyle danger = CButtonStyle(
-    backgroundColor: red60,
-    labelColor: white,
-    iconColor: white,
-  );
+  factory CButtonStyle.danger(bool isDarkMode) {
+    return CButtonStyle(
+      backgroundColor: ThemeModel.danger(isDarkMode),
+      labelColor: white,
+      iconColor: white,
+    );
+  }
 
   /// Ghost 스타일
-  static const CButtonStyle ghost = CButtonStyle(
-    backgroundColor: Colors.transparent,
-    labelColor: blue60,
-    iconColor: blue60,
-  );
+  factory CButtonStyle.ghost(bool isDarkMode) {
+    return CButtonStyle(
+      backgroundColor: Colors.transparent,
+      labelColor: ThemeModel.highlight(isDarkMode),
+      iconColor: ThemeModel.highlight(isDarkMode),
+    );
+  }
 }
 
 /// 버튼 크기를 관리하는 클래스
@@ -103,11 +116,11 @@ class CButtonSizes {
 /// - [width]: 버튼의 고정 너비
 /// - [onTap]: 버튼을 눌렀을 때 실행되는 콜백 함수
 ///
-class CButton extends StatelessWidget {
+class CButton extends ConsumerWidget {
   final String? label;
   final IconData? icon;
   final CButtonSize size;
-  final CButtonStyle style;
+  final CButtonStyle? style;
   final double? width;
   final VoidCallback? onTap;
 
@@ -116,14 +129,19 @@ class CButton extends StatelessWidget {
     this.label,
     this.icon,
     this.size = CButtonSize.large,
-    this.style = CButtonStyle.primary,
+    this.style,
     this.width,
     this.onTap,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = ref.watch(themeProvider); // 다크 모드 상태 가져오기
     final bool isDisabled = onTap == null;
+
+    // 스타일이 지정되지 않으면 기본 Primary 스타일 사용
+    final CButtonStyle effectiveStyle =
+        style ?? CButtonStyle.primary(isDarkMode);
 
     return Opacity(
       opacity: isDisabled ? 0.4 : 1.0,
@@ -133,9 +151,9 @@ class CButton extends StatelessWidget {
           padding: CButtonSizes.sizes[size]!,
           width: width,
           decoration: BoxDecoration(
-            color: style.backgroundColor,
-            border: style.border != null
-                ? Border.fromBorderSide(style.border!)
+            color: effectiveStyle.backgroundColor,
+            border: effectiveStyle.border != null
+                ? Border.fromBorderSide(effectiveStyle.border!)
                 : null,
           ),
           child: Row(
@@ -145,7 +163,7 @@ class CButton extends StatelessWidget {
                 Text(
                   label!,
                   style: TextStyle(
-                    color: style.labelColor,
+                    color: effectiveStyle.labelColor,
                     fontSize: CButtonSizes.textSizes[size],
                   ),
                 ),
@@ -154,7 +172,7 @@ class CButton extends StatelessWidget {
                 if (width != null) Spacer(),
                 Icon(
                   icon,
-                  color: style.iconColor,
+                  color: effectiveStyle.iconColor,
                   size: CButtonSizes.iconSizes[size],
                 ),
               ],
