@@ -71,8 +71,8 @@ class CButtonSizes {
     CButtonSize.small: EdgeInsets.all(8),
     CButtonSize.medium: EdgeInsets.all(12),
     CButtonSize.large: EdgeInsets.all(16),
-    CButtonSize.extraLarge: EdgeInsets.all(20),
-    CButtonSize.x2Large: EdgeInsets.all(20),
+    CButtonSize.extraLarge: EdgeInsets.all(16),
+    CButtonSize.x2Large: EdgeInsets.all(16),
   };
 
   static const Map<CButtonSize, double> textSizes = {
