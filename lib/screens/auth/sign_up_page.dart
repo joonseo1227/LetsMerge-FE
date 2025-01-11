@@ -119,7 +119,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                 Text(
                   'Let\'s Merge 시작하기',
                   style: TextStyle(
-                    fontSize: 24,
+                    fontSize: 32,
                     fontWeight: FontWeight.w700,
                   ),
                 ),

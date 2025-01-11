@@ -10,7 +10,6 @@ class ThemeModel {
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     appBarTheme: const AppBarTheme(
-      titleSpacing: 0,
       scrolledUnderElevation: 0,
       backgroundColor: grey10,
       toolbarHeight: 80,
@@ -46,7 +45,6 @@ class ThemeModel {
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     appBarTheme: const AppBarTheme(
-      titleSpacing: 0,
       scrolledUnderElevation: 0,
       backgroundColor: grey10,
       toolbarHeight: 80,

@@ -22,6 +22,7 @@ class _DevPageState extends State<DevPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('DEV'),
+        titleSpacing: 0,
       ),
       body: SingleChildScrollView(
         child: Padding(

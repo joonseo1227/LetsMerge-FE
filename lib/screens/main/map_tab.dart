@@ -7,11 +7,8 @@ class MapTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Map'),
-      ),
       body: NaverMap(
-        options:  NaverMapViewOptions(
+        options: NaverMapViewOptions(
           initialCameraPosition: NCameraPosition(
             target: NLatLng(37.451039959670574, 127.12875330395157), // 초기 위치
             zoom: 15.2, // 초기 줌 레벨
