@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
 
 ///
 /// [CSearchBar] 위젯
@@ -58,55 +59,56 @@ class _CSearchBarState extends ConsumerState<CSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 48,
-      child: TextField(
-        controller: widget.controller,
-        focusNode: _focusNode,
-        decoration: InputDecoration(
-          hintText: widget.hint,
-          hintStyle: const TextStyle(color: grey40),
-          filled: true,
-          fillColor: widget.backgroundColor ?? white,
-          enabledBorder: UnderlineInputBorder(
-            borderRadius: BorderRadius.circular(0),
-            borderSide: BorderSide(
-              color: _getErrorBorderColor(),
-              width: 1,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(0),
-            borderSide: BorderSide(
-              color: _getFocusBorderColor(),
-              width: 2,
-            ),
-          ),
-          prefixIcon: Icon(
-            Icons.search,
-            color: _hasFocus ? blue60 : grey60,
-          ),
-          suffixIcon: widget.controller?.text.isNotEmpty ?? false
-              ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    widget.controller?.clear();
-                  },
-                )
-              : null,
-        ),
-        onSubmitted: widget.onSubmitted,
-      ),
-    );
-  }
+    final isDarkMode = ref.watch(themeProvider);
 
-  // 에러 상태의 경계선 색상 반환
-  Color _getErrorBorderColor() {
-    return grey60;
+    return TextField(
+      controller: widget.controller,
+      focusNode: _focusNode,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.all(16),
+        hintText: widget.hint,
+        hintStyle: TextStyle(
+          color: ThemeModel.hintText(isDarkMode),
+        ),
+        filled: true,
+        fillColor: widget.backgroundColor ?? ThemeModel.surface(isDarkMode),
+        enabledBorder: UnderlineInputBorder(
+          borderRadius: BorderRadius.circular(0),
+          borderSide: BorderSide(
+            color: ThemeModel.sub4(isDarkMode),
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(0),
+          borderSide: BorderSide(
+            color: _getFocusBorderColor(),
+            width: 2,
+          ),
+        ),
+        prefixIcon: Icon(
+          Icons.search,
+          color: _getFocusBorderColor(),
+        ),
+        suffixIcon: widget.controller?.text.isNotEmpty ?? false
+            ? IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () {
+                  widget.controller?.clear();
+                },
+              )
+            : null,
+      ),
+      onSubmitted: widget.onSubmitted,
+    );
   }
 
   // Focus 상태에 따른 경계선 색상 반환
   Color _getFocusBorderColor() {
-    return _hasFocus ? blue60 : grey60;
+    final isDarkMode = ref.watch(themeProvider);
+
+    return _hasFocus
+        ? ThemeModel.highlight(isDarkMode)
+        : ThemeModel.sub4(isDarkMode);
   }
 }

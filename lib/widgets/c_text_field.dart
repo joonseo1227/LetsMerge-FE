@@ -101,8 +101,7 @@ class _CTextFieldState extends ConsumerState<CTextField> {
               color: ThemeModel.hintText(isDarkMode),
             ),
             filled: true,
-            fillColor:
-                widget.backgroundColor ?? ThemeModel.surface(isDarkMode),
+            fillColor: widget.backgroundColor ?? ThemeModel.surface(isDarkMode),
             enabledBorder: UnderlineInputBorder(
               borderRadius: BorderRadius.circular(0),
               borderSide: BorderSide(

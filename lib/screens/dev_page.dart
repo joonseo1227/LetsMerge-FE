@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/auth/log_in_page.dart';
@@ -8,8 +7,10 @@ import 'package:letsmerge/screens/auth/sign_up_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_search_bar.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
+import 'package:letsmerge/widgets/c_text_field.dart';
 
 class DevPage extends ConsumerStatefulWidget {
   const DevPage({super.key});
@@ -37,6 +38,15 @@ class _DevPageState extends ConsumerState<DevPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                CTextField(
+                  label: 'CTextField',
+                  hint: 'hint',
+                ),
+                SizedBox(height: 16),
+                CSearchBar(
+                  hint: 'hint',
+                ),
+                SizedBox(height: 16),
                 CSwitch(
                   value: isSwitched,
                   onChanged: (value) {

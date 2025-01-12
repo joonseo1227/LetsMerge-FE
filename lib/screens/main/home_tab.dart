@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/dev_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_search_bar.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
 
 class HomeTab extends ConsumerStatefulWidget {
@@ -31,28 +31,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 /// 목적지 검색
                 CInkWell(
                   onTap: () {},
-                  child: Container(
-                    padding: EdgeInsets.all(16),
-                    color: ThemeModel.surface(isDarkMode),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.search,
-                          color: ThemeModel.text(isDarkMode),
-                        ),
-                        SizedBox(
-                          width: 16,
-                        ),
-                        Text(
-                          '목적지 검색',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.sub3(isDarkMode),
-                          ),
-                        ),
-                      ],
-                    ),
+                  child: CSearchBar(
+                    hint: '목적지 검색',
                   ),
                 ),
                 SizedBox(
