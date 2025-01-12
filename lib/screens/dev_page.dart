@@ -198,7 +198,7 @@ class _DevPageState extends ConsumerState<DevPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '회원 가입',
+                          '계정 생성',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,

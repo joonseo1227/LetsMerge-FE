@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
-import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
@@ -99,6 +97,8 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
       final password = _passwordController.text.trim();
 
       await authNotifier.signUpWithEmail(email, password, name);
+
+      if (!mounted) return;
       Navigator.pop(context);
     } catch (e) {
       setState(() {
@@ -118,38 +118,18 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = ref.watch(themeProvider);
-
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
+      appBar: AppBar(
+        title: Text('계정 생성'),
+        titleSpacing: 0,
+      ),
+      body: SingleChildScrollView(
+        child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.all(16),
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(
-                  height: 80,
-                ),
-                SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: Image.asset('assets/imgs/logo_black.png'),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  'Let\'s Merge 시작하기',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700,
-                    color: ThemeModel.text(isDarkMode),
-                  ),
-                ),
-                const SizedBox(
-                  height: 80,
-                ),
                 CTextField(
                   label: '이름',
                   controller: _nameController,
@@ -194,7 +174,8 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                   builder: (context, isEnabled, child) {
                     return CButton(
                       onTap: isEnabled ? _signUp : null,
-                      label: '회원 가입',
+                      label: '다음',
+                      icon: Icons.navigate_next,
                       width: double.maxFinite,
                     );
                   },

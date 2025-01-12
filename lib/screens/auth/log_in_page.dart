@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/auth/sign_up_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
@@ -74,15 +75,13 @@ class _LogInPageState extends ConsumerState<LogInPage> {
       final password = _passwordController.text.trim();
 
       await authNotifier.signInWithEmail(email, password);
+
+      if (!mounted) return;
       Navigator.pop(context);
     } catch (e) {
       setState(() {
-        if (e.toString().contains('user-not-found')) {
-          _emailError = '등록되지 않은 이메일입니다.';
-        } else if (e.toString().contains('invalid-email')) {
+        if (e.toString().contains('invalid-email')) {
           _emailError = '이메일 형식을 확인하십시오.';
-        } else if (e.toString().contains('wrong-password')) {
-          _passwordError = '일치하지 않는 암호입니다.';
         } else {
           _emailError = '이메일 또는 암호를 확인하십시오.';
         }
@@ -106,7 +105,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 80,
+                  height: 24,
                 ),
                 SizedBox(
                   width: 80,
@@ -117,7 +116,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                   height: 8,
                 ),
                 Text(
-                  'Let\'s Merge 시작하기',
+                  'Let\'s Merge에 로그인',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w700,
@@ -125,7 +124,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 80,
+                  height: 48,
                 ),
                 CTextField(
                   label: '이메일',
@@ -152,9 +151,36 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                     return CButton(
                       onTap: isEnabled ? _login : null,
                       label: '로그인',
+                      icon: Icons.navigate_next,
                       width: double.maxFinite,
                     );
                   },
+                ),
+                const SizedBox(
+                  height: 48,
+                ),
+                Text(
+                  '계정이 없으신가요?',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: ThemeModel.text(isDarkMode),
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                CButton(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => SignUpPage(),
+                      ),
+                    );
+                  },
+                  label: '계정 생성',
+                  icon: Icons.navigate_next,
+                  style: CButtonStyle.tertiary(isDarkMode),
+                  width: double.maxFinite,
                 ),
               ],
             ),
