@@ -117,7 +117,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                   height: 8,
                 ),
                 Text(
-                  'Let\'s Merge에 로그인',
+                  '렛츠머지에 로그인',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w700,
