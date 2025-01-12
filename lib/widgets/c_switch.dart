@@ -16,10 +16,10 @@ class CSwitch extends ConsumerStatefulWidget {
   final bool value; // 부모로부터 전달받는 스위치 상태
 
   const CSwitch({
-    Key? key,
+    super.key,
     required this.onChanged,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   _CSwitchState createState() => _CSwitchState();

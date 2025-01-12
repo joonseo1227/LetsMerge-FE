@@ -22,7 +22,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _pages = <Widget>[
+    List<Widget> pages = <Widget>[
       HomeTab(),
       MapTab(),
       NotificationTab(),
@@ -32,7 +32,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       body: IndexedStack(
         index: _selectedIndex,
-        children: _pages,
+        children: pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:letsmerge/models/user_model.dart';
@@ -34,7 +35,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
       );
       state = UserDTO.fromFirebaseUser(result.user!);
     } catch (e) {
-      print('로그인 실패: $e');
+      debugPrint('로그인 실패: $e');
       rethrow;
     }
   }
@@ -55,7 +56,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
         state = UserDTO.fromFirebaseUser(firebaseUser);
       }
     } catch (e) {
-      print('회원가입 실패: $e');
+      debugPrint('회원가입 실패: $e');
       rethrow;
     }
   }
@@ -66,7 +67,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
       await _auth.signOut();
       state = null;
     } catch (e) {
-      print('로그아웃 실패: $e');
+      debugPrint('로그아웃 실패: $e');
       rethrow;
     }
   }
@@ -81,7 +82,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
         state = UserDTO.fromFirebaseUser(firebaseUser);
       }
     } catch (e) {
-      print('이름 업데이트 실패: $e');
+      debugPrint('이름 업데이트 실패: $e');
       rethrow;
     }
   }
