@@ -64,6 +64,11 @@ class _CSearchBarState extends ConsumerState<CSearchBar> {
     return TextField(
       controller: widget.controller,
       focusNode: _focusNode,
+      textAlign: TextAlign.start,
+      textAlignVertical: TextAlignVertical.center,
+      style: TextStyle(
+        color: ThemeModel.text(isDarkMode),
+      ),
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(16),
         hintText: widget.hint,
