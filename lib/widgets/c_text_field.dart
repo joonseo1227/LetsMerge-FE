@@ -84,44 +84,47 @@ class _CTextFieldState extends ConsumerState<CTextField> {
         ),
         const SizedBox(height: 4),
         // 텍스트 입력 필드
-        SizedBox(
-          height: 48,
-          child: TextField(
-            controller: widget.controller,
-            focusNode: _focusNode,
-            obscureText: widget.obscureText,
-            keyboardType: widget.keyboardType,
-            decoration: InputDecoration(
-              hintText: widget.hint,
-              hintStyle: TextStyle(
-                color: ThemeModel.hintText(isDarkMode),
-              ),
-              filled: true,
-              fillColor:
-                  widget.backgroundColor ?? ThemeModel.surface(isDarkMode),
-              enabledBorder: UnderlineInputBorder(
-                borderRadius: BorderRadius.circular(0),
-                borderSide: BorderSide(
-                  color: _getErrorBorderColor(),
-                  width: 1,
-                ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(0),
-                borderSide: BorderSide(
-                  color: _getFocusBorderColor(),
-                  width: 2,
-                ),
-              ),
-              suffixIcon: widget.controller?.text.isNotEmpty ?? false
-                  ? IconButton(
-                      icon: const Icon(Icons.clear),
-                      onPressed: () {
-                        widget.controller?.clear();
-                      },
-                    )
-                  : null,
+        TextField(
+          controller: widget.controller,
+          focusNode: _focusNode,
+          obscureText: widget.obscureText,
+          keyboardType: widget.keyboardType,
+          textAlign: TextAlign.start,
+          textAlignVertical: TextAlignVertical.center,
+          style: TextStyle(
+            color: ThemeModel.text(isDarkMode),
+          ),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(16),
+            hintText: widget.hint,
+            hintStyle: TextStyle(
+              color: ThemeModel.hintText(isDarkMode),
             ),
+            filled: true,
+            fillColor:
+                widget.backgroundColor ?? ThemeModel.surface(isDarkMode),
+            enabledBorder: UnderlineInputBorder(
+              borderRadius: BorderRadius.circular(0),
+              borderSide: BorderSide(
+                color: _getErrorBorderColor(),
+                width: 1,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(0),
+              borderSide: BorderSide(
+                color: _getFocusBorderColor(),
+                width: 2,
+              ),
+            ),
+            suffixIcon: widget.controller?.text.isNotEmpty ?? false
+                ? IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () {
+                      widget.controller?.clear();
+                    },
+                  )
+                : null,
           ),
         ),
         // 에러 메시지 표시
