@@ -29,7 +29,7 @@ class MyApp extends ConsumerWidget {
     final isDarkMode = ref.watch(themeProvider);
 
     return MaterialApp(
-      title: '머지해요',
+      title: 'Let\'s Merge',
       debugShowCheckedModeBanner: false,
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeModel.lightTheme,

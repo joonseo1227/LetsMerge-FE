@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
@@ -110,7 +111,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                 SizedBox(
                   width: 80,
                   height: 80,
-                  child: Image.asset('assets/imgs/logo_black.png'),
+                  child: isDarkMode ? SvgPicture.asset('assets/imgs/logo_grey10.svg') : SvgPicture.asset('assets/imgs/logo_grey100.svg'),
                 ),
                 const SizedBox(
                   height: 8,
