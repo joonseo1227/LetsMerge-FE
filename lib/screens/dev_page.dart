@@ -31,234 +31,236 @@ class _DevPageState extends ConsumerState<DevPage> {
         titleSpacing: 0,
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CSwitch(
-                value: isSwitched,
-                onChanged: (value) {
-                  setState(() {
-                    isSwitched = value;
-                  });
-                },
-              ),
-              SizedBox(height: 16),
-              CButton(
-                label: 'Default Button',
-                onTap: () {
-                  debugPrint('Default Button Clicked');
-                },
-              ),
-              SizedBox(height: 16),
-              CButton(
-                style: CButtonStyle.primary(isDarkMode),
-                label: 'Primary Button',
-                icon: Icons.home,
-                width: 300,
-                onTap: () {
-                  debugPrint('Primary Button Clicked');
-                },
-              ),
-              SizedBox(height: 16),
-              CButton(
-                style: CButtonStyle.secondary(isDarkMode),
-                icon: Icons.settings,
-                size: CButtonSize.medium,
-                onTap: () {
-                  debugPrint('Secondary Button Clicked');
-                },
-              ),
-              SizedBox(height: 16),
-              CButton(
-                style: CButtonStyle.tertiary(isDarkMode),
-                label: 'Tertiary Button',
-                icon: Icons.info,
-                size: CButtonSize.medium,
-                onTap: () {
-                  debugPrint('Tertiary Button Clicked');
-                },
-              ),
-              SizedBox(height: 16),
-              CButton(
-                style: CButtonStyle.danger(isDarkMode),
-                label: 'Danger Button',
-                size: CButtonSize.x2Large,
-                onTap: () {
-                  debugPrint('Danger Button Clicked');
-                },
-              ),
-              SizedBox(height: 16),
-              CButton(
-                style: CButtonStyle.ghost(isDarkMode),
-                label: 'Ghost Button',
-                onTap: () {
-                  debugPrint('Ghost Button Clicked');
-                },
-              ),
-              SizedBox(height: 16),
-              CButton(
-                style: CButtonStyle.primary(isDarkMode),
-                label: 'Small Button',
-                size: CButtonSize.small,
-                onTap: () {
-                  debugPrint('Small Button Clicked');
-                },
-              ),
-              SizedBox(height: 16),
-              CButton(
-                style: CButtonStyle.secondary(isDarkMode),
-                label: 'Extra Large Button',
-                size: CButtonSize.extraLarge,
-                onTap: () {
-                  debugPrint('Extra Large Button Clicked');
-                },
-              ),
-              SizedBox(height: 16),
-              CButton(
-                style: CButtonStyle.tertiary(isDarkMode),
-                label: 'Custom Width',
-                icon: Icons.star,
-                width: 250,
-                onTap: () {
-                  debugPrint('Custom Width Button Clicked');
-                },
-              ),
-              SizedBox(height: 16),
-              CInkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => LogInPage(),
-                    ),
-                  );
-                },
-                child: Container(
-                  color: ThemeModel.surface(isDarkMode),
-                  height: 120,
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '로그인',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: ThemeModel.text(isDarkMode),
-                        ),
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CSwitch(
+                  value: isSwitched,
+                  onChanged: (value) {
+                    setState(() {
+                      isSwitched = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  label: 'Default Button',
+                  onTap: () {
+                    debugPrint('Default Button Clicked');
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  style: CButtonStyle.primary(isDarkMode),
+                  label: 'Primary Button',
+                  icon: Icons.home,
+                  width: 300,
+                  onTap: () {
+                    debugPrint('Primary Button Clicked');
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  style: CButtonStyle.secondary(isDarkMode),
+                  icon: Icons.settings,
+                  size: CButtonSize.medium,
+                  onTap: () {
+                    debugPrint('Secondary Button Clicked');
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  style: CButtonStyle.tertiary(isDarkMode),
+                  label: 'Tertiary Button',
+                  icon: Icons.info,
+                  size: CButtonSize.medium,
+                  onTap: () {
+                    debugPrint('Tertiary Button Clicked');
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  style: CButtonStyle.danger(isDarkMode),
+                  label: 'Danger Button',
+                  size: CButtonSize.x2Large,
+                  onTap: () {
+                    debugPrint('Danger Button Clicked');
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  style: CButtonStyle.ghost(isDarkMode),
+                  label: 'Ghost Button',
+                  onTap: () {
+                    debugPrint('Ghost Button Clicked');
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  style: CButtonStyle.primary(isDarkMode),
+                  label: 'Small Button',
+                  size: CButtonSize.small,
+                  onTap: () {
+                    debugPrint('Small Button Clicked');
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  style: CButtonStyle.secondary(isDarkMode),
+                  label: 'Extra Large Button',
+                  size: CButtonSize.extraLarge,
+                  onTap: () {
+                    debugPrint('Extra Large Button Clicked');
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  style: CButtonStyle.tertiary(isDarkMode),
+                  label: 'Custom Width',
+                  icon: Icons.star,
+                  width: 250,
+                  onTap: () {
+                    debugPrint('Custom Width Button Clicked');
+                  },
+                ),
+                SizedBox(height: 16),
+                CInkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => LogInPage(),
                       ),
-                      Spacer(),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          CTag(
-                            text: 'DEV',
-                            color: TagColor.blue,
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.navigate_next,
+                    );
+                  },
+                  child: Container(
+                    color: ThemeModel.surface(isDarkMode),
+                    height: 120,
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '로그인',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
                             color: ThemeModel.text(isDarkMode),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        Spacer(),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            CTag(
+                              text: 'DEV',
+                              color: TagColor.blue,
+                            ),
+                            Spacer(),
+                            Icon(
+                              Icons.navigate_next,
+                              color: ThemeModel.text(isDarkMode),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              CInkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => SignUpPage(),
-                    ),
-                  );
-                },
-                child: Container(
-                  color: ThemeModel.surface(isDarkMode),
-                  height: 120,
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '회원 가입',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: ThemeModel.text(isDarkMode),
-                        ),
+                SizedBox(
+                  height: 16,
+                ),
+                CInkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => SignUpPage(),
                       ),
-                      Spacer(),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          CTag(
-                            text: 'DEV',
-                            color: TagColor.blue,
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.navigate_next,
+                    );
+                  },
+                  child: Container(
+                    color: ThemeModel.surface(isDarkMode),
+                    height: 120,
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '회원 가입',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
                             color: ThemeModel.text(isDarkMode),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        Spacer(),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            CTag(
+                              text: 'DEV',
+                              color: TagColor.blue,
+                            ),
+                            Spacer(),
+                            Icon(
+                              Icons.navigate_next,
+                              color: ThemeModel.text(isDarkMode),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 16,
-              ),
-              CInkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => SettingsPage(),
-                    ),
-                  );
-                },
-                child: Container(
-                  color: ThemeModel.surface(isDarkMode),
-                  height: 120,
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '설정',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: ThemeModel.text(isDarkMode),
-                        ),
+                SizedBox(
+                  height: 16,
+                ),
+                CInkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => SettingsPage(),
                       ),
-                      Spacer(),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          CTag(
-                            text: 'DEV',
-                            color: TagColor.blue,
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.navigate_next,
+                    );
+                  },
+                  child: Container(
+                    color: ThemeModel.surface(isDarkMode),
+                    height: 120,
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '설정',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
                             color: ThemeModel.text(isDarkMode),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        Spacer(),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            CTag(
+                              text: 'DEV',
+                              color: TagColor.blue,
+                            ),
+                            Spacer(),
+                            Icon(
+                              Icons.navigate_next,
+                              color: ThemeModel.text(isDarkMode),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
