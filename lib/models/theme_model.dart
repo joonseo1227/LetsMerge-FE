@@ -3,9 +3,9 @@ import 'package:letsmerge/config/color.dart';
 
 class ThemeModel {
   // 현재 테마에 따라 동적 색상 반환
-  static Color background(bool isDarkMode) => isDarkMode ? black : grey10;
+  static Color background(bool isDarkMode) => isDarkMode ? grey100 : grey10;
 
-  static Color surface(bool isDarkMode) => isDarkMode ? grey100 : white;
+  static Color surface(bool isDarkMode) => isDarkMode ? grey90 : white;
 
   static Color text(bool isDarkMode) => isDarkMode ? grey10 : grey100;
 
@@ -67,12 +67,12 @@ class ThemeModel {
     fontFamily: 'Pretendard',
     colorScheme: ColorScheme.fromSeed(seedColor: blue50),
     useMaterial3: true,
-    scaffoldBackgroundColor: black,
+    scaffoldBackgroundColor: grey100,
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     appBarTheme: const AppBarTheme(
       scrolledUnderElevation: 0,
-      backgroundColor: black,
+      backgroundColor: grey100,
       toolbarHeight: 80,
       centerTitle: false,
       titleTextStyle: TextStyle(
@@ -85,7 +85,7 @@ class ThemeModel {
       ),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: black,
+      backgroundColor: grey100,
       elevation: 0,
       selectedItemColor: grey10,
       unselectedItemColor: grey70,
