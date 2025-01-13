@@ -28,9 +28,11 @@ class _MapTabState extends ConsumerState<MapTab> {
                 // 초기 위치
                 zoom: 15.2, // 초기 줌 레벨
               ),
+              locationButtonEnable: true
             ),
             onMapReady: (controller) {
               debugPrint('Naver Map is ready');
+              controller.setLocationTrackingMode(NLocationTrackingMode.follow);
             },
           ),
           SafeArea(
