@@ -120,9 +120,9 @@ class _MapTabState extends ConsumerState<MapTab> {
           SafeArea(
             child: DraggableScrollableSheet(
               snap: true,
-              snapSizes: const [0.3, 1],
+              snapSizes: const [0.1, 0.3, 1],
               initialChildSize: 0.1,
-              minChildSize: 0.05,
+              minChildSize: 0.1,
               maxChildSize: 1,
               builder:
                   (BuildContext context, ScrollController scrollController) {
