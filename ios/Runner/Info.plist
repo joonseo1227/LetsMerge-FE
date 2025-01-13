@@ -27,9 +27,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>앱 사용 중 또는 항상 위치 정보가 필요합니다.</string>
+	<string>사용자의 위치를 지도에 표시하고, 맞춤형 정보와 서비스를 제공하기 위해 위치 정보 접근 권한이 필요합니다.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>앱 사용 중 위치 정보가 필요합니다.</string>
+	<string>사용자의 위치를 지도에 표시하고, 맞춤형 정보와 서비스를 제공하기 위해 위치 정보 접근 권한이 필요합니다.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
