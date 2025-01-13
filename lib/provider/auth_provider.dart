@@ -40,7 +40,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
     }
   }
 
-  // 이메일 및 암호로 회원가입 + 이름 설정
+  // 이메일 및 암호로 계정 생성 + 이름 설정
   Future<void> signUpWithEmail(
       String email, String password, String name) async {
     try {
@@ -56,7 +56,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
         state = UserDTO.fromFirebaseUser(firebaseUser);
       }
     } catch (e) {
-      debugPrint('회원가입 실패: $e');
+      debugPrint('계정 생성 실패: $e');
       rethrow;
     }
   }
