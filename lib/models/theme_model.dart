@@ -9,15 +9,15 @@ class ThemeModel {
 
   static Color text(bool isDarkMode) => isDarkMode ? grey10 : grey100;
 
-  static Color sub1(bool isDarkMode) => isDarkMode ? grey90 : grey20;
+  static Color sub1(bool isDarkMode) => isDarkMode ? grey80 : grey20;
 
-  static Color sub2(bool isDarkMode) => isDarkMode ? grey80 : grey30;
+  static Color sub2(bool isDarkMode) => isDarkMode ? grey70 : grey30;
 
-  static Color sub3(bool isDarkMode) => isDarkMode ? grey60 : grey50;
+  static Color sub3(bool isDarkMode) => isDarkMode ? grey50 : grey50;
 
-  static Color sub4(bool isDarkMode) => isDarkMode ? grey50 : grey60;
+  static Color sub4(bool isDarkMode) => isDarkMode ? grey40 : grey60;
 
-  static Color sub5(bool isDarkMode) => isDarkMode ? grey20 : grey90;
+  static Color sub5(bool isDarkMode) => isDarkMode ? grey30 : grey70;
 
   static Color hintText(bool isDarkMode) => isDarkMode ? grey70 : grey40;
 

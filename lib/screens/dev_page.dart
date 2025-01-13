@@ -38,6 +38,35 @@ class _DevPageState extends ConsumerState<DevPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                CInkWell(
+                  onTap: () {
+                    ref.read(themeProvider.notifier).toggleTheme();
+                  },
+                  child: Container(
+                    color: ThemeModel.surface(isDarkMode),
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Text(
+                          '다크 모드',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: ThemeModel.text(isDarkMode),
+                          ),
+                        ),
+                        const Spacer(),
+                        CSwitch(
+                          value: isDarkMode,
+                          onChanged: (_) {
+                            ref.read(themeProvider.notifier).toggleTheme();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
                 CTextField(
                   label: 'CTextField',
                   hint: 'hint',

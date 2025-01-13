@@ -30,9 +30,9 @@ Future<void> _handleLocationPermission() async {
   }
 
   if (status.isGranted) {
-    print('위치 권한이 허용되었습니다.');
+    debugPrint('위치 권한이 허용되었습니다.');
   } else if (status.isDenied) {
-    print('위치 권한이 거부되었습니다.');
+    debugPrint('위치 권한이 거부되었습니다.');
   } else if (status.isPermanentlyDenied) {
     await openAppSettings();
   }

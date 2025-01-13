@@ -19,7 +19,7 @@ class _MapTabState extends ConsumerState<MapTab> {
   double _currentExtent = 0.1; // 초기 바텀시트 위치 비율
   double _widgetHeight = 0; // 위젯 높이
   double _buttonPosition = 0; // FAB 위치
-  double _buttonPositionPadding = 16;
+  final double _buttonPositionPadding = 16;
   bool _isButtonVisible = true;
 
   NaverMapController? _mapController;
@@ -120,10 +120,10 @@ class _MapTabState extends ConsumerState<MapTab> {
           SafeArea(
             child: DraggableScrollableSheet(
               snap: true,
-              snapSizes: const [0.3, 0.9],
+              snapSizes: const [0.3, 1],
               initialChildSize: 0.1,
-              minChildSize: 0.1,
-              maxChildSize: 0.9,
+              minChildSize: 0.05,
+              maxChildSize: 1,
               builder:
                   (BuildContext context, ScrollController scrollController) {
                 return NotificationListener<DraggableScrollableNotification>(
@@ -135,7 +135,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                         _buttonPosition = _currentExtent * _widgetHeight +
                             _buttonPositionPadding;
                       }
-                      _isButtonVisible = _currentExtent < 0.9;
+                      _isButtonVisible = _currentExtent < 0.4;
                     });
                     return true;
                   },
@@ -200,7 +200,7 @@ class _MapTabState extends ConsumerState<MapTab> {
             right: 16,
             child: AnimatedOpacity(
               opacity: _isButtonVisible ? 1.0 : 0.0,
-              duration: Duration(milliseconds: 300),
+              duration: Duration(milliseconds: 150),
               child: CButton(
                 style: CButtonStyle.secondary(isDarkMode),
                 icon: Icons.my_location,

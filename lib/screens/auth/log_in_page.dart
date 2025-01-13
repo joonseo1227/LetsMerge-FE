@@ -111,7 +111,9 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                 SizedBox(
                   width: 80,
                   height: 80,
-                  child: isDarkMode ? SvgPicture.asset('assets/imgs/logo_grey10.svg') : SvgPicture.asset('assets/imgs/logo_grey100.svg'),
+                  child: isDarkMode
+                      ? SvgPicture.asset('assets/imgs/logo_grey10.svg')
+                      : SvgPicture.asset('assets/imgs/logo_grey100.svg'),
                 ),
                 const SizedBox(
                   height: 8,
