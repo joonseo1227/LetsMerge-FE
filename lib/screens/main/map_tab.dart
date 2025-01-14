@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/group_detail_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
@@ -145,7 +146,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                        color: ThemeModel.surface(isDarkMode),
+                        color: ThemeModel.background(isDarkMode),
                         boxShadow: [
                           BoxShadow(
                             color: black.withAlpha(20),
@@ -172,19 +173,176 @@ class _MapTabState extends ConsumerState<MapTab> {
                               controller: scrollController,
                               itemCount: 10,
                               itemBuilder: (BuildContext context, int index) {
-                                return CInkWell(
-                                  onTap: () {
-                                    debugPrint('옵션 $index 클릭됨');
-                                  },
-                                  child: ListTile(
-                                    leading: Icon(
-                                      Icons.place,
-                                      color: ThemeModel.text(isDarkMode),
-                                    ),
-                                    title: Text(
-                                      '옵션 $index',
-                                      style: TextStyle(
-                                        color: ThemeModel.text(isDarkMode),
+                                return Padding(
+                                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                  child: CInkWell(
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => GroupDetailPage(),
+                                        ),
+                                      );
+                                    },
+                                    child: Container(
+                                      color: ThemeModel.surface(isDarkMode),
+                                      width: double.maxFinite,
+                                      padding: EdgeInsets.all(16),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '1자리 남음',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: ThemeModel.sub3(isDarkMode),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 16,
+                                                child: VerticalDivider(
+                                                  thickness: 1,
+                                                  color: ThemeModel.sub2(isDarkMode),
+                                                ),
+                                              ),
+                                              Text(
+                                                '5분 후 마감',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w500,
+                                                  color: ThemeModel.sub3(isDarkMode),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 8,
+                                                height: 8,
+                                                margin: EdgeInsets.all(6),
+                                                decoration: ShapeDecoration(
+                                                  color: ThemeModel.sub2(isDarkMode),
+                                                  shape: CircleBorder(),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 12,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '가천대역 수인분당선',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: ThemeModel.text(isDarkMode),
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.access_time_filled,
+                                                        size: 14,
+                                                        color: ThemeModel.sub2(isDarkMode),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 4,
+                                                      ),
+                                                      Text(
+                                                        '10:30',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w500,
+                                                          color: ThemeModel.sub3(isDarkMode),
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 16,
+                                                        child: VerticalDivider(
+                                                          thickness: 1,
+                                                          color: ThemeModel.sub2(isDarkMode),
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        '현재 위치에서 도보 3분',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w500,
+                                                          color: ThemeModel.sub3(isDarkMode),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(
+                                            height: 16,
+                                          ),
+                                          Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 8,
+                                                height: 8,
+                                                margin: EdgeInsets.all(6),
+                                                decoration: ShapeDecoration(
+                                                  color: ThemeModel.highlight(isDarkMode),
+                                                  shape: CircleBorder(),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 12,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '가천대학교 AI관',
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.w500,
+                                                      color: ThemeModel.text(isDarkMode),
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                    children: [
+                                                      Icon(
+                                                        Icons.access_time_filled,
+                                                        size: 14,
+                                                        color: ThemeModel.sub2(isDarkMode),
+                                                      ),
+                                                      SizedBox(
+                                                        width: 4,
+                                                      ),
+                                                      Text(
+                                                        '10:35',
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.w500,
+                                                          color: ThemeModel.sub3(isDarkMode),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   ),

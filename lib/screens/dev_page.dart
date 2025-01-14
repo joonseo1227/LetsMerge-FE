@@ -4,6 +4,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/auth/log_in_page.dart';
 import 'package:letsmerge/screens/auth/sign_up_page.dart';
+import 'package:letsmerge/screens/group_detail_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
@@ -273,6 +274,51 @@ class _DevPageState extends ConsumerState<DevPage> {
                       children: [
                         Text(
                           '설정',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: ThemeModel.text(isDarkMode),
+                          ),
+                        ),
+                        Spacer(),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            CTag(
+                              text: 'DEV',
+                              color: TagColor.blue,
+                            ),
+                            Spacer(),
+                            Icon(
+                              Icons.navigate_next,
+                              color: ThemeModel.text(isDarkMode),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 16,
+                ),
+                CInkWell(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => GroupDetailPage(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    color: ThemeModel.surface(isDarkMode),
+                    height: 120,
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'GroupDetailPage',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,

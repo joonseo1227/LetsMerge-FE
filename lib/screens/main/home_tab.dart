@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/dev_page.dart';
+import 'package:letsmerge/screens/group_detail_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
@@ -358,7 +359,13 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   ),
 
                   CInkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => GroupDetailPage(),
+                        ),
+                      );
+                    },
                     child: Container(
                       color: ThemeModel.surface(isDarkMode),
                       width: double.maxFinite,
@@ -528,7 +535,13 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   ),
 
                   CInkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => GroupDetailPage(),
+                        ),
+                      );
+                    },
                     child: Container(
                       color: ThemeModel.surface(isDarkMode),
                       width: double.maxFinite,
