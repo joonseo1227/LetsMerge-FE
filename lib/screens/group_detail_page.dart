@@ -81,6 +81,30 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// 지도
+                SizedBox(
+                  height: 400,
+                  child: NaverMap(
+                    options: NaverMapViewOptions(
+                      initialCameraPosition: NCameraPosition(
+                        target: NLatLng(_currentPosition!.latitude,
+                            _currentPosition!.longitude),
+                        zoom: 15.0,
+                      ),
+                    ),
+                    onMapReady: (controller) {
+                      debugPrint('Naver Map is ready');
+                      _mapController = controller;
+                      controller.setLocationTrackingMode(
+                          NLocationTrackingMode.follow);
+                    },
+                  ),
+                ),
+
+                SizedBox(
+                  height: 16,
+                ),
+
                 /// 기본 정보
                 Container(
                   color: ThemeModel.surface(isDarkMode),
@@ -450,30 +474,6 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
                         ),
                       ),
                     ],
-                  ),
-                ),
-
-                SizedBox(
-                  height: 16,
-                ),
-
-                /// 지도
-                SizedBox(
-                  height: 400,
-                  child: NaverMap(
-                    options: NaverMapViewOptions(
-                      initialCameraPosition: NCameraPosition(
-                        target: NLatLng(_currentPosition!.latitude,
-                            _currentPosition!.longitude),
-                        zoom: 15.0,
-                      ),
-                    ),
-                    onMapReady: (controller) {
-                      debugPrint('Naver Map is ready');
-                      _mapController = controller;
-                      controller.setLocationTrackingMode(
-                          NLocationTrackingMode.follow);
-                    },
                   ),
                 ),
               ],
