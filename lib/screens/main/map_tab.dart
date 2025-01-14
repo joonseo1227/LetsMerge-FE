@@ -107,25 +107,36 @@ class _MapTabState extends ConsumerState<MapTab> {
       child: Scaffold(
         body: Stack(
           children: [
-            NaverMap(
-              options: NaverMapViewOptions(
-                initialCameraPosition: NCameraPosition(
-                  target: NLatLng(
-                      _currentPosition!.latitude, _currentPosition!.longitude),
-                  zoom: 15.0,
+            // 지도를 Positioned로 배치
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              // _widgetHeight를 사용하여 계산
+              bottom: _currentExtent <= 0.4
+                  ? _currentExtent * _widgetHeight
+                  : 0.4 * _widgetHeight,
+              child: NaverMap(
+                options: NaverMapViewOptions(
+                  initialCameraPosition: NCameraPosition(
+                    target: NLatLng(_currentPosition!.latitude,
+                        _currentPosition!.longitude),
+                    zoom: 15.0,
+                  ),
                 ),
+                onMapReady: (controller) {
+                  debugPrint('Naver Map is ready');
+                  _mapController = controller;
+                  controller
+                      .setLocationTrackingMode(NLocationTrackingMode.follow);
+                },
               ),
-              onMapReady: (controller) {
-                debugPrint('Naver Map is ready');
-                _mapController = controller;
-                controller
-                    .setLocationTrackingMode(NLocationTrackingMode.follow);
-              },
             ),
+            // 바텀시트
             SafeArea(
               child: DraggableScrollableSheet(
                 snap: true,
-                snapSizes: const [0.1, 0.3, 1],
+                snapSizes: const [0.1, 0.4, 1],
                 initialChildSize: 0.1,
                 minChildSize: 0.1,
                 maxChildSize: 1,
@@ -140,7 +151,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                           _buttonPosition = _currentExtent * _widgetHeight +
                               _buttonPositionPadding;
                         }
-                        _isButtonVisible = _currentExtent < 0.4;
+                        _isButtonVisible = _currentExtent < 0.45;
                       });
                       return true;
                     },
@@ -179,7 +190,8 @@ class _MapTabState extends ConsumerState<MapTab> {
                                     onTap: () {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
-                                          builder: (context) => GroupDetailPage(),
+                                          builder: (context) =>
+                                              GroupDetailPage(),
                                         ),
                                       );
                                     },
@@ -188,7 +200,8 @@ class _MapTabState extends ConsumerState<MapTab> {
                                       width: double.maxFinite,
                                       padding: EdgeInsets.all(16),
                                       child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Row(
                                             children: [
@@ -197,14 +210,16 @@ class _MapTabState extends ConsumerState<MapTab> {
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w500,
-                                                  color: ThemeModel.sub3(isDarkMode),
+                                                  color: ThemeModel.sub3(
+                                                      isDarkMode),
                                                 ),
                                               ),
                                               SizedBox(
                                                 height: 16,
                                                 child: VerticalDivider(
                                                   thickness: 1,
-                                                  color: ThemeModel.sub2(isDarkMode),
+                                                  color: ThemeModel.sub2(
+                                                      isDarkMode),
                                                 ),
                                               ),
                                               Text(
@@ -212,7 +227,8 @@ class _MapTabState extends ConsumerState<MapTab> {
                                                 style: TextStyle(
                                                   fontSize: 14,
                                                   fontWeight: FontWeight.w500,
-                                                  color: ThemeModel.sub3(isDarkMode),
+                                                  color: ThemeModel.sub3(
+                                                      isDarkMode),
                                                 ),
                                               ),
                                             ],
@@ -221,14 +237,16 @@ class _MapTabState extends ConsumerState<MapTab> {
                                             height: 16,
                                           ),
                                           Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Container(
                                                 width: 8,
                                                 height: 8,
                                                 margin: EdgeInsets.all(6),
                                                 decoration: ShapeDecoration(
-                                                  color: ThemeModel.sub2(isDarkMode),
+                                                  color: ThemeModel.sub2(
+                                                      isDarkMode),
                                                   shape: CircleBorder(),
                                                 ),
                                               ),
@@ -236,24 +254,30 @@ class _MapTabState extends ConsumerState<MapTab> {
                                                 width: 12,
                                               ),
                                               Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     '가천대역 수인분당선',
                                                     style: TextStyle(
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: ThemeModel.text(isDarkMode),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: ThemeModel.text(
+                                                          isDarkMode),
                                                     ),
                                                   ),
                                                   Row(
                                                     crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Icon(
-                                                        Icons.access_time_filled,
+                                                        Icons
+                                                            .access_time_filled,
                                                         size: 14,
-                                                        color: ThemeModel.sub2(isDarkMode),
+                                                        color: ThemeModel.sub2(
+                                                            isDarkMode),
                                                       ),
                                                       SizedBox(
                                                         width: 4,
@@ -262,23 +286,31 @@ class _MapTabState extends ConsumerState<MapTab> {
                                                         '10:30',
                                                         style: TextStyle(
                                                           fontSize: 14,
-                                                          fontWeight: FontWeight.w500,
-                                                          color: ThemeModel.sub3(isDarkMode),
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color:
+                                                              ThemeModel.sub3(
+                                                                  isDarkMode),
                                                         ),
                                                       ),
                                                       SizedBox(
                                                         height: 16,
                                                         child: VerticalDivider(
                                                           thickness: 1,
-                                                          color: ThemeModel.sub2(isDarkMode),
+                                                          color:
+                                                              ThemeModel.sub2(
+                                                                  isDarkMode),
                                                         ),
                                                       ),
                                                       Text(
                                                         '현재 위치에서 도보 3분',
                                                         style: TextStyle(
                                                           fontSize: 14,
-                                                          fontWeight: FontWeight.w500,
-                                                          color: ThemeModel.sub3(isDarkMode),
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color:
+                                                              ThemeModel.sub3(
+                                                                  isDarkMode),
                                                         ),
                                                       ),
                                                     ],
@@ -291,14 +323,16 @@ class _MapTabState extends ConsumerState<MapTab> {
                                             height: 16,
                                           ),
                                           Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Container(
                                                 width: 8,
                                                 height: 8,
                                                 margin: EdgeInsets.all(6),
                                                 decoration: ShapeDecoration(
-                                                  color: ThemeModel.highlight(isDarkMode),
+                                                  color: ThemeModel.highlight(
+                                                      isDarkMode),
                                                   shape: CircleBorder(),
                                                 ),
                                               ),
@@ -306,24 +340,30 @@ class _MapTabState extends ConsumerState<MapTab> {
                                                 width: 12,
                                               ),
                                               Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     '가천대학교 AI관',
                                                     style: TextStyle(
                                                       fontSize: 16,
-                                                      fontWeight: FontWeight.w500,
-                                                      color: ThemeModel.text(isDarkMode),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: ThemeModel.text(
+                                                          isDarkMode),
                                                     ),
                                                   ),
                                                   Row(
                                                     crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Icon(
-                                                        Icons.access_time_filled,
+                                                        Icons
+                                                            .access_time_filled,
                                                         size: 14,
-                                                        color: ThemeModel.sub2(isDarkMode),
+                                                        color: ThemeModel.sub2(
+                                                            isDarkMode),
                                                       ),
                                                       SizedBox(
                                                         width: 4,
@@ -332,8 +372,11 @@ class _MapTabState extends ConsumerState<MapTab> {
                                                         '10:35',
                                                         style: TextStyle(
                                                           fontSize: 14,
-                                                          fontWeight: FontWeight.w500,
-                                                          color: ThemeModel.sub3(isDarkMode),
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          color:
+                                                              ThemeModel.sub3(
+                                                                  isDarkMode),
                                                         ),
                                                       ),
                                                     ],
