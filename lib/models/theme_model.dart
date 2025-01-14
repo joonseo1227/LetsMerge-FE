@@ -25,32 +25,24 @@ class ThemeModel {
 
   static Color danger(bool isDarkMode) => isDarkMode ? red50 : red60;
 
-  static final lightTheme = ThemeData(
+  // 공통 설정
+  static final baseTheme = ThemeData(
     fontFamily: 'Pretendard',
-    colorScheme: ColorScheme.fromSeed(seedColor: blue60),
     useMaterial3: true,
-    scaffoldBackgroundColor: grey10,
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
     appBarTheme: const AppBarTheme(
       scrolledUnderElevation: 0,
-      backgroundColor: grey10,
-      toolbarHeight: 80,
+      toolbarHeight: 64,
       centerTitle: false,
       titleTextStyle: TextStyle(
-        color: grey100,
         fontSize: 24,
         fontWeight: FontWeight.w600,
       ),
-      iconTheme: IconThemeData(
-        color: grey100,
-      ),
+      iconTheme: IconThemeData(),
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: grey10,
       elevation: 0,
-      selectedItemColor: grey100,
-      unselectedItemColor: grey40,
       type: BottomNavigationBarType.fixed,
       selectedLabelStyle: TextStyle(
         fontSize: 12,
@@ -63,41 +55,35 @@ class ThemeModel {
     ),
   );
 
-  static final darkTheme = ThemeData(
-    fontFamily: 'Pretendard',
-    colorScheme: ColorScheme.fromSeed(seedColor: blue50),
-    useMaterial3: true,
-    scaffoldBackgroundColor: grey100,
-    splashColor: Colors.transparent,
-    highlightColor: Colors.transparent,
-    appBarTheme: const AppBarTheme(
-      scrolledUnderElevation: 0,
-      backgroundColor: grey100,
-      toolbarHeight: 80,
-      centerTitle: false,
-      titleTextStyle: TextStyle(
-        color: grey10,
-        fontSize: 24,
-        fontWeight: FontWeight.w600,
-      ),
-      iconTheme: IconThemeData(
-        color: white,
-      ),
+  // 라이트 테마
+  static final lightTheme = baseTheme.copyWith(
+    colorScheme: ColorScheme.fromSeed(seedColor: blue60),
+    scaffoldBackgroundColor: grey10,
+    appBarTheme: baseTheme.appBarTheme.copyWith(
+      backgroundColor: grey10,
+      titleTextStyle: baseTheme.appBarTheme.titleTextStyle?.copyWith(color: grey100),
+      iconTheme: const IconThemeData(color: grey100),
     ),
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: baseTheme.bottomNavigationBarTheme.copyWith(
+      backgroundColor: grey10,
+      selectedItemColor: grey100,
+      unselectedItemColor: grey40,
+    ),
+  );
+
+  // 다크 테마
+  static final darkTheme = baseTheme.copyWith(
+    colorScheme: ColorScheme.fromSeed(seedColor: blue50),
+    scaffoldBackgroundColor: grey100,
+    appBarTheme: baseTheme.appBarTheme.copyWith(
       backgroundColor: grey100,
-      elevation: 0,
+      titleTextStyle: baseTheme.appBarTheme.titleTextStyle?.copyWith(color: grey10),
+      iconTheme: const IconThemeData(color: white),
+    ),
+    bottomNavigationBarTheme: baseTheme.bottomNavigationBarTheme.copyWith(
+      backgroundColor: grey100,
       selectedItemColor: grey10,
       unselectedItemColor: grey70,
-      type: BottomNavigationBarType.fixed,
-      selectedLabelStyle: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-      ),
-      unselectedLabelStyle: TextStyle(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-      ),
     ),
   );
 }
