@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -100,118 +101,122 @@ class _MapTabState extends ConsumerState<MapTab> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          NaverMap(
-            options: NaverMapViewOptions(
-              initialCameraPosition: NCameraPosition(
-                target: NLatLng(
-                    _currentPosition!.latitude, _currentPosition!.longitude),
-                zoom: 15.0,
+    return AnnotatedRegion(
+      value: SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            NaverMap(
+              options: NaverMapViewOptions(
+                initialCameraPosition: NCameraPosition(
+                  target: NLatLng(
+                      _currentPosition!.latitude, _currentPosition!.longitude),
+                  zoom: 15.0,
+                ),
               ),
-            ),
-            onMapReady: (controller) {
-              debugPrint('Naver Map is ready');
-              _mapController = controller;
-              controller.setLocationTrackingMode(NLocationTrackingMode.follow);
-            },
-          ),
-          SafeArea(
-            child: DraggableScrollableSheet(
-              snap: true,
-              snapSizes: const [0.1, 0.3, 1],
-              initialChildSize: 0.1,
-              minChildSize: 0.1,
-              maxChildSize: 1,
-              builder:
-                  (BuildContext context, ScrollController scrollController) {
-                return NotificationListener<DraggableScrollableNotification>(
-                  onNotification: (notification) {
-                    setState(() {
-                      _currentExtent = notification.extent;
-                      if (context.size != null) {
-                        _widgetHeight = context.size!.height;
-                        _buttonPosition = _currentExtent * _widgetHeight +
-                            _buttonPositionPadding;
-                      }
-                      _isButtonVisible = _currentExtent < 0.4;
-                    });
-                    return true;
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: ThemeModel.surface(isDarkMode),
-                      boxShadow: [
-                        BoxShadow(
-                          color: black.withAlpha(20),
-                          blurRadius: 16,
-                          spreadRadius: 8,
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        // 드래그 핸들
-                        Container(
-                          width: 40,
-                          height: 4,
-                          margin: const EdgeInsets.symmetric(vertical: 8),
-                          decoration: ShapeDecoration(
-                            color: ThemeModel.sub2(isDarkMode),
-                            shape: const StadiumBorder(),
-                          ),
-                        ),
-                        // 리스트 내용
-                        Expanded(
-                          child: ListView.builder(
-                            controller: scrollController,
-                            itemCount: 10,
-                            itemBuilder: (BuildContext context, int index) {
-                              return CInkWell(
-                                onTap: () {
-                                  debugPrint('옵션 $index 클릭됨');
-                                },
-                                child: ListTile(
-                                  leading: Icon(
-                                    Icons.place,
-                                    color: ThemeModel.text(isDarkMode),
-                                  ),
-                                  title: Text(
-                                    '옵션 $index',
-                                    style: TextStyle(
-                                      color: ThemeModel.text(isDarkMode),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+              onMapReady: (controller) {
+                debugPrint('Naver Map is ready');
+                _mapController = controller;
+                controller
+                    .setLocationTrackingMode(NLocationTrackingMode.follow);
               },
             ),
-          ),
-          Positioned(
-            bottom: _buttonPosition,
-            right: 16,
-            child: AnimatedOpacity(
-              opacity: _isButtonVisible ? 1.0 : 0.0,
-              duration: Duration(milliseconds: 150),
-              child: CButton(
-                style: CButtonStyle.secondary(isDarkMode),
-                icon: Icons.my_location,
-                onTap: () async {
-                  debugPrint('move to current location');
-                  await _goToCurrentLocation();
+            SafeArea(
+              child: DraggableScrollableSheet(
+                snap: true,
+                snapSizes: const [0.1, 0.3, 1],
+                initialChildSize: 0.1,
+                minChildSize: 0.1,
+                maxChildSize: 1,
+                builder:
+                    (BuildContext context, ScrollController scrollController) {
+                  return NotificationListener<DraggableScrollableNotification>(
+                    onNotification: (notification) {
+                      setState(() {
+                        _currentExtent = notification.extent;
+                        if (context.size != null) {
+                          _widgetHeight = context.size!.height;
+                          _buttonPosition = _currentExtent * _widgetHeight +
+                              _buttonPositionPadding;
+                        }
+                        _isButtonVisible = _currentExtent < 0.4;
+                      });
+                      return true;
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: ThemeModel.surface(isDarkMode),
+                        boxShadow: [
+                          BoxShadow(
+                            color: black.withAlpha(20),
+                            blurRadius: 16,
+                            spreadRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          // 드래그 핸들
+                          Container(
+                            width: 40,
+                            height: 4,
+                            margin: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: ShapeDecoration(
+                              color: ThemeModel.sub2(isDarkMode),
+                              shape: const StadiumBorder(),
+                            ),
+                          ),
+                          // 리스트 내용
+                          Expanded(
+                            child: ListView.builder(
+                              controller: scrollController,
+                              itemCount: 10,
+                              itemBuilder: (BuildContext context, int index) {
+                                return CInkWell(
+                                  onTap: () {
+                                    debugPrint('옵션 $index 클릭됨');
+                                  },
+                                  child: ListTile(
+                                    leading: Icon(
+                                      Icons.place,
+                                      color: ThemeModel.text(isDarkMode),
+                                    ),
+                                    title: Text(
+                                      '옵션 $index',
+                                      style: TextStyle(
+                                        color: ThemeModel.text(isDarkMode),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
                 },
               ),
             ),
-          ),
-        ],
+            Positioned(
+              bottom: _buttonPosition,
+              right: 16,
+              child: AnimatedOpacity(
+                opacity: _isButtonVisible ? 1.0 : 0.0,
+                duration: Duration(milliseconds: 150),
+                child: CButton(
+                  style: CButtonStyle.secondary(isDarkMode),
+                  icon: Icons.my_location,
+                  onTap: () async {
+                    debugPrint('move to current location');
+                    await _goToCurrentLocation();
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

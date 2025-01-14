@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
@@ -15,15 +16,19 @@ class _NotificationTabState extends ConsumerState<NotificationTab> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('알림'),
-      ),
-      body: Center(
-        child: Text(
-          '알림',
-          style: TextStyle(
-            color: ThemeModel.text(isDarkMode),
+    return AnnotatedRegion(
+      value:
+          isDarkMode ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('알림'),
+        ),
+        body: Center(
+          child: Text(
+            '알림',
+            style: TextStyle(
+              color: ThemeModel.text(isDarkMode),
+            ),
           ),
         ),
       ),
