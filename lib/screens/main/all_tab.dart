@@ -6,14 +6,14 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
-class ProfileTab extends ConsumerStatefulWidget {
-  const ProfileTab({super.key});
+class AllTab extends ConsumerStatefulWidget {
+  const AllTab({super.key});
 
   @override
-  ConsumerState<ProfileTab> createState() => _ProfileTabState();
+  ConsumerState<AllTab> createState() => _ProfileTabState();
 }
 
-class _ProfileTabState extends ConsumerState<ProfileTab> {
+class _ProfileTabState extends ConsumerState<AllTab> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);

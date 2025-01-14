@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:letsmerge/screens/main/home_tab.dart';
 import 'package:letsmerge/screens/main/map_tab.dart';
 import 'package:letsmerge/screens/main/notification_tab.dart';
-import 'package:letsmerge/screens/main/profile_tab.dart';
+import 'package:letsmerge/screens/main/all_tab.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -26,7 +26,7 @@ class _MainPageState extends State<MainPage> {
       HomeTab(),
       MapTab(),
       NotificationTab(),
-      ProfileTab(),
+      AllTab(),
     ];
 
     return Scaffold(
@@ -51,8 +51,8 @@ class _MainPageState extends State<MainPage> {
             label: '알림',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '프로필',
+            icon: Icon(Icons.menu),
+            label: '전체',
           ),
         ],
       ),
