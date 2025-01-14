@@ -79,7 +79,7 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -466,11 +466,10 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
           ),
         ),
       ),
-      bottomNavigationBar: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.all(16),
-
-          /// 참여하기 버튼
+      bottomNavigationBar: Container(
+        color: ThemeModel.highlight(isDarkMode),
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+        child: SafeArea(
           child: CButton(
             onTap: () {},
             label: '참여하기',
