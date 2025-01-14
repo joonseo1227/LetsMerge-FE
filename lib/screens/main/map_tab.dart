@@ -151,7 +151,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                           _buttonPosition = _currentExtent * _widgetHeight +
                               _buttonPositionPadding;
                         }
-                        _isButtonVisible = _currentExtent < 0.45;
+                        _isButtonVisible = _currentExtent <= 0.4;
                       });
                       return true;
                     },
