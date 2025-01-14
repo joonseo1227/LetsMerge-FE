@@ -22,58 +22,58 @@ extension TagColorExtension on TagColor {
   Color backgroundColor(bool isDarkMode) {
     switch (this) {
       case TagColor.red:
-        return isDarkMode ? red80 : red20;
+        return isDarkMode ? red70 : red20;
       case TagColor.magenta:
-        return isDarkMode ? magenta80 : magenta20;
+        return isDarkMode ? magenta70 : magenta20;
       case TagColor.purple:
-        return isDarkMode ? purple80 : purple20;
+        return isDarkMode ? purple70 : purple20;
       case TagColor.blue:
-        return isDarkMode ? blue80 : blue20;
+        return isDarkMode ? blue70 : blue20;
       case TagColor.cyan:
-        return isDarkMode ? cyan80 : cyan20;
+        return isDarkMode ? cyan70 : cyan20;
       case TagColor.teal:
-        return isDarkMode ? teal80 : teal20;
+        return isDarkMode ? teal70 : teal20;
       case TagColor.green:
-        return isDarkMode ? green80 : green20;
+        return isDarkMode ? green70 : green20;
       case TagColor.orange:
         return orange40;
       case TagColor.yellow:
         return yellow30;
       case TagColor.grey:
-        return isDarkMode ? grey80 : grey20;
+        return isDarkMode ? grey70 : grey20;
       case TagColor.coolGrey:
-        return isDarkMode ? coolgrey80 : coolgrey20;
+        return isDarkMode ? coolgrey70 : coolgrey20;
       case TagColor.warmGrey:
-        return isDarkMode ? warmgrey80 : warmgrey20;
+        return isDarkMode ? warmgrey70 : warmgrey20;
     }
   }
 
   Color textColor(bool isDarkMode) {
     switch (this) {
       case TagColor.red:
-        return isDarkMode ? red40 : red70;
+        return isDarkMode ? red20 : red70;
       case TagColor.magenta:
-        return isDarkMode ? magenta40 : magenta70;
+        return isDarkMode ? magenta20 : magenta70;
       case TagColor.purple:
-        return isDarkMode ? purple40 : purple70;
+        return isDarkMode ? purple20 : purple70;
       case TagColor.blue:
-        return isDarkMode ? blue40 : blue70;
+        return isDarkMode ? blue20 : blue70;
       case TagColor.cyan:
-        return isDarkMode ? cyan40 : cyan70;
+        return isDarkMode ? cyan20 : cyan70;
       case TagColor.teal:
-        return isDarkMode ? teal40 : teal70;
+        return isDarkMode ? teal20 : teal70;
       case TagColor.green:
-        return isDarkMode ? green40 : green70;
+        return isDarkMode ? green20 : green70;
       case TagColor.orange:
         return white;
       case TagColor.yellow:
         return black;
       case TagColor.grey:
-        return isDarkMode ? grey40 : grey70;
+        return isDarkMode ? grey20 : grey70;
       case TagColor.coolGrey:
-        return isDarkMode ? coolgrey40 : coolgrey70;
+        return isDarkMode ? coolgrey20 : coolgrey70;
       case TagColor.warmGrey:
-        return isDarkMode ? warmgrey40 : warmgrey70;
+        return isDarkMode ? warmgrey20 : warmgrey70;
     }
   }
 }
