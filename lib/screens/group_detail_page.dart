@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_tag.dart';
 
 class GroupDetailPage extends ConsumerStatefulWidget {
   const GroupDetailPage({super.key});
@@ -280,53 +282,50 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            width: 8,
-                            height: 8,
-                            margin: EdgeInsets.all(6),
+                            width: 40,
+                            height: 40,
                             decoration: ShapeDecoration(
-                              color: ThemeModel.sub2(isDarkMode),
+                              color: blue20,
                               shape: CircleBorder(),
                             ),
                           ),
                           SizedBox(
                             width: 12,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '홍길동',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.text(isDarkMode),
-                                ),
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                    size: 14,
-                                    color: ThemeModel.sub2(isDarkMode),
-                                  ),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                  Text(
-                                    '4.5/5.0',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: ThemeModel.sub3(isDarkMode),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                          Text(
+                            '홍길동',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: ThemeModel.text(isDarkMode),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          CTag(
+                            text: '대표',
+                            color: TagColor.blue,
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.star,
+                            size: 16,
+                            color: ThemeModel.sub2(isDarkMode),
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            '4.5/5.0',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: ThemeModel.sub3(isDarkMode),
+                            ),
                           ),
                         ],
                       ),
@@ -334,53 +333,46 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
                         height: 16,
                       ),
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            width: 8,
-                            height: 8,
-                            margin: EdgeInsets.all(6),
+                            width: 40,
+                            height: 40,
                             decoration: ShapeDecoration(
-                              color: ThemeModel.sub2(isDarkMode),
+                              color: blue20,
                               shape: CircleBorder(),
                             ),
                           ),
                           SizedBox(
                             width: 12,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '홍길자',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.text(isDarkMode),
-                                ),
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                    size: 14,
-                                    color: ThemeModel.sub2(isDarkMode),
-                                  ),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                  Text(
-                                    '4.5/5.0',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: ThemeModel.sub3(isDarkMode),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                          Text(
+                            '홍길자',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: ThemeModel.text(isDarkMode),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.star,
+                            size: 16,
+                            color: ThemeModel.sub2(isDarkMode),
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            '4.5/5.0',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: ThemeModel.sub3(isDarkMode),
+                            ),
                           ),
                         ],
                       ),
@@ -388,53 +380,46 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
                         height: 16,
                       ),
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            width: 8,
-                            height: 8,
-                            margin: EdgeInsets.all(6),
+                            width: 40,
+                            height: 40,
                             decoration: ShapeDecoration(
-                              color: ThemeModel.sub2(isDarkMode),
+                              color: blue20,
                               shape: CircleBorder(),
                             ),
                           ),
                           SizedBox(
                             width: 12,
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '홍동',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.text(isDarkMode),
-                                ),
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Icon(
-                                    Icons.star,
-                                    size: 14,
-                                    color: ThemeModel.sub2(isDarkMode),
-                                  ),
-                                  SizedBox(
-                                    width: 4,
-                                  ),
-                                  Text(
-                                    '4.5/5.0',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                      color: ThemeModel.sub3(isDarkMode),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                          Text(
+                            '홍동',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: ThemeModel.text(isDarkMode),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 8,
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.star,
+                            size: 16,
+                            color: ThemeModel.sub2(isDarkMode),
+                          ),
+                          SizedBox(
+                            width: 4,
+                          ),
+                          Text(
+                            '4.5/5.0',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: ThemeModel.sub3(isDarkMode),
+                            ),
                           ),
                         ],
                       ),
