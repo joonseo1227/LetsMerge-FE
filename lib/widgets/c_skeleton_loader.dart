@@ -40,14 +40,14 @@ class _CSkeletonState extends ConsumerState<CSkeleton> {
           opacity: _opacity, // 페이드인 애니메이션 적용
           duration: const Duration(milliseconds: 300), // 페이드인 지속 시간
           child: Shimmer.fromColors(
-            baseColor: ThemeModel.sub1(isDarkMode),
-            highlightColor: ThemeModel.sub2(isDarkMode),
+            baseColor: ThemeModel.surface(isDarkMode),
+            highlightColor: ThemeModel.sub1(isDarkMode),
             period: const Duration(milliseconds: 800), // 기존 애니메이션 유지
             child: Container(
               width: constraints.maxWidth, // 부모의 너비
               height: constraints.maxHeight, // 부모의 높이
               decoration: BoxDecoration(
-                color: ThemeModel.sub1(isDarkMode),
+                color: ThemeModel.surface(isDarkMode),
               ),
             ),
           ),
