@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:letsmerge/config/color.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:shimmer/shimmer.dart';
 
-class CSkeleton extends StatefulWidget {
+class CSkeleton extends ConsumerStatefulWidget {
   const CSkeleton({Key? key}) : super(key: key);
 
   @override
   _CSkeletonState createState() => _CSkeletonState();
 }
 
-class _CSkeletonState extends State<CSkeleton> {
+class _CSkeletonState extends ConsumerState<CSkeleton> {
   double _opacity = 0.0; // 초기 투명도
 
   @override
@@ -30,20 +32,22 @@ class _CSkeletonState extends State<CSkeleton> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         return AnimatedOpacity(
           opacity: _opacity, // 페이드인 애니메이션 적용
           duration: const Duration(milliseconds: 300), // 페이드인 지속 시간
           child: Shimmer.fromColors(
-            baseColor: grey20,
-            highlightColor: grey10,
+            baseColor: ThemeModel.sub1(isDarkMode),
+            highlightColor: ThemeModel.sub2(isDarkMode),
             period: const Duration(milliseconds: 800), // 기존 애니메이션 유지
             child: Container(
               width: constraints.maxWidth, // 부모의 너비
               height: constraints.maxHeight, // 부모의 높이
               decoration: BoxDecoration(
-                color: grey30,
+                color: ThemeModel.sub1(isDarkMode),
               ),
             ),
           ),
