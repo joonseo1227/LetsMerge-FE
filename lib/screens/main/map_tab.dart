@@ -71,7 +71,7 @@ class _MapTabState extends ConsumerState<MapTab> {
       debugPrint('위치 스트림 시작 중 에러 발생: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('위치를 가져올 수 없습니다. GPS 설정을 확인해주세요.'),
+          content: Text('GPS 상태를 확인하세요.'),
         ),
       );
     }
@@ -85,47 +85,42 @@ class _MapTabState extends ConsumerState<MapTab> {
     controller.setLocationTrackingMode(NLocationTrackingMode.follow);
 
     // 지도 초기화 시 현재 위치로 이동
-    if (_currentPosition != null) {
-      controller.updateCamera(
-        NCameraUpdate.scrollAndZoomTo(
-          target:
-              NLatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-        ),
-      );
-    } else {
-      debugPrint('현재 위치를 가져올 수 없습니다. 기본 위치로 설정합니다.');
-      controller.updateCamera(
-        NCameraUpdate.scrollAndZoomTo(
-          target: NLatLng(37.5665, 126.9780), // 서울 기본 위치
-        ),
-      );
-    }
+    _goToCurrentLocation();
 
     // 최초 로딩이 완료되면 Skeleton 해제
     if (_showSkeleton) {
-      Future.delayed(const Duration(milliseconds: 800), () {
-        setState(() {
-          _showSkeleton = false;
-        });
-      });
+      Future.delayed(
+        const Duration(milliseconds: 800),
+        () {
+          setState(
+            () {
+              _showSkeleton = false;
+            },
+          );
+        },
+      );
     }
   }
 
-  // 내 위치로 이동하기
+  // 내 위치로 이동
   Future<void> _goToCurrentLocation() async {
     if (_mapController != null && _currentPosition != null) {
       _mapController!.updateCamera(
         NCameraUpdate.scrollAndZoomTo(
-          target:
-              NLatLng(_currentPosition!.latitude, _currentPosition!.longitude),
+          target: _currentPosition != null
+              ? NLatLng(
+                  _currentPosition!.latitude,
+                  _currentPosition!.longitude,
+                )
+              : NLatLng(37.5665, 126.9780),
           zoom: 15.0,
         ),
       );
     } else {
-      debugPrint('현재 위치를 가져올 수 없습니다.');
+      debugPrint('현재 위치를 불러오지 못했습니다.');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('현재 위치를 가져올 수 없습니다. GPS를 확인해주세요.'),
+          content: Text('GPS 상태를 확인하세요.'),
         ),
       );
     }
@@ -141,50 +136,36 @@ class _MapTabState extends ConsumerState<MapTab> {
         body: Stack(
           children: [
             if (_currentPosition != null)
-              AnimatedOpacity(
-                opacity: _showSkeleton ? 0.0 : 1.0,
-                duration: const Duration(milliseconds: 200),
-                child: NaverMap(
-                  options: NaverMapViewOptions(
-                    initialCameraPosition: NCameraPosition(
-                      target: _currentPosition != null
-                          ? NLatLng(
-                              _currentPosition!.latitude,
-                              _currentPosition!.longitude,
-                            )
-                          : NLatLng(37.5665, 126.9780),
-                      zoom: 15.0,
+              // 지도를 Positioned로 배치
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                // _widgetHeight를 사용하여 계산
+                bottom: _currentExtent <= 0.4
+                    ? _currentExtent * _widgetHeight
+                    : 0.4 * _widgetHeight,
+                child: AnimatedOpacity(
+                  opacity: _showSkeleton ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: NaverMap(
+                    options: NaverMapViewOptions(
+                      initialCameraPosition: NCameraPosition(
+                        target: _currentPosition != null
+                            ? NLatLng(
+                                _currentPosition!.latitude,
+                                _currentPosition!.longitude,
+                              )
+                            : NLatLng(37.5665, 126.9780),
+                        zoom: 15.0,
+                      ),
                     ),
+                    onMapReady: _onMapReady,
                   ),
-                  onMapReady: _onMapReady,
                 ),
               ),
             if (_showSkeleton) const CSkeleton(),
-            // 지도를 Positioned로 배치
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              // _widgetHeight를 사용하여 계산
-              bottom: _currentExtent <= 0.4
-                  ? _currentExtent * _widgetHeight
-                  : 0.4 * _widgetHeight,
-              child: NaverMap(
-                options: NaverMapViewOptions(
-                  initialCameraPosition: NCameraPosition(
-                    target: NLatLng(_currentPosition!.latitude,
-                        _currentPosition!.longitude),
-                    zoom: 15.0,
-                  ),
-                ),
-                onMapReady: (controller) {
-                  debugPrint('Naver Map is ready');
-                  _mapController = controller;
-                  controller
-                      .setLocationTrackingMode(NLocationTrackingMode.follow);
-                },
-              ),
-            ),
+
             // 바텀시트
             SafeArea(
               child: DraggableScrollableSheet(
