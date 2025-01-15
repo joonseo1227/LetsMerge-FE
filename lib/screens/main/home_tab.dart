@@ -22,8 +22,11 @@ class _HomeTabState extends ConsumerState<HomeTab> {
     final isDarkMode = ref.watch(themeProvider);
 
     return AnnotatedRegion(
-      value:
-          isDarkMode ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      value: isDarkMode
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark.copyWith(
+              statusBarColor: Colors.transparent,
+            ),
       child: Scaffold(
         body: SafeArea(
           child: SingleChildScrollView(

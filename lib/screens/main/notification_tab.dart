@@ -17,8 +17,11 @@ class _NotificationTabState extends ConsumerState<NotificationTab> {
     final isDarkMode = ref.watch(themeProvider);
 
     return AnnotatedRegion(
-      value:
-          isDarkMode ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      value: isDarkMode
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark.copyWith(
+              statusBarColor: Colors.transparent,
+            ),
       child: Scaffold(
         appBar: AppBar(
           title: Text('알림'),

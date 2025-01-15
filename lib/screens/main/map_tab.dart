@@ -35,16 +35,20 @@ class _MapTabState extends ConsumerState<MapTab> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // 레이아웃 계산 후 size를 안전하게 처리
-      if (context.size != null) {
-        setState(() {
-          _widgetHeight = context.size!.height;
-          _buttonPosition =
-              _currentExtent * _widgetHeight + _buttonPositionPadding;
-        });
-      }
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        // 레이아웃 계산 후 size를 안전하게 처리
+        if (context.size != null) {
+          setState(
+            () {
+              _widgetHeight = context.size!.height;
+              _buttonPosition =
+                  _currentExtent * _widgetHeight + _buttonPositionPadding;
+            },
+          );
+        }
+      },
+    );
     _startLocationStream();
   }
 
@@ -56,17 +60,23 @@ class _MapTabState extends ConsumerState<MapTab> {
           accuracy: LocationAccuracy.high,
           distanceFilter: 5, // 5미터 이동 시 업데이트
         ),
-      ).listen((Position position) {
-        setState(() {
-          _currentPosition = position;
-        });
-        debugPrint('Updated position: $position');
-        if (_mapController != null) {
-          _mapController!.updateCamera(NCameraUpdate.scrollAndZoomTo(
-            target: NLatLng(position.latitude, position.longitude),
-          ));
-        }
-      });
+      ).listen(
+        (Position position) {
+          setState(
+            () {
+              _currentPosition = position;
+            },
+          );
+          debugPrint('Updated position: $position');
+          if (_mapController != null) {
+            _mapController!.updateCamera(
+              NCameraUpdate.scrollAndZoomTo(
+                target: NLatLng(position.latitude, position.longitude),
+              ),
+            );
+          }
+        },
+      );
     } catch (e) {
       debugPrint('위치 스트림 시작 중 에러 발생: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -131,7 +141,9 @@ class _MapTabState extends ConsumerState<MapTab> {
     final isDarkMode = ref.watch(themeProvider);
 
     return AnnotatedRegion(
-      value: SystemUiOverlayStyle.dark,
+      value: SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.transparent,
+      ),
       child: Scaffold(
         body: Stack(
           children: [
