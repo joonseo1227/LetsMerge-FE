@@ -9,6 +9,7 @@ import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/group_detail_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 
 class MapTab extends ConsumerStatefulWidget {
   const MapTab({super.key});
@@ -23,6 +24,7 @@ class _MapTabState extends ConsumerState<MapTab> {
   double _buttonPosition = 0; // FAB 위치
   final double _buttonPositionPadding = 16;
   bool _isButtonVisible = true;
+  bool _showSkeleton = true;
 
   NaverMapController? _mapController;
   Position? _currentPosition;
@@ -107,6 +109,36 @@ class _MapTabState extends ConsumerState<MapTab> {
       child: Scaffold(
         body: Stack(
           children: [
+            if (_currentPosition != null)
+              AnimatedOpacity(
+                opacity: _showSkeleton ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 200),
+                child: NaverMap(
+                  options: NaverMapViewOptions(
+                    initialCameraPosition: NCameraPosition(
+                      target: _currentPosition != null
+                          ? NLatLng(
+                              _currentPosition!.latitude,
+                              _currentPosition!.longitude,
+                            )
+                          : NLatLng(37.5665, 126.9780),
+                      zoom: 15.0,
+                    ),
+                  ),
+                  onMapReady: (controller) {
+                    debugPrint('Naver Map is ready');
+                    _mapController = controller;
+                    controller
+                        .setLocationTrackingMode(NLocationTrackingMode.follow);
+                    Future.delayed(const Duration(milliseconds: 800), () {
+                      setState(() {
+                        _showSkeleton = false;
+                      });
+                    });
+                  },
+                ),
+              ),
+            if (_showSkeleton) const CSkeleton(),
             // 지도를 Positioned로 배치
             Positioned(
               top: 0,
@@ -420,5 +452,11 @@ class _MapTabState extends ConsumerState<MapTab> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    super.dispose();
   }
 }

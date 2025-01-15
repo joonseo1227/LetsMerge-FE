@@ -5,7 +5,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/main/map_tab.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
 
 class GroupDetailPage extends ConsumerStatefulWidget {
@@ -18,6 +20,7 @@ class GroupDetailPage extends ConsumerStatefulWidget {
 class _MapTabState extends ConsumerState<GroupDetailPage> {
   NaverMapController? _mapController;
   Position? _currentPosition;
+  bool _showSkeleton = true;
 
   @override
   void initState() {
@@ -27,43 +30,31 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
 
   // 내 위치 가져오기
   Future<void> _getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        throw Exception('Location services are disabled.');
       }
-    }
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied.');
-    }
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          throw Exception('Location permissions are denied.');
+        }
+      }
 
-    // 현재 위치 가져오기
-    Position position = await Geolocator.getCurrentPosition();
+      if (permission == LocationPermission.deniedForever) {
+        throw Exception('Location permissions are permanently denied.');
+      }
 
-    // 위치를 저장하고 지도 초기화
-    setState(() {
-      _currentPosition = position;
-    });
+      Position position = await Geolocator.getCurrentPosition();
 
-    // 초기 위치로 지도 이동
-    if (_mapController != null && _currentPosition != null) {
-      _mapController!.updateCamera(
-        NCameraUpdate.scrollAndZoomTo(
-          target:
-              NLatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-          zoom: 15.0,
-        ),
-      );
+      setState(() {
+        _currentPosition = position;
+      });
+    } catch (e) {
+      debugPrint('Error: $e');
     }
   }
 
@@ -86,21 +77,39 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
                 /// 지도
                 SizedBox(
                   height: 400,
-                  child: NaverMap(
-                    options: NaverMapViewOptions(
-                      initialCameraPosition: NCameraPosition(
-                        target: NLatLng(_currentPosition!.latitude,
-                            _currentPosition!.longitude),
-                        zoom: 15.0,
+                  child: Stack(children: [
+                    if (_currentPosition != null)
+                      AnimatedOpacity(
+                        opacity: _showSkeleton ? 0.0 : 1.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: NaverMap(
+                          options: NaverMapViewOptions(
+                            initialCameraPosition: NCameraPosition(
+                              target: _currentPosition != null
+                                  ? NLatLng(
+                                      _currentPosition!.latitude,
+                                      _currentPosition!.longitude,
+                                    )
+                                  : NLatLng(37.5665, 126.9780),
+                              zoom: 15.0,
+                            ),
+                          ),
+                          onMapReady: (controller) {
+                            debugPrint('Naver Map is ready');
+                            _mapController = controller;
+                            controller.setLocationTrackingMode(
+                                NLocationTrackingMode.follow);
+                            Future.delayed(const Duration(milliseconds: 800),
+                                () {
+                              setState(() {
+                                _showSkeleton = false;
+                              });
+                            });
+                          },
+                        ),
                       ),
-                    ),
-                    onMapReady: (controller) {
-                      debugPrint('Naver Map is ready');
-                      _mapController = controller;
-                      controller.setLocationTrackingMode(
-                          NLocationTrackingMode.follow);
-                    },
-                  ),
+                    if (_showSkeleton) const CSkeleton(),
+                  ]),
                 ),
 
                 SizedBox(
@@ -479,5 +488,11 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    super.dispose();
   }
 }
