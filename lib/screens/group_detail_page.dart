@@ -325,7 +325,7 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: ThemeModel.highlight(isDarkMode),
+        color: blue60,
         padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: SafeArea(
           child: CButton(
