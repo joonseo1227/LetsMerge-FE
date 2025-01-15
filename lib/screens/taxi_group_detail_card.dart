@@ -44,10 +44,11 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   color: ThemeModel.sub3(isDarkMode),
                 ),
               ),
-              const SizedBox(
-                height: 16,
+              SizedBox(
+                height: 12,
                 child: VerticalDivider(
                   thickness: 1,
+                  color: ThemeModel.sub2(isDarkMode),
                 ),
               ),
               Text(
@@ -102,10 +103,11 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                           color: ThemeModel.sub3(isDarkMode),
                         ),
                       ),
-                      const SizedBox(
-                        height: 16,
+                      SizedBox(
+                        height: 12,
                         child: VerticalDivider(
                           thickness: 1,
+                          color: ThemeModel.sub2(isDarkMode),
                         ),
                       ),
                       Text(
