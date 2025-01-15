@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -28,6 +30,7 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   NaverMapController? _mapController;
   Position? _currentPosition;
+  StreamSubscription<Position>? _positionStream;
 
   @override
   void initState() {
@@ -42,48 +45,69 @@ class _MapTabState extends ConsumerState<MapTab> {
         });
       }
     });
-    _getCurrentLocation();
+    _startLocationStream();
   }
 
-  // 내 위치 가져오기
-  Future<void> _getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+  // 위치 스트림 시작
+  void _startLocationStream() {
+    try {
+      _positionStream = Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 5, // 5미터 이동 시 업데이트
+        ),
+      ).listen((Position position) {
+        setState(() {
+          _currentPosition = position;
+        });
+        debugPrint('Updated position: $position');
+        if (_mapController != null) {
+          _mapController!.updateCamera(NCameraUpdate.scrollAndZoomTo(
+            target: NLatLng(position.latitude, position.longitude),
+          ));
+        }
+      });
+    } catch (e) {
+      debugPrint('위치 스트림 시작 중 에러 발생: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('위치를 가져올 수 없습니다. GPS 설정을 확인해주세요.'),
+        ),
+      );
     }
+  }
 
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
+  void _onMapReady(NaverMapController controller) {
+    debugPrint('Naver Map is ready');
+    _mapController = controller;
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('Location permissions are permanently denied.');
-    }
+    // 위치 추적 모드 설정
+    controller.setLocationTrackingMode(NLocationTrackingMode.follow);
 
-    // 현재 위치 가져오기
-    Position position = await Geolocator.getCurrentPosition();
-
-    // 위치를 저장하고 지도 초기화
-    setState(() {
-      _currentPosition = position;
-    });
-
-    // 초기 위치로 지도 이동
-    if (_mapController != null && _currentPosition != null) {
-      _mapController!.updateCamera(
+    // 지도 초기화 시 현재 위치로 이동
+    if (_currentPosition != null) {
+      controller.updateCamera(
         NCameraUpdate.scrollAndZoomTo(
           target:
               NLatLng(_currentPosition!.latitude, _currentPosition!.longitude),
-          zoom: 15.0,
         ),
       );
+    } else {
+      debugPrint('현재 위치를 가져올 수 없습니다. 기본 위치로 설정합니다.');
+      controller.updateCamera(
+        NCameraUpdate.scrollAndZoomTo(
+          target: NLatLng(37.5665, 126.9780), // 서울 기본 위치
+        ),
+      );
+    }
+
+    // 최초 로딩이 완료되면 Skeleton 해제
+    if (_showSkeleton) {
+      Future.delayed(const Duration(milliseconds: 800), () {
+        setState(() {
+          _showSkeleton = false;
+        });
+      });
     }
   }
 
@@ -95,6 +119,13 @@ class _MapTabState extends ConsumerState<MapTab> {
           target:
               NLatLng(_currentPosition!.latitude, _currentPosition!.longitude),
           zoom: 15.0,
+        ),
+      );
+    } else {
+      debugPrint('현재 위치를 가져올 수 없습니다.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('현재 위치를 가져올 수 없습니다. GPS를 확인해주세요.'),
         ),
       );
     }
@@ -125,17 +156,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                       zoom: 15.0,
                     ),
                   ),
-                  onMapReady: (controller) {
-                    debugPrint('Naver Map is ready');
-                    _mapController = controller;
-                    controller
-                        .setLocationTrackingMode(NLocationTrackingMode.follow);
-                    Future.delayed(const Duration(milliseconds: 800), () {
-                      setState(() {
-                        _showSkeleton = false;
-                      });
-                    });
-                  },
+                  onMapReady: _onMapReady,
                 ),
               ),
             if (_showSkeleton) const CSkeleton(),
