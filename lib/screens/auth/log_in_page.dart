@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/screens/auth/sign_up_page.dart';
+import 'package:letsmerge/screens/auth/create_account_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
@@ -177,7 +177,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                   onTap: () {
                     Navigator.of(context).push(
                       CupertinoPageRoute(
-                        builder: (context) => SignUpPage(),
+                        builder: (context) => CreateAccountPage(),
                       ),
                     );
                   },
