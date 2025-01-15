@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
@@ -170,7 +171,7 @@ class _DevPageState extends ConsumerState<DevPage> {
                 CInkWell(
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                         builder: (context) => LogInPage(),
                       ),
                     );
@@ -215,7 +216,7 @@ class _DevPageState extends ConsumerState<DevPage> {
                 CInkWell(
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                         builder: (context) => SignUpPage(),
                       ),
                     );
@@ -260,7 +261,7 @@ class _DevPageState extends ConsumerState<DevPage> {
                 CInkWell(
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                         builder: (context) => SettingsPage(),
                       ),
                     );
@@ -305,7 +306,7 @@ class _DevPageState extends ConsumerState<DevPage> {
                 CInkWell(
                   onTap: () {
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      CupertinoPageRoute(
                         builder: (context) => GroupDetailPage(),
                       ),
                     );

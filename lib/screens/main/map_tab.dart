@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -236,7 +237,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                                   child: CInkWell(
                                     onTap: () {
                                       Navigator.of(context).push(
-                                        MaterialPageRoute(
+                                        CupertinoPageRoute(
                                           builder: (context) =>
                                               GroupDetailPage(),
                                         ),
@@ -245,7 +246,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                                     child: CInkWell(
                                       onTap: () {
                                         Navigator.of(context).push(
-                                          MaterialPageRoute(
+                                          CupertinoPageRoute(
                                             builder: (context) =>
                                                 GroupDetailPage(),
                                           ),

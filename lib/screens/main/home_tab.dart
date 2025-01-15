@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -166,7 +167,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                         child: CInkWell(
                           onTap: () {
                             Navigator.of(context).push(
-                              MaterialPageRoute(
+                              CupertinoPageRoute(
                                 builder: (context) => DevPage(),
                               ),
                             );
@@ -365,7 +366,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   CInkWell(
                     onTap: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(
+                        CupertinoPageRoute(
                           builder: (context) => GroupDetailPage(),
                         ),
                       );
@@ -388,7 +389,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   CInkWell(
                     onTap: () {
                       Navigator.of(context).push(
-                        MaterialPageRoute(
+                        CupertinoPageRoute(
                           builder: (context) => GroupDetailPage(),
                         ),
                       );
