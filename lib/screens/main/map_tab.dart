@@ -33,6 +33,7 @@ class _MapTabState extends ConsumerState<MapTab> {
   NaverMapController? _mapController;
   Position? _currentPosition;
   StreamSubscription<Position>? _positionStream;
+  final _mapKey = UniqueKey();
 
   @override
   void initState() {
@@ -163,6 +164,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                   opacity: _showSkeleton ? 0.0 : 1.0,
                   duration: const Duration(milliseconds: 200),
                   child: NaverMap(
+                    key: _mapKey,
                     options: NaverMapViewOptions(
                       initialCameraPosition: NCameraPosition(
                         target: _currentPosition != null
