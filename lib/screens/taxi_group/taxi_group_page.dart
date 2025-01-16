@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,8 +6,10 @@ import 'package:geolocator/geolocator.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/screens/taxi_group_detail_card.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
@@ -66,6 +69,18 @@ class _MapTabState extends ConsumerState<TaxiGroupPage> {
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
+        leading: CInkWell(
+          onTap: () {},
+          child: SizedBox(
+            width: 32,
+            height: 32,
+            child: Icon(
+              Icons.close,
+              size: 24,
+              color: ThemeModel.text(isDarkMode),
+            ),
+          ),
+        ),
         actions: [
           CPopupMenu(
             button: SizedBox(
@@ -77,20 +92,48 @@ class _MapTabState extends ConsumerState<TaxiGroupPage> {
                 color: ThemeModel.text(isDarkMode),
               ),
             ),
-            dropdown: Container(
-              padding: EdgeInsets.all(8),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ListTile(
-                    leading: Icon(Icons.logout),
-                    title: Text('그룹 나가기'),
-                    onTap: () {},
-                  ),
-                ],
-              ),
-            ),
             dropdownWidth: 200,
+            dropdown: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CInkWell(
+                  onTap: () {},
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.logout,
+                      size: 24,
+                      color: ThemeModel.text(isDarkMode),
+                    ),
+                    title: Text(
+                      '그룹 나가기',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: ThemeModel.text(isDarkMode),
+                      ),
+                    ),
+                  ),
+                ),
+                CInkWell(
+                  onTap: () {},
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.flag_outlined,
+                      size: 24,
+                      color: ThemeModel.text(isDarkMode),
+                    ),
+                    title: Text(
+                      '신고',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: ThemeModel.text(isDarkMode),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
           SizedBox(
             width: 16,
@@ -359,7 +402,13 @@ class _MapTabState extends ConsumerState<TaxiGroupPage> {
         padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: SafeArea(
           child: CButton(
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => TaxiGroupSplitMoneyPage(),
+                ),
+              );
+            },
             label: '정산하기',
             icon: Icons.navigate_next,
             width: double.maxFinite,

@@ -6,8 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/screens/taxi_group_detail_card.dart';
-import 'package:letsmerge/screens/taxi_group_page.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
@@ -331,10 +331,9 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
         child: SafeArea(
           child: CButton(
             onTap: () {
-              Navigator.of(context).push(
-                CupertinoPageRoute(
-                  builder: (context) => TaxiGroupPage(),
-                ),
+              Navigator.of(context).pushAndRemoveUntil(
+                CupertinoPageRoute(builder: (context) => TaxiGroupPage()),
+                    (Route<dynamic> route) => false,
               );
             },
             label: '참여하기',
