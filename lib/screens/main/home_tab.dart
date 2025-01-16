@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/dev_page.dart';
-import 'package:letsmerge/screens/group_detail_page.dart';
+import 'package:letsmerge/screens/taxi_group_preview_page.dart';
 import 'package:letsmerge/screens/taxi_group_detail_card.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
@@ -367,7 +367,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     onTap: () {
                       Navigator.of(context).push(
                         CupertinoPageRoute(
-                          builder: (context) => GroupDetailPage(),
+                          builder: (context) => TaxiGroupPreviewPage(),
                         ),
                       );
                     },
@@ -390,7 +390,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                     onTap: () {
                       Navigator.of(context).push(
                         CupertinoPageRoute(
-                          builder: (context) => GroupDetailPage(),
+                          builder: (context) => TaxiGroupPreviewPage(),
                         ),
                       );
                     },

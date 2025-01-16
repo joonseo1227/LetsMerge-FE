@@ -5,7 +5,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/auth/log_in_page.dart';
 import 'package:letsmerge/screens/auth/create_account_page.dart';
-import 'package:letsmerge/screens/group_detail_page.dart';
+import 'package:letsmerge/screens/taxi_group_preview_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
@@ -307,7 +307,7 @@ class _DevPageState extends ConsumerState<DevPage> {
                   onTap: () {
                     Navigator.of(context).push(
                       CupertinoPageRoute(
-                        builder: (context) => GroupDetailPage(),
+                        builder: (context) => TaxiGroupPreviewPage(),
                       ),
                     );
                   },

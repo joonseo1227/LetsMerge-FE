@@ -7,17 +7,18 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/taxi_group_detail_card.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
 
-class GroupDetailPage extends ConsumerStatefulWidget {
-  const GroupDetailPage({super.key});
+class TaxiGroupPage extends ConsumerStatefulWidget {
+  const TaxiGroupPage({super.key});
 
   @override
-  ConsumerState<GroupDetailPage> createState() => _MapTabState();
+  ConsumerState<TaxiGroupPage> createState() => _MapTabState();
 }
 
-class _MapTabState extends ConsumerState<GroupDetailPage> {
+class _MapTabState extends ConsumerState<TaxiGroupPage> {
   NaverMapController? _mapController;
   Position? _currentPosition;
   bool _showSkeleton = true;
@@ -64,8 +65,37 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('GroupDetailPage'),
         titleSpacing: 0,
+        actions: [
+          CPopupMenu(
+            button: SizedBox(
+              width: 32,
+              height: 32,
+              child: Icon(
+                Icons.more_vert,
+                size: 24,
+                color: ThemeModel.text(isDarkMode),
+              ),
+            ),
+            dropdown: Container(
+              padding: EdgeInsets.all(8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.logout),
+                    title: Text('그룹 나가기'),
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ),
+            dropdownWidth: 200,
+          ),
+          SizedBox(
+            width: 16,
+          ),
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -330,7 +360,7 @@ class _MapTabState extends ConsumerState<GroupDetailPage> {
         child: SafeArea(
           child: CButton(
             onTap: () {},
-            label: '참여하기',
+            label: '정산하기',
             icon: Icons.navigate_next,
             width: double.maxFinite,
           ),

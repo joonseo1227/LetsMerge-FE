@@ -9,7 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/screens/group_detail_page.dart';
+import 'package:letsmerge/screens/taxi_group_preview_page.dart';
 import 'package:letsmerge/screens/taxi_group_detail_card.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
@@ -241,7 +241,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                                       Navigator.of(context).push(
                                         CupertinoPageRoute(
                                           builder: (context) =>
-                                              GroupDetailPage(),
+                                              TaxiGroupPreviewPage(),
                                         ),
                                       );
                                     },
@@ -250,7 +250,7 @@ class _MapTabState extends ConsumerState<MapTab> {
                                         Navigator.of(context).push(
                                           CupertinoPageRoute(
                                             builder: (context) =>
-                                                GroupDetailPage(),
+                                                TaxiGroupPreviewPage(),
                                           ),
                                         );
                                       },
