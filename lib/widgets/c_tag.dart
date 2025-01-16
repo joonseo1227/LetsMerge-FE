@@ -81,15 +81,9 @@ extension TagColorExtension on TagColor {
 ///
 /// [CTag] 위젯
 ///
-/// 사용자 정의 태그 컴포넌트
-///
 /// Parameter:
 /// - [text]: 태그 내부에 표시할 텍스트
 /// - [color]: 태그의 색상 ([TagColor] 타입)
-///
-/// 기능:
-/// - 주어진 색상과 텍스트로 태그 UI 구성
-/// - 다크 모드 상태에 따라 배경 및 텍스트 색상 변경
 ///
 class CTag extends ConsumerWidget {
   const CTag({

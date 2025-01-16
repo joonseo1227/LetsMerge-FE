@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 ///
 /// [CInkWell] 위젯
 ///
-/// 커스텀 InkWell 위젯으로 버튼을 눌렀을 때 크기가 축소되는 효과를 제공합니다.
-///
 /// Parameter:
 /// - [child]: 위젯 내부에 표시될 자식 위젯
 /// - [onTap]: 버튼을 눌렀을 때 실행될 함수 (optional, null일 경우 비활성화 상태)

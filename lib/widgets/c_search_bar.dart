@@ -6,8 +6,6 @@ import 'package:letsmerge/provider/theme_provider.dart';
 ///
 /// [CSearchBar] 위젯
 ///
-/// 검색 기능을 위한 사용자 정의 텍스트 입력 필드
-///
 /// Parameter:
 /// - [hint]: 입력 필드에 표시될 힌트 텍스트 (optional)
 /// - [controller]: 텍스트 입력값을 제어하는 컨트롤러 (optional)

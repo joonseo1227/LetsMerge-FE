@@ -6,8 +6,6 @@ import 'package:letsmerge/provider/theme_provider.dart';
 ///
 /// [CTextField] 위젯
 ///
-/// 사용자 정의 텍스트 입력 필드
-///
 /// Parameter:
 /// - [label]: 필드 상단에 표시될 레이블 텍스트
 /// - [hint]: 입력 필드에 표시될 힌트 텍스트 (optional)

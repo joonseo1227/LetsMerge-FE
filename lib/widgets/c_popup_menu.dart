@@ -4,6 +4,15 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
+///
+/// [CPopupMenu] 위젯
+///
+/// Parameter:
+/// - [button]: 드롭다운 메뉴를 여는 버튼 위젯
+/// - [dropdown]: 드롭다운에 표시될 콘텐츠 위젯
+/// - [dropdownWidth]: 드롭다운의 너비 (optional, 기본값은 버튼의 너비)
+/// - [dropdownHeight]: 드롭다운의 높이 (optional)
+///
 class CPopupMenu extends ConsumerStatefulWidget {
   final Widget button;
   final Widget dropdown;

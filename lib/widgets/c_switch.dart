@@ -5,7 +5,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 
 ///
-/// [CSwitch] 커스텀 스위치 위젯
+/// [CSwitch] 위젯
 ///
 /// Parameter:
 /// - [onChanged]: 스위치 값이 변경되었을 때 실행되는 콜백 함수

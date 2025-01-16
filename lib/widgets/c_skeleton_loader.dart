@@ -4,6 +4,12 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:shimmer/shimmer.dart';
 
+///
+/// [CSkeleton] 위젯
+///
+/// Parameter:
+/// - [key]: Flutter의 기본 키 값 (optional)
+///
 class CSkeleton extends ConsumerStatefulWidget {
   const CSkeleton({Key? key}) : super(key: key);
 
