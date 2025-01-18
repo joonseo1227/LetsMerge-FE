@@ -23,6 +23,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
   NaverMapController? _mapController;
   Position? _currentPosition;
   bool _showSkeleton = true;
+  final _mapKey = UniqueKey();
 
   @override
   void initState() {
@@ -52,9 +53,11 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
 
       Position position = await Geolocator.getCurrentPosition();
 
-      setState(() {
-        _currentPosition = position;
-      });
+      if (mounted) {
+        setState(() {
+          _currentPosition = position;
+        });
+      }
     } catch (e) {
       debugPrint('Error _getCurrentLocation: $e');
     }
@@ -78,41 +81,50 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
                 /// 지도
                 SizedBox(
                   height: 400,
-                  child: Stack(children: [
-                    if (_currentPosition != null)
-                      AnimatedOpacity(
-                        opacity: _showSkeleton ? 0.0 : 1.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: NaverMap(
-                          options: NaverMapViewOptions(
-                            mapType: NMapType.navi,
-                            nightModeEnable: isDarkMode,
-                            initialCameraPosition: NCameraPosition(
-                              target: _currentPosition != null
-                                  ? NLatLng(
-                                      _currentPosition!.latitude,
-                                      _currentPosition!.longitude,
-                                    )
-                                  : NLatLng(37.5665, 126.9780),
-                              zoom: 15.0,
+                  child: Stack(
+                    children: [
+                      if (_currentPosition != null)
+                        AnimatedOpacity(
+                          opacity: _showSkeleton ? 0.0 : 1.0,
+                          duration: const Duration(milliseconds: 200),
+                          child: NaverMap(
+                            key: _mapKey,
+                            options: NaverMapViewOptions(
+                              mapType: NMapType.navi,
+                              nightModeEnable: isDarkMode,
+                              initialCameraPosition: NCameraPosition(
+                                target: _currentPosition != null
+                                    ? NLatLng(
+                                        _currentPosition!.latitude,
+                                        _currentPosition!.longitude,
+                                      )
+                                    : NLatLng(37.5665, 126.9780),
+                                zoom: 15.0,
+                              ),
                             ),
-                          ),
-                          onMapReady: (controller) {
-                            debugPrint('Naver Map Ready');
-                            _mapController = controller;
-                            controller.setLocationTrackingMode(
-                                NLocationTrackingMode.follow);
-                            Future.delayed(const Duration(milliseconds: 800),
+                            onMapReady: (controller) {
+                              debugPrint('Naver Map Ready');
+                              _mapController = controller;
+                              controller.setLocationTrackingMode(
+                                  NLocationTrackingMode.follow);
+                              Future.delayed(
+                                const Duration(milliseconds: 800),
                                 () {
-                              setState(() {
-                                _showSkeleton = false;
-                              });
-                            });
-                          },
+                                  if (mounted) {
+                                    setState(
+                                      () {
+                                        _showSkeleton = false;
+                                      },
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    if (_showSkeleton) const CSkeleton(),
-                  ]),
+                      if (_showSkeleton) const CSkeleton(),
+                    ],
+                  ),
                 ),
 
                 SizedBox(

@@ -29,7 +29,6 @@ class _MapTabState extends ConsumerState<MapTab> {
   final double _buttonPositionPadding = 16;
   bool _isButtonVisible = true;
   bool _showSkeleton = true;
-
   NaverMapController? _mapController;
   Position? _currentPosition;
   StreamSubscription<Position>? _positionStream;
@@ -54,7 +53,7 @@ class _MapTabState extends ConsumerState<MapTab> {
     _startLocationStream();
   }
 
-  // 위치 스트림 시작
+  /// 위치 스트림 시작
   void _startLocationStream() {
     try {
       _positionStream = Geolocator.getPositionStream(
@@ -64,11 +63,11 @@ class _MapTabState extends ConsumerState<MapTab> {
         ),
       ).listen(
         (Position position) {
-          setState(
-            () {
+          if (mounted) {
+            setState(() {
               _currentPosition = position;
-            },
-          );
+            });
+          }
           debugPrint('Updated position: $position');
           if (_mapController != null) {
             _mapController!.updateCamera(
@@ -104,17 +103,19 @@ class _MapTabState extends ConsumerState<MapTab> {
       Future.delayed(
         const Duration(milliseconds: 800),
         () {
-          setState(
-            () {
-              _showSkeleton = false;
-            },
-          );
+          if (mounted) {
+            setState(
+              () {
+                _showSkeleton = false;
+              },
+            );
+          }
         },
       );
     }
   }
 
-  // 내 위치로 이동
+  /// 내 위치로 이동
   Future<void> _goToCurrentLocation() async {
     debugPrint('Move to current location');
 
@@ -153,13 +154,12 @@ class _MapTabState extends ConsumerState<MapTab> {
       child: Scaffold(
         body: Stack(
           children: [
+            /// 지도
             if (_currentPosition != null)
-              // 지도를 Positioned로 배치
               Positioned(
                 top: 0,
                 left: 0,
                 right: 0,
-                // _widgetHeight를 사용하여 계산
                 bottom: _currentExtent <= 0.4
                     ? _currentExtent * _widgetHeight
                     : 0.4 * _widgetHeight,
@@ -187,7 +187,7 @@ class _MapTabState extends ConsumerState<MapTab> {
               ),
             if (_showSkeleton) const CSkeleton(),
 
-            // 바텀시트
+            /// 바텀시트
             SafeArea(
               child: DraggableScrollableSheet(
                 snap: true,
@@ -199,15 +199,19 @@ class _MapTabState extends ConsumerState<MapTab> {
                     (BuildContext context, ScrollController scrollController) {
                   return NotificationListener<DraggableScrollableNotification>(
                     onNotification: (notification) {
-                      setState(() {
-                        _currentExtent = notification.extent;
-                        if (context.size != null) {
-                          _widgetHeight = context.size!.height;
-                          _buttonPosition = _currentExtent * _widgetHeight +
-                              _buttonPositionPadding;
-                        }
-                        _isButtonVisible = _currentExtent <= 0.41;
-                      });
+                      setState(
+                        () {
+                          _currentExtent = notification.extent;
+
+                          if (context.size != null) {
+                            _widgetHeight = context.size!.height;
+                            _buttonPosition = _currentExtent * _widgetHeight +
+                                _buttonPositionPadding;
+                          }
+
+                          _isButtonVisible = _currentExtent <= 0.41;
+                        },
+                      );
                       return true;
                     },
                     child: Container(
@@ -271,6 +275,8 @@ class _MapTabState extends ConsumerState<MapTab> {
                 },
               ),
             ),
+
+            /// 현재 위치 버튼
             Positioned(
               bottom: _buttonPosition,
               right: 16,
@@ -294,7 +300,9 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   @override
   void dispose() {
+    _positionStream?.cancel();
     _mapController?.dispose();
+
     super.dispose();
   }
 }
