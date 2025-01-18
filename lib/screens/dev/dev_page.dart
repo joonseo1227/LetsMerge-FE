@@ -92,8 +92,14 @@ class _DevPageState extends ConsumerState<DevPage> {
                       builder: (BuildContext context) {
                         return CDialog(
                           title: 'Title',
-                          content:
-                              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id accumsan augue.',
+                          content: Text(
+                            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id accumsan augue.',
+                            style: TextStyle(
+                              color: ThemeModel.text(isDarkMode),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
                           buttons: [
                             CButton(
                               style: CButtonStyle.secondary(isDarkMode),

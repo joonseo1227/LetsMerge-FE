@@ -10,12 +10,12 @@ import 'package:letsmerge/widgets/c_button.dart';
 ///
 /// Parameter:
 /// - [title]: 대화상자의 제목 (optional)
-/// - [content]: 대화상자의 내용 (optional)
+/// - [content]: 대화상자의 내용 위젯 (optional)
 /// - [buttons]: 대화상자 하단에 표시될 버튼 리스트
 ///
 class CDialog extends ConsumerWidget {
   final String? title;
-  final String? content;
+  final Widget? content;
   final List<Widget> buttons;
 
   const CDialog({
@@ -57,15 +57,7 @@ class CDialog extends ConsumerWidget {
                     const SizedBox(
                       height: 16,
                     ),
-                  if (content != null)
-                    Text(
-                      content!,
-                      style: TextStyle(
-                        color: ThemeModel.text(isDarkMode),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
+                  if (content != null) content!,
                 ],
               ),
             ),

@@ -9,6 +9,7 @@ import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
+import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsPage extends ConsumerWidget {
@@ -134,7 +135,14 @@ class SettingsPage extends ConsumerWidget {
                             builder: (BuildContext context) {
                               return CDialog(
                                 title: '로그아웃',
-                                content: '로그아웃하시겠습니까?',
+                                content: Text(
+                                  '로그아웃하시겠습니까?',
+                                  style: TextStyle(
+                                    color: ThemeModel.text(isDarkMode),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
                                 buttons: [
                                   CButton(
                                     style: CButtonStyle.secondary(isDarkMode),
@@ -197,16 +205,135 @@ class SettingsPage extends ConsumerWidget {
                         ),
                       ),
 
-                      /// 계정 탈퇴
+                      /// 계정 삭제
                       CInkWell(
-                        onTap: () {},
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              final emailController = TextEditingController();
+                              final passwordController =
+                                  TextEditingController();
+                              String? emailError;
+                              String? passwordError;
+
+                              return StatefulBuilder(
+                                builder: (context, setState) {
+                                  return CDialog(
+                                    title: '계정 재인증 필요',
+                                    content: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '계정을 삭제하려면 보안을 위해 이메일과 암호로 재인증해야 합니다. 아래에 로그인 정보를 입력해 주세요.',
+                                          style: TextStyle(
+                                            color: ThemeModel.text(isDarkMode),
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 16),
+                                        // 이메일 입력 필드
+                                        CTextField(
+                                          backgroundColor:
+                                              ThemeModel.background(isDarkMode),
+                                          label: '이메일',
+                                          controller: emailController,
+                                          errorText: emailError,
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          hint: 'example@example.com',
+                                        ),
+                                        const SizedBox(height: 16),
+                                        // 비밀번호 입력 필드
+                                        CTextField(
+                                          backgroundColor:
+                                              ThemeModel.background(isDarkMode),
+                                          label: '암호',
+                                          controller: passwordController,
+                                          errorText: passwordError,
+                                          obscureText: true,
+                                        ),
+                                      ],
+                                    ),
+                                    buttons: [
+                                      // 취소 버튼
+                                      CButton(
+                                        label: '취소',
+                                        style:
+                                            CButtonStyle.secondary(isDarkMode),
+                                        size: CButtonSize.large,
+                                        onTap: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      // 계정 삭제 버튼
+                                      CButton(
+                                        style: CButtonStyle.danger(isDarkMode),
+                                        label: '계정 삭제',
+                                        size: CButtonSize.large,
+                                        onTap: () async {
+                                          final email =
+                                              emailController.text.trim();
+                                          final password =
+                                              passwordController.text.trim();
+
+                                          setState(() {
+                                            emailError = email.isEmpty
+                                                ? '이메일을 입력하십시오.'
+                                                : null;
+                                            passwordError = password.isEmpty
+                                                ? '암호를 입력하십시오.'
+                                                : null;
+                                          });
+
+                                          if (emailError == null &&
+                                              passwordError == null) {
+                                            try {
+                                              await ref
+                                                  .read(authProvider.notifier)
+                                                  .deleteAccount(
+                                                      email, password);
+                                              if (context.mounted) {
+                                                Navigator.of(context)
+                                                    .pushAndRemoveUntil(
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const LogInPage(),
+                                                  ),
+                                                  (route) => false,
+                                                );
+                                              }
+                                            } catch (e) {
+                                              setState(() {
+                                                if (e.toString().contains(
+                                                    'invalid-email')) {
+                                                  emailError =
+                                                      '이메일 형식을 확인하십시오.';
+                                                } else {
+                                                  passwordError =
+                                                      '이메일 또는 암호를 확인하십시오.';
+                                                }
+                                              });
+                                            }
+                                          }
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          );
+                        },
                         child: Container(
                           color: ThemeModel.surface(isDarkMode),
                           padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
                               Text(
-                                '계정 탈퇴',
+                                '계정 삭제',
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,

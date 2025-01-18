@@ -18,14 +18,14 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
     });
   }
 
-  // 현재 사용자 초기화
+  /// 현재 사용자 초기화
   void _initializeUser() {
     final firebaseUser = _auth.currentUser;
     state =
         firebaseUser != null ? UserDTO.fromFirebaseUser(firebaseUser) : null;
   }
 
-  // 이메일 및 암호로 로그인
+  /// 이메일 및 암호로 로그인
   Future<void> signInWithEmail(String email, String password) async {
     try {
       final firebase_auth.UserCredential result =
@@ -40,7 +40,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
     }
   }
 
-  // 이메일 및 암호로 계정 생성 + 이름 설정
+  /// 이메일 및 암호로 계정 생성 + 이름 설정
   Future<void> signUpWithEmail(
       String email, String password, String name) async {
     try {
@@ -50,10 +50,11 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
         password: password,
       );
       final firebaseUser = result.user;
+
       if (firebaseUser != null) {
         await firebaseUser.updateDisplayName(name);
         await firebaseUser.reload();
-        state = UserDTO.fromFirebaseUser(firebaseUser);
+        state = UserDTO.fromFirebaseUser(_auth.currentUser!);
       }
     } catch (e) {
       debugPrint('Error signUpWithEmail: $e');
@@ -61,7 +62,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
     }
   }
 
-  // 로그아웃
+  /// 로그아웃
   Future<void> signOut() async {
     try {
       await _auth.signOut();
@@ -72,7 +73,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
     }
   }
 
-  // 이름 업데이트
+  /// 이름 업데이트
   Future<void> updateName(String name) async {
     try {
       final firebaseUser = _auth.currentUser;
@@ -83,6 +84,39 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
       }
     } catch (e) {
       debugPrint('Error updateName: $e');
+      rethrow;
+    }
+  }
+
+  /// 계정 삭제
+  Future<void> deleteAccount(String email, String password) async {
+    try {
+      // 재인증 수행
+      await reauthenticate(email, password);
+
+      // 계정 삭제
+      final firebaseUser = _auth.currentUser;
+      if (firebaseUser != null) {
+        await firebaseUser.delete();
+        state = null;
+      }
+    } catch (e) {
+      debugPrint('Error deleting account: $e');
+      rethrow;
+    }
+  }
+
+  /// 재인증
+  Future<void> reauthenticate(String email, String password) async {
+    try {
+      final credential = firebase_auth.EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+      await _auth.currentUser?.reauthenticateWithCredential(credential);
+      debugPrint('Re-authentication successful');
+    } catch (e) {
+      debugPrint('Error during re-authentication: $e');
       rethrow;
     }
   }

@@ -61,7 +61,7 @@ class CButtonStyle {
   /// Danger 스타일
   factory CButtonStyle.danger(bool isDarkMode) {
     return CButtonStyle(
-      backgroundColor: ThemeModel.danger(isDarkMode),
+      backgroundColor: red60,
       labelColor: white,
       iconColor: white,
     );
