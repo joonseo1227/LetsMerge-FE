@@ -35,34 +35,6 @@ class TaxiGroupDetailCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
-            children: [
-              Text(
-                '$remainingSeats자리 남음',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: ThemeModel.sub3(isDarkMode),
-                ),
-              ),
-              SizedBox(
-                height: 12,
-                child: VerticalDivider(
-                  thickness: 1,
-                  color: ThemeModel.sub2(isDarkMode),
-                ),
-              ),
-              Text(
-                '$closingTime분 후 마감',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: ThemeModel.sub3(isDarkMode),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
@@ -169,6 +141,35 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                     ],
                   ),
                 ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                '$remainingSeats자리 남음',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.sub3(isDarkMode),
+                ),
+              ),
+              SizedBox(
+                height: 12,
+                child: VerticalDivider(
+                  thickness: 1,
+                  color: ThemeModel.sub2(isDarkMode),
+                ),
+              ),
+              Text(
+                '$closingTime분 후 마감',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.sub3(isDarkMode),
+                ),
               ),
             ],
           ),
