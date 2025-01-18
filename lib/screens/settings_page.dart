@@ -9,9 +9,15 @@ import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsPage extends ConsumerWidget {
   const SettingsPage({super.key});
+
+  Future<String> _getAppVersion() async {
+    final packageInfo = await PackageInfo.fromPlatform();
+    return '${packageInfo.version} (${packageInfo.buildNumber})';
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,11 +35,11 @@ class SettingsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// 다크 모드
                 Container(
                   color: ThemeModel.surface(isDarkMode),
                   child: Column(
                     children: [
+                      /// 다크 모드
                       CInkWell(
                         onTap: () {
                           ref.read(themeProvider.notifier).toggleTheme();
@@ -67,9 +73,55 @@ class SettingsPage extends ConsumerWidget {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 16),
-
+                Container(
+                  color: ThemeModel.surface(isDarkMode),
+                  child: Column(
+                    children: [
+                      /// 앱 버전
+                      FutureBuilder<String>(
+                        future: _getAppVersion(),
+                        builder: (context, snapshot) {
+                          String versionText = '';
+                          if (snapshot.connectionState ==
+                              ConnectionState.done) {
+                            if (snapshot.hasData) {
+                              versionText = snapshot.data!;
+                            } else {
+                              versionText = '버전 정보를 가져올 수 없습니다.';
+                            }
+                          }
+                          return Container(
+                            color: ThemeModel.surface(isDarkMode),
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '앱 버전',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.text(isDarkMode),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  versionText,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.sub4(isDarkMode),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Container(
                   color: ThemeModel.surface(isDarkMode),
                   child: Column(
