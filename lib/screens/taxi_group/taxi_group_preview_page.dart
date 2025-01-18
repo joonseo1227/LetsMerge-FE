@@ -56,7 +56,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
         _currentPosition = position;
       });
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error _getCurrentLocation: $e');
     }
   }
 
@@ -85,6 +85,8 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
                         duration: const Duration(milliseconds: 200),
                         child: NaverMap(
                           options: NaverMapViewOptions(
+                            mapType: NMapType.navi,
+                            nightModeEnable: isDarkMode,
                             initialCameraPosition: NCameraPosition(
                               target: _currentPosition != null
                                   ? NLatLng(
@@ -96,7 +98,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
                             ),
                           ),
                           onMapReady: (controller) {
-                            debugPrint('Naver Map is ready');
+                            debugPrint('Naver Map Ready');
                             _mapController = controller;
                             controller.setLocationTrackingMode(
                                 NLocationTrackingMode.follow);

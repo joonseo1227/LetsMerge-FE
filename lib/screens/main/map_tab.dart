@@ -23,9 +23,9 @@ class MapTab extends ConsumerStatefulWidget {
 }
 
 class _MapTabState extends ConsumerState<MapTab> {
-  double _currentExtent = 0.1; // 초기 바텀시트 위치 비율
-  double _widgetHeight = 0; // 위젯 높이
-  double _buttonPosition = 0; // FAB 위치
+  double _currentExtent = 0.1;
+  double _widgetHeight = 0;
+  double _buttonPosition = 0;
   final double _buttonPositionPadding = 16;
   bool _isButtonVisible = true;
   bool _showSkeleton = true;
@@ -40,7 +40,6 @@ class _MapTabState extends ConsumerState<MapTab> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
-        // 레이아웃 계산 후 size를 안전하게 처리
         if (context.size != null) {
           setState(
             () {
@@ -61,7 +60,7 @@ class _MapTabState extends ConsumerState<MapTab> {
       _positionStream = Geolocator.getPositionStream(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
-          distanceFilter: 5, // 5미터 이동 시 업데이트
+          distanceFilter: 1,
         ),
       ).listen(
         (Position position) {
@@ -81,7 +80,7 @@ class _MapTabState extends ConsumerState<MapTab> {
         },
       );
     } catch (e) {
-      debugPrint('위치 스트림 시작 중 에러 발생: $e');
+      debugPrint('Error starting location stream: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('GPS 상태를 확인하세요.'),
@@ -91,7 +90,7 @@ class _MapTabState extends ConsumerState<MapTab> {
   }
 
   void _onMapReady(NaverMapController controller) {
-    debugPrint('Naver Map is ready');
+    debugPrint('Naver Map Ready');
     _mapController = controller;
 
     // 위치 추적 모드 설정
@@ -117,6 +116,8 @@ class _MapTabState extends ConsumerState<MapTab> {
 
   // 내 위치로 이동
   Future<void> _goToCurrentLocation() async {
+    debugPrint('Move to current location');
+
     if (_mapController != null && _currentPosition != null) {
       _mapController!.updateCamera(
         NCameraUpdate.scrollAndZoomTo(
@@ -130,7 +131,7 @@ class _MapTabState extends ConsumerState<MapTab> {
         ),
       );
     } else {
-      debugPrint('현재 위치를 불러오지 못했습니다.');
+      debugPrint('Failed to get current location');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('GPS 상태를 확인하세요.'),
@@ -144,9 +145,11 @@ class _MapTabState extends ConsumerState<MapTab> {
     final isDarkMode = ref.watch(themeProvider);
 
     return AnnotatedRegion(
-      value: SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.transparent,
-      ),
+      value: isDarkMode
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark.copyWith(
+              statusBarColor: Colors.transparent,
+            ),
       child: Scaffold(
         body: Stack(
           children: [
@@ -166,6 +169,8 @@ class _MapTabState extends ConsumerState<MapTab> {
                   child: NaverMap(
                     key: _mapKey,
                     options: NaverMapViewOptions(
+                      mapType: NMapType.navi,
+                      nightModeEnable: isDarkMode,
                       initialCameraPosition: NCameraPosition(
                         target: _currentPosition != null
                             ? NLatLng(
@@ -276,7 +281,6 @@ class _MapTabState extends ConsumerState<MapTab> {
                   style: CButtonStyle.secondary(isDarkMode),
                   icon: Icons.my_location,
                   onTap: () async {
-                    debugPrint('move to current location');
                     await _goToCurrentLocation();
                   },
                 ),

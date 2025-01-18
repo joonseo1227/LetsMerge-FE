@@ -35,7 +35,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
       );
       state = UserDTO.fromFirebaseUser(result.user!);
     } catch (e) {
-      debugPrint('로그인 실패: $e');
+      debugPrint('Error signInWithEmail: $e');
       rethrow;
     }
   }
@@ -56,7 +56,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
         state = UserDTO.fromFirebaseUser(firebaseUser);
       }
     } catch (e) {
-      debugPrint('계정 생성 실패: $e');
+      debugPrint('Error signUpWithEmail: $e');
       rethrow;
     }
   }
@@ -67,7 +67,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
       await _auth.signOut();
       state = null;
     } catch (e) {
-      debugPrint('로그아웃 실패: $e');
+      debugPrint('Error signOut: $e');
       rethrow;
     }
   }
@@ -82,7 +82,7 @@ class AuthNotifier extends StateNotifier<UserDTO?> {
         state = UserDTO.fromFirebaseUser(firebaseUser);
       }
     } catch (e) {
-      debugPrint('이름 업데이트 실패: $e');
+      debugPrint('Error updateName: $e');
       rethrow;
     }
   }
