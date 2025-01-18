@@ -57,12 +57,7 @@ class _MapTabState extends ConsumerState<MapTab> {
   /// 위치 스트림 시작
   void _startLocationStream() {
     try {
-      _positionStream = Geolocator.getPositionStream(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          distanceFilter: 1,
-        ),
-      ).listen(
+      _positionStream = Geolocator.getPositionStream().listen(
         (Position position) {
           if (mounted) {
             setState(() {
@@ -70,13 +65,6 @@ class _MapTabState extends ConsumerState<MapTab> {
             });
           }
           debugPrint('Updated position: $position');
-          if (_mapController != null) {
-            _mapController!.updateCamera(
-              NCameraUpdate.scrollAndZoomTo(
-                target: NLatLng(position.latitude, position.longitude),
-              ),
-            );
-          }
         },
       );
     } catch (e) {
@@ -94,7 +82,7 @@ class _MapTabState extends ConsumerState<MapTab> {
     _mapController = controller;
 
     // 위치 추적 모드 설정
-    controller.setLocationTrackingMode(NLocationTrackingMode.follow);
+    controller.setLocationTrackingMode(NLocationTrackingMode.noFollow);
 
     // 지도 초기화 시 현재 위치로 이동
     _goToCurrentLocation();
