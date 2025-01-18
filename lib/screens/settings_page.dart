@@ -260,19 +260,19 @@ class SettingsPage extends ConsumerWidget {
                                     buttons: [
                                       // 취소 버튼
                                       CButton(
+                                        size: CButtonSize.extraLarge,
                                         label: '취소',
                                         style:
                                             CButtonStyle.secondary(isDarkMode),
-                                        size: CButtonSize.large,
                                         onTap: () {
                                           Navigator.of(context).pop();
                                         },
                                       ),
                                       // 계정 삭제 버튼
                                       CButton(
+                                        size: CButtonSize.extraLarge,
                                         style: CButtonStyle.danger(isDarkMode),
                                         label: '계정 삭제',
-                                        size: CButtonSize.large,
                                         onTap: () async {
                                           final email =
                                               emailController.text.trim();

@@ -34,45 +34,48 @@ class CDialog extends ConsumerWidget {
         borderRadius: BorderRadius.circular(0),
       ),
       backgroundColor: ThemeModel.surface(isDarkMode),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (title != null)
-                    Text(
-                      title!,
-                      style: TextStyle(
-                        color: ThemeModel.text(isDarkMode),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (title != null)
+                      Text(
+                        title!,
+                        style: TextStyle(
+                          color: ThemeModel.text(isDarkMode),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                  if (title != null)
-                    const SizedBox(
-                      height: 16,
-                    ),
-                  if (content != null) content!,
-                ],
+                    if (title != null)
+                      const SizedBox(
+                        height: 16,
+                      ),
+                    if (content != null) content!,
+                  ],
+                ),
               ),
             ),
-            Row(
-              children: buttons.map((button) {
-                return Expanded(
-                  child: Container(
-                    color: (button as CButton).style?.backgroundColor ?? blue60,
-                    child: button,
-                  ),
-                );
-              }).toList(),
-            )
-          ],
-        ),
+          ),
+          Row(
+            children: buttons.map((button) {
+              return Expanded(
+                child: Container(
+                  color: (button as CButton).style?.backgroundColor ?? blue60,
+                  child: button,
+                ),
+              );
+            }).toList(),
+          )
+        ],
       ),
     );
   }
