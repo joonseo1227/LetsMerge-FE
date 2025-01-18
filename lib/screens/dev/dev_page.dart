@@ -5,9 +5,10 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/auth/log_in_page.dart';
 import 'package:letsmerge/screens/auth/create_account_page.dart';
-import 'package:letsmerge/screens/taxi_group/taxi_group_preview_page.dart';
+import 'package:letsmerge/screens/dev/button_gallery_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
@@ -88,83 +89,46 @@ class _DevPageState extends ConsumerState<DevPage> {
                 ),
                 SizedBox(height: 16),
                 CButton(
-                  label: 'Default Button',
+                  label: 'Show Dialog',
                   onTap: () {
-                    debugPrint('Default Button Clicked');
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CDialog(
+                          title: 'Title',
+                          content:
+                              'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id accumsan augue.',
+                          buttons: [
+                            CButton(
+                              style: CButtonStyle.secondary(isDarkMode),
+                              size: CButtonSize.extraLarge,
+                              label: '취소',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            CButton(
+                              size: CButtonSize.extraLarge,
+                              label: '확인',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   },
                 ),
                 SizedBox(height: 16),
                 CButton(
-                  style: CButtonStyle.primary(isDarkMode),
-                  label: 'Primary Button',
-                  icon: Icons.home,
-                  width: 300,
+                  label: 'ButtonGalleryPage',
                   onTap: () {
-                    debugPrint('Primary Button Clicked');
-                  },
-                ),
-                SizedBox(height: 16),
-                CButton(
-                  style: CButtonStyle.secondary(isDarkMode),
-                  icon: Icons.settings,
-                  size: CButtonSize.medium,
-                  onTap: () {
-                    debugPrint('Secondary Button Clicked');
-                  },
-                ),
-                SizedBox(height: 16),
-                CButton(
-                  style: CButtonStyle.tertiary(isDarkMode),
-                  label: 'Tertiary Button',
-                  icon: Icons.info,
-                  size: CButtonSize.medium,
-                  onTap: () {
-                    debugPrint('Tertiary Button Clicked');
-                  },
-                ),
-                SizedBox(height: 16),
-                CButton(
-                  style: CButtonStyle.danger(isDarkMode),
-                  label: 'Danger Button',
-                  size: CButtonSize.x2Large,
-                  onTap: () {
-                    debugPrint('Danger Button Clicked');
-                  },
-                ),
-                SizedBox(height: 16),
-                CButton(
-                  style: CButtonStyle.ghost(isDarkMode),
-                  label: 'Ghost Button',
-                  onTap: () {
-                    debugPrint('Ghost Button Clicked');
-                  },
-                ),
-                SizedBox(height: 16),
-                CButton(
-                  style: CButtonStyle.primary(isDarkMode),
-                  label: 'Small Button',
-                  size: CButtonSize.small,
-                  onTap: () {
-                    debugPrint('Small Button Clicked');
-                  },
-                ),
-                SizedBox(height: 16),
-                CButton(
-                  style: CButtonStyle.secondary(isDarkMode),
-                  label: 'Extra Large Button',
-                  size: CButtonSize.extraLarge,
-                  onTap: () {
-                    debugPrint('Extra Large Button Clicked');
-                  },
-                ),
-                SizedBox(height: 16),
-                CButton(
-                  style: CButtonStyle.tertiary(isDarkMode),
-                  label: 'Custom Width',
-                  icon: Icons.star,
-                  width: 250,
-                  onTap: () {
-                    debugPrint('Custom Width Button Clicked');
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => ButtonGalleryPage(),
+                      ),
+                    );
                   },
                 ),
                 SizedBox(height: 16),
@@ -275,51 +239,6 @@ class _DevPageState extends ConsumerState<DevPage> {
                       children: [
                         Text(
                           '설정',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.text(isDarkMode),
-                          ),
-                        ),
-                        Spacer(),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            CTag(
-                              text: 'DEV',
-                              color: TagColor.blue,
-                            ),
-                            Spacer(),
-                            Icon(
-                              Icons.navigate_next,
-                              color: ThemeModel.text(isDarkMode),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                CInkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => TaxiGroupPreviewPage(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    color: ThemeModel.surface(isDarkMode),
-                    height: 120,
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'GroupDetailPage',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w500,

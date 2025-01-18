@@ -69,6 +69,7 @@ class _MapTabState extends ConsumerState<TaxiGroupSplitMoneyPage> {
                 (Route<dynamic> route) => false,
               );
             },
+            size: CButtonSize.extraLarge,
             label: '정산 완료',
             icon: Icons.navigate_next,
             width: double.maxFinite,

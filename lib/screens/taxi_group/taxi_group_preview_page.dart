@@ -333,9 +333,10 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
             onTap: () {
               Navigator.of(context).pushAndRemoveUntil(
                 CupertinoPageRoute(builder: (context) => TaxiGroupPage()),
-                    (Route<dynamic> route) => false,
+                (Route<dynamic> route) => false,
               );
             },
+            size: CButtonSize.extraLarge,
             label: '참여하기',
             icon: Icons.navigate_next,
             width: double.maxFinite,

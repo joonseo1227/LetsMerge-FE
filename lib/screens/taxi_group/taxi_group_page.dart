@@ -409,6 +409,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPage> {
                 ),
               );
             },
+            size: CButtonSize.extraLarge,
             label: '정산하기',
             icon: Icons.navigate_next,
             width: double.maxFinite,

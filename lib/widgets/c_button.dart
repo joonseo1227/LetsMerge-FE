@@ -11,7 +11,6 @@ enum CButtonSize {
   medium,
   large,
   extraLarge,
-  x2Large,
 }
 
 /// 버튼 스타일을 관리하는 클래스
@@ -84,8 +83,7 @@ class CButtonSizes {
     CButtonSize.small: EdgeInsets.all(8),
     CButtonSize.medium: EdgeInsets.all(12),
     CButtonSize.large: EdgeInsets.all(16),
-    CButtonSize.extraLarge: EdgeInsets.all(16),
-    CButtonSize.x2Large: EdgeInsets.all(16),
+    CButtonSize.extraLarge: EdgeInsets.fromLTRB(16, 16, 16, 24),
   };
 
   static const Map<CButtonSize, double> textSizes = {
@@ -93,15 +91,13 @@ class CButtonSizes {
     CButtonSize.medium: 14,
     CButtonSize.large: 16,
     CButtonSize.extraLarge: 16,
-    CButtonSize.x2Large: 20,
   };
 
   static const Map<CButtonSize, double> iconSizes = {
     CButtonSize.small: 16,
     CButtonSize.medium: 20,
     CButtonSize.large: 24,
-    CButtonSize.extraLarge: 28,
-    CButtonSize.x2Large: 32,
+    CButtonSize.extraLarge: 24,
   };
 }
 
