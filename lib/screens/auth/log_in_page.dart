@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:letsmerge/models/theme_model.dart';
@@ -102,95 +103,102 @@ class _LogInPageState extends ConsumerState<LogInPage> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
 
-    return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(
-                  height: 24,
-                ),
-                SizedBox(
-                  width: 80,
-                  height: 80,
-                  child: isDarkMode
-                      ? SvgPicture.asset('assets/imgs/logo_grey10.svg')
-                      : SvgPicture.asset('assets/imgs/logo_grey100.svg'),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  '렛츠머지 시작하기',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700,
-                    color: ThemeModel.text(isDarkMode),
+    return AnnotatedRegion(
+      value: isDarkMode
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark.copyWith(
+              statusBarColor: Colors.transparent,
+            ),
+      child: Scaffold(
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(
+                    height: 24,
                   ),
-                ),
-                const SizedBox(
-                  height: 48,
-                ),
-                CTextField(
-                  label: '이메일',
-                  controller: _emailController,
-                  errorText: _emailError,
-                  keyboardType: TextInputType.emailAddress,
-                  hint: 'example@example.com',
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                CTextField(
-                  label: '암호',
-                  controller: _passwordController,
-                  errorText: _passwordError,
-                  obscureText: true,
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                ValueListenableBuilder<bool>(
-                  valueListenable: _isButtonEnabled,
-                  builder: (context, isEnabled, child) {
-                    return CButton(
-                      onTap: isEnabled ? _login : null,
-                      label: '로그인',
-                      icon: Icons.navigate_next,
-                      width: double.maxFinite,
-                    );
-                  },
-                ),
-                const SizedBox(
-                  height: 48,
-                ),
-                Text(
-                  '계정이 없으신가요?',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: ThemeModel.text(isDarkMode),
+                  SizedBox(
+                    width: 80,
+                    height: 80,
+                    child: isDarkMode
+                        ? SvgPicture.asset('assets/imgs/logo_grey10.svg')
+                        : SvgPicture.asset('assets/imgs/logo_grey100.svg'),
                   ),
-                ),
-                const SizedBox(
-                  height: 8,
-                ),
-                CButton(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => CreateAccountPage(),
-                      ),
-                    );
-                  },
-                  label: '계정 생성',
-                  icon: Icons.navigate_next,
-                  style: CButtonStyle.tertiary(isDarkMode),
-                  width: double.maxFinite,
-                ),
-              ],
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Text(
+                    '렛츠머지 시작하기',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w700,
+                      color: ThemeModel.text(isDarkMode),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 48,
+                  ),
+                  CTextField(
+                    label: '이메일',
+                    controller: _emailController,
+                    errorText: _emailError,
+                    keyboardType: TextInputType.emailAddress,
+                    hint: 'example@example.com',
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  CTextField(
+                    label: '암호',
+                    controller: _passwordController,
+                    errorText: _passwordError,
+                    obscureText: true,
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: _isButtonEnabled,
+                    builder: (context, isEnabled, child) {
+                      return CButton(
+                        onTap: isEnabled ? _login : null,
+                        label: '로그인',
+                        icon: Icons.navigate_next,
+                        width: double.maxFinite,
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    height: 48,
+                  ),
+                  Text(
+                    '계정이 없으신가요?',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: ThemeModel.text(isDarkMode),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  CButton(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => CreateAccountPage(),
+                        ),
+                      );
+                    },
+                    label: '계정 생성',
+                    icon: Icons.navigate_next,
+                    style: CButtonStyle.tertiary(isDarkMode),
+                    width: double.maxFinite,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
