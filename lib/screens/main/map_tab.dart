@@ -9,8 +9,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/screens/taxi_group/taxi_group_preview_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_preview_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
@@ -23,6 +23,9 @@ class MapTab extends ConsumerStatefulWidget {
 }
 
 class _MapTabState extends ConsumerState<MapTab> {
+  final DraggableScrollableController _draggableController =
+      DraggableScrollableController();
+
   double _currentExtent = 0.1;
   double _widgetHeight = 0;
   double _buttonPosition = 0;
@@ -37,19 +40,17 @@ class _MapTabState extends ConsumerState<MapTab> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        if (context.size != null) {
-          setState(
-            () {
-              _widgetHeight = context.size!.height;
-              _buttonPosition =
-                  _currentExtent * _widgetHeight + _buttonPositionPadding;
-            },
-          );
-        }
-      },
-    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 바텀시트 애니메이션
+      _draggableController.animateTo(
+        0.4,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOut,
+      );
+    });
+
+    // 위치 스트림 시작
     _startLocationStream();
   }
 
@@ -104,11 +105,9 @@ class _MapTabState extends ConsumerState<MapTab> {
         const Duration(milliseconds: 800),
         () {
           if (mounted) {
-            setState(
-              () {
-                _showSkeleton = false;
-              },
-            );
+            setState(() {
+              _showSkeleton = false;
+            });
           }
         },
       );
@@ -122,12 +121,10 @@ class _MapTabState extends ConsumerState<MapTab> {
     if (_mapController != null && _currentPosition != null) {
       _mapController!.updateCamera(
         NCameraUpdate.scrollAndZoomTo(
-          target: _currentPosition != null
-              ? NLatLng(
-                  _currentPosition!.latitude,
-                  _currentPosition!.longitude,
-                )
-              : NLatLng(37.5665, 126.9780),
+          target: NLatLng(
+            _currentPosition!.latitude,
+            _currentPosition!.longitude,
+          ),
           zoom: 15.0,
         ),
       );
@@ -172,12 +169,10 @@ class _MapTabState extends ConsumerState<MapTab> {
                       mapType: NMapType.navi,
                       nightModeEnable: isDarkMode,
                       initialCameraPosition: NCameraPosition(
-                        target: _currentPosition != null
-                            ? NLatLng(
-                                _currentPosition!.latitude,
-                                _currentPosition!.longitude,
-                              )
-                            : NLatLng(37.5665, 126.9780),
+                        target: NLatLng(
+                          _currentPosition!.latitude,
+                          _currentPosition!.longitude,
+                        ),
                         zoom: 15.0,
                       ),
                     ),
@@ -190,6 +185,8 @@ class _MapTabState extends ConsumerState<MapTab> {
             /// 바텀시트
             SafeArea(
               child: DraggableScrollableSheet(
+                // 위에서 선언한 controller를 연결
+                controller: _draggableController,
                 snap: true,
                 snapSizes: const [0.1, 0.4, 1],
                 initialChildSize: 0.1,
@@ -199,19 +196,17 @@ class _MapTabState extends ConsumerState<MapTab> {
                     (BuildContext context, ScrollController scrollController) {
                   return NotificationListener<DraggableScrollableNotification>(
                     onNotification: (notification) {
-                      setState(
-                        () {
-                          _currentExtent = notification.extent;
+                      setState(() {
+                        _currentExtent = notification.extent;
 
-                          if (context.size != null) {
-                            _widgetHeight = context.size!.height;
-                            _buttonPosition = _currentExtent * _widgetHeight +
-                                _buttonPositionPadding;
-                          }
+                        if (context.size != null) {
+                          _widgetHeight = context.size!.height;
+                          _buttonPosition = _currentExtent * _widgetHeight +
+                              _buttonPositionPadding;
+                        }
 
-                          _isButtonVisible = _currentExtent <= 0.41;
-                        },
-                      );
+                        _isButtonVisible = _currentExtent <= 0.41;
+                      });
                       return true;
                     },
                     child: Container(
@@ -244,17 +239,18 @@ class _MapTabState extends ConsumerState<MapTab> {
                               itemCount: 10,
                               itemBuilder: (BuildContext context, int index) {
                                 return Padding(
-                                  padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                                  padding:
+                                      const EdgeInsets.fromLTRB(16, 0, 16, 16),
                                   child: CInkWell(
                                     onTap: () {
                                       Navigator.of(context).push(
                                         CupertinoPageRoute(
                                           builder: (context) =>
-                                              TaxiGroupPreviewPage(),
+                                              const TaxiGroupPreviewPage(),
                                         ),
                                       );
                                     },
-                                    child: TaxiGroupDetailCard(
+                                    child: const TaxiGroupDetailCard(
                                       remainingSeats: 1,
                                       closingTime: 5,
                                       startLocation: '가천대역 수인분당선',
@@ -282,7 +278,7 @@ class _MapTabState extends ConsumerState<MapTab> {
               right: 16,
               child: AnimatedOpacity(
                 opacity: _isButtonVisible ? 1.0 : 0.0,
-                duration: Duration(milliseconds: 150),
+                duration: const Duration(milliseconds: 150),
                 child: CButton(
                   style: CButtonStyle.secondary(isDarkMode),
                   icon: Icons.my_location,
@@ -302,7 +298,6 @@ class _MapTabState extends ConsumerState<MapTab> {
   void dispose() {
     _positionStream?.cancel();
     _mapController?.dispose();
-
     super.dispose();
   }
 }
