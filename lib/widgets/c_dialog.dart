@@ -5,15 +5,23 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 
+///
+/// [CDialog]
+///
+/// Parameter:
+/// - [title]: 대화상자의 제목 (optional)
+/// - [content]: 대화상자의 내용 (optional)
+/// - [buttons]: 대화상자 하단에 표시될 버튼 리스트
+///
 class CDialog extends ConsumerWidget {
-  final String title;
-  final String content;
+  final String? title;
+  final String? content;
   final List<Widget> buttons;
 
   const CDialog({
     super.key,
-    required this.title,
-    required this.content,
+    this.title,
+    this.content,
     required this.buttons,
   });
 
@@ -36,25 +44,28 @@ class CDialog extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      color: ThemeModel.text(isDarkMode),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w500,
+                  if (title != null)
+                    Text(
+                      title!,
+                      style: TextStyle(
+                        color: ThemeModel.text(isDarkMode),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 16,
-                  ),
-                  Text(
-                    content,
-                    style: TextStyle(
-                      color: ThemeModel.text(isDarkMode),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
+                  if (title != null)
+                    const SizedBox(
+                      height: 16,
                     ),
-                  ),
+                  if (content != null)
+                    Text(
+                      content!,
+                      style: TextStyle(
+                        color: ThemeModel.text(isDarkMode),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                 ],
               ),
             ),

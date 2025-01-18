@@ -3,16 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/screens/auth/log_in_page.dart';
-import 'package:letsmerge/screens/auth/create_account_page.dart';
 import 'package:letsmerge/screens/dev/button_gallery_page.dart';
-import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
-import 'package:letsmerge/widgets/c_tag.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
 class DevPage extends ConsumerStatefulWidget {
@@ -130,139 +126,6 @@ class _DevPageState extends ConsumerState<DevPage> {
                       ),
                     );
                   },
-                ),
-                SizedBox(height: 16),
-                CInkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => LogInPage(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    color: ThemeModel.surface(isDarkMode),
-                    height: 120,
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '로그인',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.text(isDarkMode),
-                          ),
-                        ),
-                        Spacer(),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            CTag(
-                              text: 'DEV',
-                              color: TagColor.blue,
-                            ),
-                            Spacer(),
-                            Icon(
-                              Icons.navigate_next,
-                              color: ThemeModel.text(isDarkMode),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                CInkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => CreateAccountPage(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    color: ThemeModel.surface(isDarkMode),
-                    height: 120,
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '계정 생성',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.text(isDarkMode),
-                          ),
-                        ),
-                        Spacer(),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            CTag(
-                              text: 'DEV',
-                              color: TagColor.blue,
-                            ),
-                            Spacer(),
-                            Icon(
-                              Icons.navigate_next,
-                              color: ThemeModel.text(isDarkMode),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 16,
-                ),
-                CInkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => SettingsPage(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    color: ThemeModel.surface(isDarkMode),
-                    height: 120,
-                    padding: EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '설정',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.text(isDarkMode),
-                          ),
-                        ),
-                        Spacer(),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            CTag(
-                              text: 'DEV',
-                              color: TagColor.blue,
-                            ),
-                            Spacer(),
-                            Icon(
-                              Icons.navigate_next,
-                              color: ThemeModel.text(isDarkMode),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
               ],
             ),

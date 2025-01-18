@@ -8,7 +8,7 @@ class ButtonGalleryPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDarkMode = ref.watch(themeProvider); // 다크 모드 상태 가져오기
+    final isDarkMode = ref.watch(themeProvider);
     final List<Map<String, CButtonStyle Function(bool)>> styles = [
       {'Primary': CButtonStyle.primary},
       {'Secondary': CButtonStyle.secondary},
@@ -37,13 +37,11 @@ class ButtonGalleryPage extends ConsumerWidget {
                     icon: Icons.star,
                     size: size,
                     style: styleEntry.values.first(isDarkMode),
-                    onTap: () {
-                      // 버튼 클릭 시 처리
-                    },
+                    onTap: () {},
                   ),
-                  const SizedBox(height: 16), // 수직 간격
+                  const SizedBox(height: 16),
                 ],
-                const Divider(height: 32), // 각 크기별로 구분선 추가
+                const SizedBox(height: 16),
               ],
             ],
           ),

@@ -6,6 +6,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/auth/create_account_page.dart';
+import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
@@ -79,7 +80,10 @@ class _LogInPageState extends ConsumerState<LogInPage> {
       await authNotifier.signInWithEmail(email, password);
 
       if (!mounted) return;
-      Navigator.pop(context);
+      Navigator.of(context).pushAndRemoveUntil(
+        CupertinoPageRoute(builder: (context) => MainPage()),
+        (Route<dynamic> route) => false,
+      );
     } catch (e) {
       setState(() {
         if (e.toString().contains('invalid-email')) {
@@ -120,7 +124,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                   height: 8,
                 ),
                 Text(
-                  '렛츠머지에 로그인',
+                  '렛츠머지 시작하기',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w700,

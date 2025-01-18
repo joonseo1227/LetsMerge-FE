@@ -1,7 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/auth_provider.dart';
+import 'package:letsmerge/screens/auth/log_in_page.dart';
+import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
 
@@ -20,10 +25,11 @@ class SettingsPage extends ConsumerWidget {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // 다크 모드 설정
                 CInkWell(
                   onTap: () {
                     ref.read(themeProvider.notifier).toggleTheme();
@@ -51,6 +57,60 @@ class SettingsPage extends ConsumerWidget {
                       ],
                     ),
                   ),
+                ),
+                const SizedBox(height: 16),
+                // 로그아웃 버튼
+                CButton(
+                  style: CButtonStyle.ghost(isDarkMode),
+                  label: '로그아웃',
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return CDialog(
+                          title: '로그아웃',
+                          content: '로그아웃하시겠습니까?',
+                          buttons: [
+                            CButton(
+                              style: CButtonStyle.secondary(isDarkMode),
+                              size: CButtonSize.extraLarge,
+                              label: '취소',
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            CButton(
+                              size: CButtonSize.extraLarge,
+                              label: '로그아웃',
+                              onTap: () async {
+                                try {
+                                  await ref
+                                      .read(authProvider.notifier)
+                                      .signOut();
+                                  if (context.mounted) {
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                      CupertinoPageRoute(
+                                        builder: (context) => LogInPage(),
+                                      ),
+                                      (Route<dynamic> route) => false,
+                                    );
+                                  }
+                                } catch (e) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '로그아웃에 실패했습니다: $e',
+                                      ),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
                 ),
               ],
             ),
