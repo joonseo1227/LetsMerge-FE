@@ -245,24 +245,14 @@ class _MapTabState extends ConsumerState<MapTab> {
                                         ),
                                       );
                                     },
-                                    child: CInkWell(
-                                      onTap: () {
-                                        Navigator.of(context).push(
-                                          CupertinoPageRoute(
-                                            builder: (context) =>
-                                                TaxiGroupPreviewPage(),
-                                          ),
-                                        );
-                                      },
-                                      child: TaxiGroupDetailCard(
-                                        remainingSeats: 1,
-                                        closingTime: 5,
-                                        startLocation: '가천대역 수인분당선',
-                                        startTime: '10:30',
-                                        startWalkingTime: 3,
-                                        destinationLocation: '가천대학교 AI관',
-                                        destinationTime: '10:35',
-                                      ),
+                                    child: TaxiGroupDetailCard(
+                                      remainingSeats: 1,
+                                      closingTime: 5,
+                                      startLocation: '가천대역 수인분당선',
+                                      startTime: '10:30',
+                                      startWalkingTime: 3,
+                                      destinationLocation: '가천대학교 AI관',
+                                      destinationTime: '10:35',
                                     ),
                                   ),
                                 );

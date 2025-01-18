@@ -8,7 +8,6 @@ import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
 import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
-import 'package:letsmerge/widgets/c_tag.dart';
 
 class AllTab extends ConsumerStatefulWidget {
   const AllTab({super.key});
@@ -30,10 +29,36 @@ class _ProfileTabState extends ConsumerState<AllTab> {
               statusBarColor: Colors.transparent,
             ),
       child: Scaffold(
+        appBar: AppBar(
+          title: Text('전체'),
+          actions: [
+            CInkWell(
+              onTap: () {
+                Navigator.of(context).push(
+                  CupertinoPageRoute(
+                    builder: (context) => SettingsPage(),
+                  ),
+                );
+              },
+              child: SizedBox(
+                width: 32,
+                height: 32,
+                child: Icon(
+                  Icons.settings_outlined,
+                  size: 24,
+                  color: ThemeModel.text(isDarkMode),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: 16,
+            ),
+          ],
+        ),
         body: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Column(
                 children: [
                   CInkWell(
@@ -66,51 +91,6 @@ class _ProfileTabState extends ConsumerState<AllTab> {
                           Icon(
                             Icons.navigate_next,
                             color: ThemeModel.text(isDarkMode),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  CInkWell(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        CupertinoPageRoute(
-                          builder: (context) => SettingsPage(),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      color: ThemeModel.surface(isDarkMode),
-                      height: 120,
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '설정',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.text(isDarkMode),
-                            ),
-                          ),
-                          Spacer(),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              CTag(
-                                text: 'DEV',
-                                color: TagColor.blue,
-                              ),
-                              Spacer(),
-                              Icon(
-                                Icons.navigate_next,
-                                color: ThemeModel.text(isDarkMode),
-                              ),
-                            ],
                           ),
                         ],
                       ),
