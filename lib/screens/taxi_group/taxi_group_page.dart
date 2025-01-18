@@ -76,7 +76,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPage> {
             height: 32,
             child: Icon(
               Icons.close,
-              size: 24,
+              size: 28,
               color: ThemeModel.text(isDarkMode),
             ),
           ),
@@ -88,7 +88,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPage> {
               height: 32,
               child: Icon(
                 Icons.more_vert,
-                size: 24,
+                size: 28,
                 color: ThemeModel.text(isDarkMode),
               ),
             ),
@@ -255,7 +255,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub3(isDarkMode),
+                              color: ThemeModel.sub4(isDarkMode),
                             ),
                           ),
                         ],
@@ -302,7 +302,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub3(isDarkMode),
+                              color: ThemeModel.sub4(isDarkMode),
                             ),
                           ),
                         ],
@@ -349,7 +349,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub3(isDarkMode),
+                              color: ThemeModel.sub4(isDarkMode),
                             ),
                           ),
                         ],
@@ -375,7 +375,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: ThemeModel.sub3(isDarkMode),
+                          color: ThemeModel.sub4(isDarkMode),
                         ),
                       ),
                       SizedBox(

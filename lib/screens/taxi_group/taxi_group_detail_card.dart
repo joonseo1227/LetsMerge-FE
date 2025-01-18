@@ -72,7 +72,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: ThemeModel.sub3(isDarkMode),
+                          color: ThemeModel.sub4(isDarkMode),
                         ),
                       ),
                       SizedBox(
@@ -87,7 +87,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: ThemeModel.sub3(isDarkMode),
+                          color: ThemeModel.sub4(isDarkMode),
                         ),
                       ),
                     ],
@@ -135,7 +135,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: ThemeModel.sub3(isDarkMode),
+                          color: ThemeModel.sub4(isDarkMode),
                         ),
                       ),
                     ],
@@ -153,7 +153,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: ThemeModel.sub3(isDarkMode),
+                  color: ThemeModel.sub4(isDarkMode),
                 ),
               ),
               SizedBox(
@@ -168,7 +168,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
-                  color: ThemeModel.sub3(isDarkMode),
+                  color: ThemeModel.sub4(isDarkMode),
                 ),
               ),
             ],

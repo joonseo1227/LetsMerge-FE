@@ -44,9 +44,9 @@ class _ProfileTabState extends ConsumerState<AllTab> {
                 width: 32,
                 height: 32,
                 child: Icon(
-                  Icons.settings_outlined,
-                  size: 24,
-                  color: ThemeModel.text(isDarkMode),
+                  Icons.settings,
+                  size: 28,
+                  color: ThemeModel.sub3(isDarkMode),
                 ),
               ),
             ),

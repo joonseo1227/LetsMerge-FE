@@ -60,7 +60,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 Icon(
                                   Icons.home,
                                   size: 20,
-                                  color: ThemeModel.sub5(isDarkMode),
+                                  color: ThemeModel.sub6(isDarkMode),
                                 ),
                                 SizedBox(
                                   width: 4,
@@ -68,7 +68,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 Text(
                                   '집',
                                   style: TextStyle(
-                                    color: ThemeModel.sub5(isDarkMode),
+                                    color: ThemeModel.sub6(isDarkMode),
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -93,7 +93,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 Icon(
                                   Icons.apartment,
                                   size: 20,
-                                  color: ThemeModel.sub5(isDarkMode),
+                                  color: ThemeModel.sub6(isDarkMode),
                                 ),
                                 SizedBox(
                                   width: 4,
@@ -101,7 +101,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 Text(
                                   '회사',
                                   style: TextStyle(
-                                    color: ThemeModel.sub5(isDarkMode),
+                                    color: ThemeModel.sub6(isDarkMode),
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -124,7 +124,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                             child: Text(
                               '가천대학교 AI관',
                               style: TextStyle(
-                                color: ThemeModel.sub5(isDarkMode),
+                                color: ThemeModel.sub6(isDarkMode),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -145,7 +145,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                             child: Text(
                               '가천대역 수인분당선',
                               style: TextStyle(
-                                color: ThemeModel.sub5(isDarkMode),
+                                color: ThemeModel.sub6(isDarkMode),
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),

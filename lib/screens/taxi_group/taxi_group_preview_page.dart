@@ -183,7 +183,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub3(isDarkMode),
+                              color: ThemeModel.sub4(isDarkMode),
                             ),
                           ),
                         ],
@@ -230,7 +230,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub3(isDarkMode),
+                              color: ThemeModel.sub4(isDarkMode),
                             ),
                           ),
                         ],
@@ -277,7 +277,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub3(isDarkMode),
+                              color: ThemeModel.sub4(isDarkMode),
                             ),
                           ),
                         ],
@@ -303,7 +303,7 @@ class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: ThemeModel.sub3(isDarkMode),
+                          color: ThemeModel.sub4(isDarkMode),
                         ),
                       ),
                       SizedBox(

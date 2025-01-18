@@ -149,7 +149,7 @@ class _CTextFieldState extends ConsumerState<CTextField> {
 
     return widget.errorText != null && widget.errorText!.isNotEmpty
         ? ThemeModel.danger(isDarkMode)
-        : ThemeModel.sub4(isDarkMode);
+        : ThemeModel.sub5(isDarkMode);
   }
 
   // Focus 상태에 따른 경계선 색상 반환
@@ -158,6 +158,6 @@ class _CTextFieldState extends ConsumerState<CTextField> {
 
     return _hasFocus
         ? ThemeModel.highlight(isDarkMode)
-        : ThemeModel.sub4(isDarkMode);
+        : ThemeModel.sub5(isDarkMode);
   }
 }

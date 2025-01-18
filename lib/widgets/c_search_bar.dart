@@ -78,7 +78,7 @@ class _CSearchBarState extends ConsumerState<CSearchBar> {
         enabledBorder: UnderlineInputBorder(
           borderRadius: BorderRadius.circular(0),
           borderSide: BorderSide(
-            color: ThemeModel.sub4(isDarkMode),
+            color: ThemeModel.sub5(isDarkMode),
             width: 1,
           ),
         ),
@@ -112,6 +112,6 @@ class _CSearchBarState extends ConsumerState<CSearchBar> {
 
     return _hasFocus
         ? ThemeModel.highlight(isDarkMode)
-        : ThemeModel.sub4(isDarkMode);
+        : ThemeModel.sub5(isDarkMode);
   }
 }
