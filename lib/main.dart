@@ -3,7 +3,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/auth_provider.dart';
 import 'package:letsmerge/screens/auth/log_in_page.dart';
+import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/server/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:letsmerge/models/theme_model.dart';
@@ -44,6 +46,7 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = ref.watch(themeProvider);
+    final user = ref.watch(authProvider);
 
     return MaterialApp(
       title: '렛츠머지',
@@ -51,7 +54,8 @@ class MyApp extends ConsumerWidget {
       themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
       theme: ThemeModel.lightTheme,
       darkTheme: ThemeModel.darkTheme,
-      home: const LogInPage(),
+      // 사용자 인증 상태에 따라 초기 화면 설정
+      home: user != null ? const MainPage() : const LogInPage(),
     );
   }
 }
