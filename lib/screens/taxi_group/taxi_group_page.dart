@@ -13,10 +13,10 @@ class TaxiGroupPage extends ConsumerStatefulWidget {
   const TaxiGroupPage({super.key});
 
   @override
-  ConsumerState<TaxiGroupPage> createState() => _MapTabState();
+  ConsumerState<TaxiGroupPage> createState() => _TaxiGroupPageState();
 }
 
-class _MapTabState extends ConsumerState<TaxiGroupPage> {
+class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   @override
   void initState() {
     super.initState();

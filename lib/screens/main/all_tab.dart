@@ -13,10 +13,10 @@ class AllTab extends ConsumerStatefulWidget {
   const AllTab({super.key});
 
   @override
-  ConsumerState<AllTab> createState() => _ProfileTabState();
+  ConsumerState<AllTab> createState() => _AllTabState();
 }
 
-class _ProfileTabState extends ConsumerState<AllTab> {
+class _AllTabState extends ConsumerState<AllTab> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);

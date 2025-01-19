@@ -30,6 +30,11 @@ class ButtonGalleryPage extends ConsumerWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: [
+                  Spacer(),
+                ],
+              ),
               for (final size in sizes) ...[
                 for (final styleEntry in styles) ...[
                   CButton(

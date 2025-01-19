@@ -14,6 +14,7 @@ import 'package:letsmerge/provider/theme_provider.dart';
 /// - [obscureText]: 텍스트를 비밀번호 형태로 숨길지 여부 (default: false)
 /// - [keyboardType]: 입력 필드의 키보드 타입 (default: TextInputType.text)
 /// - [backgroundColor]: 입력 필드 배경 색상 (optional)
+/// - [focusNode]: 입력 필드의 포커스를 제어하기 위한 FocusNode (optional)
 ///
 class CTextField extends ConsumerStatefulWidget {
   final String label;
@@ -23,6 +24,7 @@ class CTextField extends ConsumerStatefulWidget {
   final bool obscureText;
   final TextInputType keyboardType;
   final Color? backgroundColor;
+  final FocusNode? focusNode;
 
   const CTextField({
     super.key,
@@ -33,6 +35,7 @@ class CTextField extends ConsumerStatefulWidget {
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.backgroundColor,
+    this.focusNode,
   });
 
   @override
@@ -46,14 +49,18 @@ class _CTextFieldState extends ConsumerState<CTextField> {
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
+    // 전달된 FocusNode가 있으면 사용하고, 없으면 새로 생성
+    _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(_onFocusChange); // Focus 상태 변화 감지 리스너 추가
   }
 
   @override
   void dispose() {
-    _focusNode.removeListener(_onFocusChange); // 리스너 제거
-    _focusNode.dispose();
+    // 외부에서 전달받은 FocusNode는 해제하지 않음
+    if (widget.focusNode == null) {
+      _focusNode.removeListener(_onFocusChange); // 리스너 제거
+      _focusNode.dispose();
+    }
     super.dispose();
   }
 
@@ -85,6 +92,7 @@ class _CTextFieldState extends ConsumerState<CTextField> {
         TextField(
           controller: widget.controller,
           focusNode: _focusNode,
+          // 내부 또는 외부에서 전달받은 FocusNode 사용
           obscureText: widget.obscureText,
           keyboardType: widget.keyboardType,
           textAlign: TextAlign.start,

@@ -16,10 +16,11 @@ class TaxiGroupPreviewPage extends ConsumerStatefulWidget {
   const TaxiGroupPreviewPage({super.key});
 
   @override
-  ConsumerState<TaxiGroupPreviewPage> createState() => _MapTabState();
+  ConsumerState<TaxiGroupPreviewPage> createState() =>
+      _TaxiGroupPreviewPageState();
 }
 
-class _MapTabState extends ConsumerState<TaxiGroupPreviewPage> {
+class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
   NaverMapController? _mapController;
   Position? _currentPosition;
   bool _showSkeleton = true;
