@@ -18,7 +18,7 @@ class CButtonStyle {
   final Color backgroundColor;
   final Color labelColor;
   final Color iconColor;
-  final BorderSide? border;
+  final Border? border;
 
   const CButtonStyle({
     required this.backgroundColor,
@@ -39,7 +39,7 @@ class CButtonStyle {
   /// Secondary 스타일
   factory CButtonStyle.secondary(bool isDarkMode) {
     return CButtonStyle(
-      backgroundColor: grey80,
+      backgroundColor: isDarkMode ? grey70 : grey80,
       labelColor: white,
       iconColor: white,
     );
@@ -51,7 +51,7 @@ class CButtonStyle {
       backgroundColor: Colors.transparent,
       labelColor: isDarkMode ? grey10 : blue60,
       iconColor: isDarkMode ? grey10 : blue60,
-      border: BorderSide(
+      border: Border.all(
         color: isDarkMode ? grey10 : blue60,
         width: 1,
       ),
@@ -132,10 +132,9 @@ class CButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDarkMode = ref.watch(themeProvider); // 다크 모드 상태 가져오기
+    final isDarkMode = ref.watch(themeProvider);
     final bool isDisabled = onTap == null;
 
-    // 스타일이 지정되지 않으면 기본 Primary 스타일 사용
     final CButtonStyle effectiveStyle =
         style ?? CButtonStyle.primary(isDarkMode);
 
@@ -148,9 +147,7 @@ class CButton extends ConsumerWidget {
           width: width,
           decoration: BoxDecoration(
             color: effectiveStyle.backgroundColor,
-            border: effectiveStyle.border != null
-                ? Border.fromBorderSide(effectiveStyle.border!)
-                : null,
+            border: effectiveStyle.border,
           ),
           child: Row(
             mainAxisSize: width != null ? MainAxisSize.max : MainAxisSize.min,

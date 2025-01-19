@@ -6,6 +6,7 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
+import 'package:letsmerge/screens/dev/dev_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
@@ -90,10 +91,213 @@ class _AllTabState extends ConsumerState<AllTab> {
                           Spacer(),
                           Icon(
                             Icons.navigate_next,
-                            color: ThemeModel.text(isDarkMode),
+                            color: ThemeModel.sub3(isDarkMode),
                           ),
                         ],
                       ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    color: ThemeModel.surface(isDarkMode),
+                    child: Column(
+                      children: [
+                        /// DEV
+                        CInkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => DevPage(),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            color: ThemeModel.surface(isDarkMode),
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.code,
+                                  size: 24,
+                                  color: ThemeModel.sub4(isDarkMode),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Text(
+                                  'DEV',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.text(isDarkMode),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Icon(
+                                  Icons.navigate_next,
+                                  color: ThemeModel.sub3(isDarkMode),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    color: ThemeModel.surface(isDarkMode),
+                    child: Column(
+                      children: [
+                        /// 내 계좌번호
+                        CInkWell(
+                          onTap: () {},
+                          child: Container(
+                            color: ThemeModel.surface(isDarkMode),
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.wallet,
+                                  size: 24,
+                                  color: ThemeModel.sub4(isDarkMode),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Text(
+                                  '내 계좌번호',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.text(isDarkMode),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Icon(
+                                  Icons.navigate_next,
+                                  color: ThemeModel.sub3(isDarkMode),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        /// 이용 내역
+                        CInkWell(
+                          onTap: () {},
+                          child: Container(
+                            color: ThemeModel.surface(isDarkMode),
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.receipt,
+                                  size: 24,
+                                  color: ThemeModel.sub4(isDarkMode),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Text(
+                                  '이용 내역',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.text(isDarkMode),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Icon(
+                                  Icons.navigate_next,
+                                  color: ThemeModel.sub3(isDarkMode),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    color: ThemeModel.surface(isDarkMode),
+                    child: Column(
+                      children: [
+                        /// 고객 지원
+                        CInkWell(
+                          onTap: () {},
+                          child: Container(
+                            color: ThemeModel.surface(isDarkMode),
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.help,
+                                  size: 24,
+                                  color: ThemeModel.sub4(isDarkMode),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Text(
+                                  '고객 지원',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.text(isDarkMode),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Icon(
+                                  Icons.navigate_next,
+                                  color: ThemeModel.sub3(isDarkMode),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                        /// 약관 및 정책
+                        CInkWell(
+                          onTap: () {},
+                          child: Container(
+                            color: ThemeModel.surface(isDarkMode),
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.info,
+                                  size: 24,
+                                  color: ThemeModel.sub4(isDarkMode),
+                                ),
+                                SizedBox(
+                                  width: 16,
+                                ),
+                                Text(
+                                  '약관 및 정책',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.text(isDarkMode),
+                                  ),
+                                ),
+                                const Spacer(),
+                                Icon(
+                                  Icons.navigate_next,
+                                  color: ThemeModel.sub3(isDarkMode),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],

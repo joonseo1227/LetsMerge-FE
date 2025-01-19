@@ -21,7 +21,7 @@ class ThemeModel {
 
   static Color sub6(bool isDarkMode) => isDarkMode ? grey30 : grey70;
 
-  static Color hintText(bool isDarkMode) => isDarkMode ? grey70 : grey40;
+  static Color hintText(bool isDarkMode) => isDarkMode ? grey60 : grey40;
 
   static Color highlight(bool isDarkMode) => isDarkMode ? blue50 : blue60;
 
@@ -63,7 +63,8 @@ class ThemeModel {
     scaffoldBackgroundColor: grey10,
     appBarTheme: baseTheme.appBarTheme.copyWith(
       backgroundColor: grey10,
-      titleTextStyle: baseTheme.appBarTheme.titleTextStyle?.copyWith(color: grey100),
+      titleTextStyle:
+          baseTheme.appBarTheme.titleTextStyle?.copyWith(color: grey100),
       iconTheme: const IconThemeData(color: grey100),
     ),
     bottomNavigationBarTheme: baseTheme.bottomNavigationBarTheme.copyWith(
@@ -79,7 +80,8 @@ class ThemeModel {
     scaffoldBackgroundColor: grey100,
     appBarTheme: baseTheme.appBarTheme.copyWith(
       backgroundColor: grey100,
-      titleTextStyle: baseTheme.appBarTheme.titleTextStyle?.copyWith(color: grey10),
+      titleTextStyle:
+          baseTheme.appBarTheme.titleTextStyle?.copyWith(color: grey10),
       iconTheme: const IconThemeData(color: white),
     ),
     bottomNavigationBarTheme: baseTheme.bottomNavigationBarTheme.copyWith(

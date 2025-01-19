@@ -10,12 +10,14 @@ import 'package:letsmerge/provider/theme_provider.dart';
 /// - [hint]: 입력 필드에 표시될 힌트 텍스트 (optional)
 /// - [controller]: 텍스트 입력값을 제어하는 컨트롤러 (optional)
 /// - [backgroundColor]: 입력 필드 배경 색상 (optional)
+/// - [focusNode]: 텍스트 필드의 포커스를 제어할 FocusNode (optional)
 /// - [onSubmitted]: 텍스트 입력 완료 시 호출될 콜백 함수 (optional)
 ///
 class CSearchBar extends ConsumerStatefulWidget {
   final String? hint;
   final TextEditingController? controller;
   final Color? backgroundColor;
+  final FocusNode? focusNode;
   final Function(String)? onSubmitted;
 
   const CSearchBar({
@@ -23,6 +25,7 @@ class CSearchBar extends ConsumerStatefulWidget {
     this.hint,
     this.controller,
     this.backgroundColor,
+    this.focusNode,
     this.onSubmitted,
   });
 
@@ -31,27 +34,30 @@ class CSearchBar extends ConsumerStatefulWidget {
 }
 
 class _CSearchBarState extends ConsumerState<CSearchBar> {
-  late FocusNode _focusNode; // Focus 상태를 감지하기 위한 FocusNode
-  bool _hasFocus = false; // 현재 Focus 상태를 나타냄
+  late FocusNode _internalFocusNode;
+  late FocusNode _activeFocusNode;
+  bool _hasFocus = false;
 
   @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
-    _focusNode.addListener(_onFocusChange); // Focus 상태 변화 감지 리스너 추가
+    _internalFocusNode = FocusNode();
+    _activeFocusNode = widget.focusNode ?? _internalFocusNode;
+    _activeFocusNode.addListener(_onFocusChange);
   }
 
   @override
   void dispose() {
-    _focusNode.removeListener(_onFocusChange); // 리스너 제거
-    _focusNode.dispose();
+    _activeFocusNode.removeListener(_onFocusChange);
+    if (widget.focusNode == null) {
+      _internalFocusNode.dispose();
+    }
     super.dispose();
   }
 
-  // Focus 상태 변화 시 호출되는 메서드
   void _onFocusChange() {
     setState(() {
-      _hasFocus = _focusNode.hasFocus;
+      _hasFocus = _activeFocusNode.hasFocus;
     });
   }
 
@@ -61,7 +67,7 @@ class _CSearchBarState extends ConsumerState<CSearchBar> {
 
     return TextField(
       controller: widget.controller,
-      focusNode: _focusNode,
+      focusNode: _activeFocusNode,
       textAlign: TextAlign.start,
       textAlignVertical: TextAlignVertical.center,
       style: TextStyle(
