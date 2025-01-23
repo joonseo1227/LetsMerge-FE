@@ -76,23 +76,25 @@ class _TaxiGroupSplitMoneyPageState
                 ],
               ),
             ),
-            Spacer(),
-            Container(
-              color: blue60,
-              child: CButton(
-                onTap: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    CupertinoPageRoute(builder: (context) => MainPage()),
-                    (Route<dynamic> route) => false,
-                  );
-                },
-                size: CButtonSize.extraLarge,
-                label: '정산 완료',
-                icon: Icons.navigate_next,
-                width: double.maxFinite,
-              ),
-            ),
           ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        color: blue60,
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+        child: SafeArea(
+          child: CButton(
+            onTap: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                CupertinoPageRoute(builder: (context) => MainPage()),
+                (Route<dynamic> route) => false,
+              );
+            },
+            size: CButtonSize.extraLarge,
+            label: '정산 완료',
+            icon: Icons.navigate_next,
+            width: double.maxFinite,
+          ),
         ),
       ),
     );

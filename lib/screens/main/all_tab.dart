@@ -6,8 +6,13 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
+import 'package:letsmerge/screens/customer_support_page.dart';
 import 'package:letsmerge/screens/dev/dev_page.dart';
+import 'package:letsmerge/screens/history_page.dart';
+import 'package:letsmerge/screens/my_account_number_page.dart';
+import 'package:letsmerge/screens/profile_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
+import 'package:letsmerge/screens/terms_and_policies_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
 class AllTab extends ConsumerStatefulWidget {
@@ -63,7 +68,13 @@ class _AllTabState extends ConsumerState<AllTab> {
               child: Column(
                 children: [
                   CInkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => ProfilePage(),
+                        ),
+                      );
+                    },
                     child: Container(
                       padding: EdgeInsets.all(16),
                       color: ThemeModel.surface(isDarkMode),
@@ -155,7 +166,13 @@ class _AllTabState extends ConsumerState<AllTab> {
                       children: [
                         /// 내 계좌번호
                         CInkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => MyAccountNumberPage(),
+                              ),
+                            );
+                          },
                           child: Container(
                             color: ThemeModel.surface(isDarkMode),
                             padding: const EdgeInsets.all(16),
@@ -189,7 +206,13 @@ class _AllTabState extends ConsumerState<AllTab> {
 
                         /// 이용 내역
                         CInkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => HistoryPage(),
+                              ),
+                            );
+                          },
                           child: Container(
                             color: ThemeModel.surface(isDarkMode),
                             padding: const EdgeInsets.all(16),
@@ -232,7 +255,13 @@ class _AllTabState extends ConsumerState<AllTab> {
                       children: [
                         /// 고객 지원
                         CInkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => CustomerSupportPage(),
+                              ),
+                            );
+                          },
                           child: Container(
                             color: ThemeModel.surface(isDarkMode),
                             padding: const EdgeInsets.all(16),
@@ -266,7 +295,13 @@ class _AllTabState extends ConsumerState<AllTab> {
 
                         /// 약관 및 정책
                         CInkWell(
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => TermsAndPoliciesPage(),
+                              ),
+                            );
+                          },
                           child: Container(
                             color: ThemeModel.surface(isDarkMode),
                             padding: const EdgeInsets.all(16),
