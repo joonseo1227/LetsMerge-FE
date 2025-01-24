@@ -66,6 +66,7 @@ class _CSearchBarState extends ConsumerState<CSearchBar> {
     final isDarkMode = ref.watch(themeProvider);
 
     return TextField(
+      keyboardAppearance: isDarkMode ? Brightness.dark : Brightness.light,
       controller: widget.controller,
       focusNode: _activeFocusNode,
       textAlign: TextAlign.start,

@@ -90,9 +90,9 @@ class _CTextFieldState extends ConsumerState<CTextField> {
         const SizedBox(height: 4),
         // 텍스트 입력 필드
         TextField(
+          keyboardAppearance: isDarkMode ? Brightness.dark : Brightness.light,
           controller: widget.controller,
           focusNode: _focusNode,
-          // 내부 또는 외부에서 전달받은 FocusNode 사용
           obscureText: widget.obscureText,
           keyboardType: widget.keyboardType,
           textAlign: TextAlign.start,
