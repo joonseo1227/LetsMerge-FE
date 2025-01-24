@@ -46,56 +46,60 @@ class _TaxiGroupSplitMoneyPageState
       appBar: AppBar(
         titleSpacing: 0,
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // 텍스트 필드에 FocusNode 연결
-                  CTextField(
-                    keyboardType: TextInputType.number,
-                    label: '택시비',
-                    focusNode: _focusNode,
-                  ),
-                  Text('1인당 택시비: 1,600원'),
-                  Text('3,200원 절약'),
-                  Text('대표자 계좌번호: '),
-                  CButton(
-                    onTap: () {
-                      Clipboard.setData(ClipboardData(text: '계좌번호'));
-                    },
-                    style: CButtonStyle.ghost(isDarkMode),
-                    size: CButtonSize.small,
-                    label: '계좌번호 복사',
-                    icon: Icons.copy,
-                  ),
-                  Text('참여자 평가하기'),
-                ],
+      body: Column(
+        children: [
+          // 스크롤 가능한 콘텐츠
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 텍스트 필드에 FocusNode 연결
+                    CTextField(
+                      keyboardType: TextInputType.number,
+                      label: '택시비',
+                      focusNode: _focusNode,
+                    ),
+                    Text('1인당 택시비: 1,600원'),
+                    Text('3,200원 절약'),
+                    Text('대표자 계좌번호: '),
+                    CButton(
+                      onTap: () {
+                        Clipboard.setData(ClipboardData(text: '계좌번호'));
+                      },
+                      style: CButtonStyle.ghost(isDarkMode),
+                      size: CButtonSize.small,
+                      label: '계좌번호 복사',
+                      icon: Icons.copy,
+                    ),
+                    Text('참여자 평가하기'),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Container(
-        color: blue60,
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-        child: SafeArea(
-          child: CButton(
-            onTap: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(builder: (context) => MainPage()),
-                (Route<dynamic> route) => false,
-              );
-            },
-            size: CButtonSize.extraLarge,
-            label: '정산 완료',
-            icon: Icons.navigate_next,
-            width: double.maxFinite,
           ),
-        ),
+          // 버튼 영역
+          Container(
+            color: blue60,
+            child: SafeArea(
+              top: false,
+              child: CButton(
+                onTap: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    CupertinoPageRoute(builder: (context) => MainPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+                size: CButtonSize.extraLarge,
+                label: '정산 완료',
+                icon: Icons.navigate_next,
+                width: double.maxFinite,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
