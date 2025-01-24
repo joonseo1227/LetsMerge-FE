@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
@@ -98,119 +98,123 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
     final selectedAddress = ref.watch(reverseGeocodingProvider);
-    final double bottomContainerHeight = 150;
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
-    return AnnotatedRegion(
-      value: isDarkMode
-          ? SystemUiOverlayStyle.light
-          : SystemUiOverlayStyle.dark.copyWith(
-              statusBarColor: Colors.transparent,
-            ),
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          systemOverlayStyle: SystemUiOverlayStyle.light,
-        ),
-        body: Stack(
-          children: [
-            if (_initialPosition != null)
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: SizedBox(
-                  height: screenHeight - bottomContainerHeight,
-                  child: NaverMap(
-                    onMapReady: (controller) {
-                      _mapController = controller;
-                      _mapController!.updateCamera(
-                        NCameraUpdate.scrollAndZoomTo(
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        systemOverlayStyle:
+            isDarkMode ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          if (_initialPosition != null)
+            Expanded(
+              child: Stack(
+                children: [
+                  SizedBox(
+                    child: NaverMap(
+                      onMapReady: (controller) {
+                        _mapController = controller;
+                        _mapController!.updateCamera(
+                          NCameraUpdate.scrollAndZoomTo(
+                            target: NLatLng(
+                              _initialPosition!.latitude,
+                              _initialPosition!.longitude,
+                            ),
+                            zoom: 15.0,
+                          ),
+                        );
+                      },
+                      options: NaverMapViewOptions(
+                        mapType: NMapType.navi,
+                        nightModeEnable: isDarkMode,
+                        initialCameraPosition: NCameraPosition(
                           target: NLatLng(
-                            _initialPosition!.latitude,
-                            _initialPosition!.longitude,
+                            _initialPosition?.latitude ?? 37.5665,
+                            _initialPosition?.longitude ?? 126.9780,
                           ),
                           zoom: 15.0,
                         ),
-                      );
-                    },
-                    options: NaverMapViewOptions(
-                      mapType: NMapType.navi,
-                      nightModeEnable: isDarkMode,
-                      initialCameraPosition: NCameraPosition(
-                        target: NLatLng(
-                          _initialPosition?.latitude ?? 37.5665,
-                          _initialPosition?.longitude ?? 126.9780,
-                        ),
-                        zoom: 15.0,
+                      ),
+                      onCameraIdle: _onCameraIdle,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 16,
+                    right: 16,
+                    child: CButton(
+                      style: CButtonStyle.secondary(isDarkMode),
+                      icon: Icons.my_location,
+                      onTap: _goToCurrentLocation,
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            color: isDarkMode ? grey70 : grey80,
+                            padding: EdgeInsets.all(8),
+                            child: Text(
+                              '출발지',
+                              style: TextStyle(
+                                color: white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: 4,
+                            height: 16,
+                            color: isDarkMode ? grey70 : grey80,
+                          ),
+                          SizedBox(
+                            height: 48,
+                          ),
+                        ],
                       ),
                     ),
-                    onCameraIdle: _onCameraIdle,
+                  ),
+                ],
+              ),
+            ),
+          Container(
+            padding: EdgeInsets.all(16),
+            height: 160,
+            decoration: BoxDecoration(
+              color: ThemeModel.surface(isDarkMode),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  selectedAddress,
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: ThemeModel.text(isDarkMode),
                   ),
                 ),
-              ),
-            Positioned(
-              top: (screenHeight - bottomContainerHeight) / 2 - 30,
-              left: screenWidth / 2 - 30,
-              child: SizedBox(
-                width: 60,
-                height: 60,
-                child: SvgPicture.asset('assets/imgs/marker.svg'),
-              ),
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                height: bottomContainerHeight,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                decoration: BoxDecoration(
-                  color: ThemeModel.surface(isDarkMode),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 5,
-                      spreadRadius: 2,
-                    ),
-                  ],
+                Spacer(),
+                CButton(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  label: '출발지 설정',
+                  width: double.maxFinite,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      selectedAddress,
-                      style: TextStyle(
-                          fontSize: 18, color: ThemeModel.text(isDarkMode)),
-                      textAlign: TextAlign.center,
-                    ),
-                    Spacer(),
-                    CButton(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      size: CButtonSize.large,
-                      label: '출발지 설정',
-                      width: double.maxFinite,
-                    ),
-                  ],
-                ),
-              ),
+              ],
             ),
-            Positioned(
-              bottom: bottomContainerHeight + 16,
-              right: 16,
-              child: CButton(
-                style: CButtonStyle.secondary(isDarkMode),
-                icon: Icons.my_location,
-                onTap: _goToCurrentLocation,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 final reverseGeocodingProvider =
-StateNotifierProvider<ReverseGeocodingNotifier, String>(
-      (ref) => ReverseGeocodingNotifier(),
+    StateNotifierProvider<ReverseGeocodingNotifier, String>(
+  (ref) => ReverseGeocodingNotifier(),
 );
 
 class ReverseGeocodingNotifier extends StateNotifier<String> {
@@ -39,7 +39,7 @@ class ReverseGeocodingNotifier extends StateNotifier<String> {
           String landAddress = land != null && land['name'] != null
               ? '${land['name']} ${land['number1']}${land['number2'] != '' ? '-${land['number2']}' : ''}'
               : '';
-          
+
           // 최종 주소
           // String fullAddress = landAddress.isNotEmpty ? landAddress : regionAddress;\
           String fullAddress = regionAddress + landAddress;
