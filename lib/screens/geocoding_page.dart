@@ -188,30 +188,34 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
             ),
           Container(
             padding: EdgeInsets.all(16),
-            height: 160,
+            width: double.infinity,
+            height: 96,
             decoration: BoxDecoration(
               color: ThemeModel.surface(isDarkMode),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  selectedAddress,
-                  maxLines: 2,
-                  style: TextStyle(
-                    fontSize: 18,
-                    color: ThemeModel.text(isDarkMode),
-                  ),
-                ),
-                Spacer(),
-                CButton(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  label: '출발지 설정',
-                  width: double.maxFinite,
-                ),
-              ],
+            child: Text(
+              selectedAddress,
+              maxLines: 2,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: ThemeModel.text(isDarkMode),
+              ),
+            ),
+          ),
+          Container(
+            color: blue60,
+            child: SafeArea(
+              top: false,
+              child: CButton(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                size: CButtonSize.extraLarge,
+                label: '출발지 설정',
+                icon: Icons.navigate_next,
+                width: double.maxFinite,
+              ),
             ),
           ),
         ],

@@ -25,16 +25,12 @@ class ButtonGalleryPage extends ConsumerWidget {
         titleSpacing: 0,
       ),
       body: SingleChildScrollView(
-        child: Padding(
+        child: Container(
           padding: const EdgeInsets.all(16),
+          width: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                children: [
-                  Spacer(),
-                ],
-              ),
               for (final size in sizes) ...[
                 for (final styleEntry in styles) ...[
                   CButton(
