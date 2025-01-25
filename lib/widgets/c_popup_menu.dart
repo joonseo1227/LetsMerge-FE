@@ -19,7 +19,7 @@ class CPopupMenu extends ConsumerStatefulWidget {
   final double? dropdownWidth;
   final double? dropdownHeight;
 
-  const CPopupMenu({
+  CPopupMenu({
     Key? key,
     required this.button,
     required this.dropdown,
@@ -28,10 +28,10 @@ class CPopupMenu extends ConsumerStatefulWidget {
   }) : super(key: key);
 
   @override
-  ConsumerState<CPopupMenu> createState() => _CPopupMenuState();
+  CPopupMenuState createState() => CPopupMenuState();
 }
 
-class _CPopupMenuState extends ConsumerState<CPopupMenu>
+class CPopupMenuState extends ConsumerState<CPopupMenu>
     with SingleTickerProviderStateMixin {
   OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
