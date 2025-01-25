@@ -34,6 +34,10 @@ class ThemeModel {
     useMaterial3: true,
     splashColor: Colors.transparent,
     highlightColor: Colors.transparent,
+    textSelectionTheme: const TextSelectionThemeData(
+      cursorColor: blue60,
+      selectionHandleColor: blue60,
+    ),
     appBarTheme: const AppBarTheme(
       scrolledUnderElevation: 0,
       toolbarHeight: 64,
@@ -60,8 +64,23 @@ class ThemeModel {
 
   /// 라이트 테마
   static final lightTheme = baseTheme.copyWith(
-    colorScheme: ColorScheme.fromSeed(seedColor: blue60),
+    colorScheme: const ColorScheme(
+      brightness: Brightness.light,
+      primary: blue60,
+      onPrimary: white,
+      secondary: grey80,
+      onSecondary: white,
+      tertiary: blue20,
+      onTertiary: blue70,
+      error: red60,
+      onError: white,
+      surface: white,
+      onSurface: grey100,
+    ),
     scaffoldBackgroundColor: grey10,
+    textSelectionTheme: const TextSelectionThemeData(
+      selectionColor: blue30,
+    ),
     appBarTheme: baseTheme.appBarTheme.copyWith(
       backgroundColor: grey10,
       titleTextStyle:
@@ -77,8 +96,23 @@ class ThemeModel {
 
   /// 다크 테마
   static final darkTheme = baseTheme.copyWith(
-    colorScheme: ColorScheme.fromSeed(seedColor: blue50),
+    colorScheme: const ColorScheme(
+      brightness: Brightness.light,
+      primary: blue60,
+      onPrimary: white,
+      secondary: grey70,
+      onSecondary: white,
+      tertiary: blue70,
+      onTertiary: blue20,
+      error: red50,
+      onError: white,
+      surface: grey90,
+      onSurface: grey10,
+    ),
     scaffoldBackgroundColor: grey100,
+    textSelectionTheme: const TextSelectionThemeData(
+      selectionColor: blue50,
+    ),
     appBarTheme: baseTheme.appBarTheme.copyWith(
       backgroundColor: grey100,
       titleTextStyle:

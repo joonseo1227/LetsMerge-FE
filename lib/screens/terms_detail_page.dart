@@ -30,11 +30,13 @@ class _TermsDetailPageState extends ConsumerState<TermsDetailPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Text(
-            widget.content,
-            style: TextStyle(
-              fontSize: 16,
-              color: ThemeModel.text(isDarkMode),
+          child: SafeArea(
+            child: Text(
+              widget.content,
+              style: TextStyle(
+                fontSize: 16,
+                color: ThemeModel.text(isDarkMode),
+              ),
             ),
           ),
         ),
