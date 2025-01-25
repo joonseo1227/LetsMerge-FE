@@ -56,7 +56,6 @@ class _TaxiGroupSplitMoneyPageState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 텍스트 필드에 FocusNode 연결
                     CTextField(
                       keyboardType: TextInputType.number,
                       label: '택시비',

@@ -24,6 +24,8 @@ class ThemeModel {
 
   static Color highlight(bool isDarkMode) => blue60;
 
+  static Color highlightText(bool isDarkMode) => isDarkMode ? blue50 : blue60;
+
   static Color danger(bool isDarkMode) => isDarkMode ? red50 : red60;
 
   /// 공통 설정

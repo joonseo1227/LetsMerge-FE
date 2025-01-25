@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/main/main_page.dart';
+import 'package:letsmerge/screens/report_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
@@ -16,10 +18,7 @@ class TaxiGroupPage extends ConsumerStatefulWidget {
 }
 
 class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
+  final GlobalKey<CPopupMenuState> popupMenuKey = GlobalKey<CPopupMenuState>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,12 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       appBar: AppBar(
         titleSpacing: 0,
         leading: CInkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).pushAndRemoveUntil(
+              CupertinoPageRoute(builder: (context) => MainPage()),
+              (Route<dynamic> route) => false,
+            );
+          },
           child: SizedBox(
             width: 32,
             height: 32,
@@ -42,6 +46,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
         ),
         actions: [
           CPopupMenu(
+            key: popupMenuKey,
             button: SizedBox(
               width: 32,
               height: 32,
@@ -56,7 +61,9 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 CInkWell(
-                  onTap: () {},
+                  onTap: () {
+                    popupMenuKey.currentState?.hideDropdown();
+                  },
                   child: ListTile(
                     leading: Icon(
                       Icons.logout,
@@ -74,19 +81,26 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                   ),
                 ),
                 CInkWell(
-                  onTap: () {},
+                  onTap: () {
+                    popupMenuKey.currentState?.hideDropdown();
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => ReportPage(),
+                      ),
+                    );
+                  },
                   child: ListTile(
                     leading: Icon(
                       Icons.flag_outlined,
                       size: 24,
-                      color: ThemeModel.text(isDarkMode),
+                      color: ThemeModel.danger(isDarkMode),
                     ),
                     title: Text(
                       '신고',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        color: ThemeModel.text(isDarkMode),
+                        color: ThemeModel.danger(isDarkMode),
                       ),
                     ),
                   ),
