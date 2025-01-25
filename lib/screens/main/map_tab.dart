@@ -114,6 +114,7 @@ class _MapTabState extends ConsumerState<MapTab> {
           children: [
             if (_initialPosition != null)
               NaverMap(
+                onMapReady: _onMapReady,
                 options: NaverMapViewOptions(
                   mapType: NMapType.navi,
                   nightModeEnable: isDarkMode,
@@ -125,7 +126,6 @@ class _MapTabState extends ConsumerState<MapTab> {
                     zoom: 15.0,
                   ),
                 ),
-                onMapReady: _onMapReady,
               ),
             if (_showSkeleton) const CSkeleton(),
             Positioned(

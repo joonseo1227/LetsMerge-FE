@@ -9,6 +9,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 
 class GeocodingPage extends ConsumerStatefulWidget {
   const GeocodingPage({super.key});
@@ -22,7 +23,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
   Position? _currentPosition;
   Position? _initialPosition;
   StreamSubscription<Position>? _positionStream;
-  bool _isLoading = true;
+  bool _showSkeleton = true;
 
   @override
   void initState() {
@@ -31,22 +32,19 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
     _startLocationStream();
   }
 
-  /// 현재 위치 가져오기
   Future<void> _initializeInitialPosition() async {
     try {
       final pos = await Geolocator.getCurrentPosition();
       if (mounted) {
         setState(() {
           _initialPosition = pos;
-          _isLoading = false;
         });
       }
     } catch (e) {
-      debugPrint('위치 정보를 가져오지 못했습니다: $e');
+      debugPrint('$e');
     }
   }
 
-  /// 위치 변화 감지 (스트리밍)
   void _startLocationStream() {
     try {
       _positionStream = Geolocator.getPositionStream().listen((pos) {
@@ -62,17 +60,27 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
     }
   }
 
-  /// 지도 이동이 멈춘 후 주소 요청
-  void _onCameraIdle() async {
-    if (_mapController != null) {
-      NCameraPosition cameraPosition =
-          await _mapController!.getCameraPosition();
-      ref.read(reverseGeocodingProvider.notifier).fetchAddress(
-          cameraPosition.target.latitude, cameraPosition.target.longitude);
+  void _onMapReady(NaverMapController controller) {
+    _mapController = controller;
+    controller.setLocationTrackingMode(NLocationTrackingMode.noFollow);
+    if (_initialPosition != null) {
+      controller.updateCamera(
+        NCameraUpdate.scrollAndZoomTo(
+          target:
+              NLatLng(_initialPosition!.latitude, _initialPosition!.longitude),
+          zoom: 15.0,
+        ),
+      );
     }
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) {
+        setState(() {
+          _showSkeleton = false;
+        });
+      }
+    });
   }
 
-  /// 내 위치로 이동
   Future<void> _goToCurrentLocation() async {
     if (_mapController != null && _currentPosition != null) {
       await _mapController!.updateCamera(
@@ -85,12 +93,23 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
         ),
       );
     } else {
-      debugPrint('현재 위치를 가져오지 못했습니다.');
+      debugPrint('Failed to get current location');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('GPS 상태를 확인하세요.'),
         ),
       );
+    }
+  }
+
+  void _onCameraIdle() async {
+    if (_mapController != null) {
+      NCameraPosition cameraPosition =
+          await _mapController!.getCameraPosition();
+      ref.read(reverseGeocodingProvider.notifier).fetchAddress(
+            cameraPosition.target.latitude,
+            cameraPosition.target.longitude,
+          );
     }
   }
 
@@ -108,84 +127,74 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
       ),
       body: Column(
         children: [
-          if (_initialPosition != null)
-            Expanded(
-              child: Stack(
-                children: [
+          Expanded(
+            child: Stack(
+              children: [
+                if (_initialPosition != null)
                   SizedBox(
                     child: NaverMap(
-                      onMapReady: (controller) {
-                        _mapController = controller;
-                        _mapController!.updateCamera(
-                          NCameraUpdate.scrollAndZoomTo(
-                            target: NLatLng(
-                              _initialPosition!.latitude,
-                              _initialPosition!.longitude,
-                            ),
-                            zoom: 15.0,
-                          ),
-                        );
-                      },
+                      onMapReady: _onMapReady,
+                      onCameraIdle: _onCameraIdle,
                       options: NaverMapViewOptions(
                         mapType: NMapType.navi,
                         nightModeEnable: isDarkMode,
                         initialCameraPosition: NCameraPosition(
                           target: NLatLng(
-                            _initialPosition?.latitude ?? 37.5665,
-                            _initialPosition?.longitude ?? 126.9780,
+                            _initialPosition!.latitude,
+                            _initialPosition!.longitude,
                           ),
                           zoom: 15.0,
                         ),
                       ),
-                      onCameraIdle: _onCameraIdle,
                     ),
                   ),
-                  Positioned(
-                    bottom: 16,
-                    right: 16,
-                    child: CButton(
-                      style: CButtonStyle.secondary(isDarkMode),
-                      icon: Icons.my_location,
-                      onTap: _goToCurrentLocation,
-                    ),
+                if (_showSkeleton) const CSkeleton(),
+                Positioned(
+                  bottom: 16,
+                  right: 16,
+                  child: CButton(
+                    style: CButtonStyle.secondary(isDarkMode),
+                    icon: Icons.my_location,
+                    onTap: _goToCurrentLocation,
                   ),
-                  Positioned(
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            color: isDarkMode ? grey70 : grey80,
-                            padding: EdgeInsets.all(8),
-                            child: Text(
-                              '출발지',
-                              style: TextStyle(
-                                color: white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
+                ),
+                Positioned(
+                  top: 0,
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          color: ThemeModel.highlight(isDarkMode),
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            '출발지',
+                            style: TextStyle(
+                              color: white,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
-                          Container(
-                            width: 4,
-                            height: 16,
-                            color: isDarkMode ? grey70 : grey80,
-                          ),
-                          SizedBox(
-                            height: 48,
-                          ),
-                        ],
-                      ),
+                        ),
+                        Container(
+                          width: 4,
+                          height: 16,
+                          color: ThemeModel.highlight(isDarkMode),
+                        ),
+                        SizedBox(
+                          height: 48,
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+          ),
           Container(
             padding: EdgeInsets.all(16),
             width: double.infinity,
