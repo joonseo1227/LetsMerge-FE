@@ -13,31 +13,36 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
-  // 플러터 엔진 초기화 (비동기 작업 전에 반드시 호출)
   WidgetsFlutterBinding.ensureInitialized();
+  debugPrint('1. WidgetsFlutterBinding initialized.');
 
   // Firebase 초기화
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  debugPrint('2. Firebase initialized.');
 
   // 위치 권한 요청
   await _handleLocationPermission();
+  debugPrint('3. Location permission handled.');
 
-  // 환경변수(.env 파일) 로드
+  // 환경변수 로드
   await dotenv.load(fileName: 'assets/config/.env');
+  debugPrint('4. Environment variables loaded.');
 
   // 네이버 지도 API 초기화
   await NaverMapSdk.instance.initialize(
     clientId: dotenv.env['NAVER_MAP_CLIENT_ID']!,
   );
+  debugPrint('5. NaverMap SDK initialized.');
 
-  // 미리 저장된 다크모드 설정 불러오기
+  // SharedPreferences 및 다크모드 설정 불러오기
   final prefs = await SharedPreferences.getInstance();
   final isDarkMode = prefs.getBool('isDarkMode') ?? false;
+  debugPrint('6. Dark mode status loaded: $isDarkMode');
 
-  // 다크모드 초기 상태를 가진 ThemeNotifier 생성
+  // 다크모드 설정
   final themeNotifier = ThemeNotifier(isDarkMode);
 
-  // themeProvider를 override하여, 앱 실행 시부터 다크모드 적용을 반영
+  // 앱 실행
   runApp(
     ProviderScope(
       overrides: [
@@ -46,6 +51,7 @@ Future<void> main() async {
       child: const MyApp(),
     ),
   );
+  debugPrint('7. App started.');
 }
 
 // 위치 권한 요청 처리
