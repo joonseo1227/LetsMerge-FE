@@ -25,14 +25,12 @@ class _HistoryPageState extends ConsumerState<HistoryPage> {
         title: const Text('이용 내역'),
         titleSpacing: 0,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [],
-            ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [],
           ),
         ),
       ),

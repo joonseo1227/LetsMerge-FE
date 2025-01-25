@@ -29,48 +29,46 @@ class _MyAccountNumberPageState extends ConsumerState<MyAccountNumberPage> {
         title: const Text('내 계좌번호'),
         titleSpacing: 0,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                CInkWell(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => AddAccountNumberPage(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              CInkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    CupertinoPageRoute(
+                      builder: (context) => AddAccountNumberPage(),
+                    ),
+                  );
+                },
+                child: Container(
+                  color: ThemeModel.surface(isDarkMode),
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.add,
+                        size: 24,
+                        color: ThemeModel.highlightText(isDarkMode),
                       ),
-                    );
-                  },
-                  child: Container(
-                    color: ThemeModel.surface(isDarkMode),
-                    padding: const EdgeInsets.all(16),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.add,
-                          size: 24,
+                      SizedBox(
+                        width: 16,
+                      ),
+                      Text(
+                        '계좌 추가하기',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
                           color: ThemeModel.highlightText(isDarkMode),
                         ),
-                        SizedBox(
-                          width: 16,
-                        ),
-                        Text(
-                          '계좌 추가하기',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.highlightText(isDarkMode),
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
