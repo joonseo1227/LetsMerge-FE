@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
@@ -69,7 +68,8 @@ class CDialog extends ConsumerWidget {
             children: buttons.map((button) {
               return Expanded(
                 child: Container(
-                  color: (button as CButton).style?.backgroundColor ?? blue60,
+                  color: (button as CButton).style?.backgroundColor ??
+                      ThemeModel.highlight(isDarkMode),
                   child: button,
                 ),
               );

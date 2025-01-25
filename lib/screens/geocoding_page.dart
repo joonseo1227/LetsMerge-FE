@@ -213,7 +213,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
             ),
           ),
           Container(
-            color: blue60,
+            color: ThemeModel.highlight(isDarkMode),
             child: SafeArea(
               top: false,
               child: CButton(

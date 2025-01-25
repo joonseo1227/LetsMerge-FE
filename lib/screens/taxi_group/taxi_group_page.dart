@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
@@ -112,7 +111,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: blue60,
+        color: ThemeModel.highlight(isDarkMode),
         padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: SafeArea(
           child: CButton(

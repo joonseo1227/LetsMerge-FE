@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:letsmerge/config/color.dart';
 
 class ThemeModel {
-  // 현재 테마에 따라 동적 색상 반환
   static Color background(bool isDarkMode) => isDarkMode ? grey100 : grey10;
 
   static Color surface(bool isDarkMode) => isDarkMode ? grey90 : white;
@@ -23,11 +22,11 @@ class ThemeModel {
 
   static Color hintText(bool isDarkMode) => isDarkMode ? grey60 : grey40;
 
-  static Color highlight(bool isDarkMode) => isDarkMode ? blue50 : blue60;
+  static Color highlight(bool isDarkMode) => blue60;
 
   static Color danger(bool isDarkMode) => isDarkMode ? red50 : red60;
 
-  // 공통 설정
+  /// 공통 설정
   static final baseTheme = ThemeData(
     fontFamily: 'Pretendard',
     useMaterial3: true,
@@ -57,7 +56,7 @@ class ThemeModel {
     ),
   );
 
-  // 라이트 테마
+  /// 라이트 테마
   static final lightTheme = baseTheme.copyWith(
     colorScheme: ColorScheme.fromSeed(seedColor: blue60),
     scaffoldBackgroundColor: grey10,
@@ -74,7 +73,7 @@ class ThemeModel {
     ),
   );
 
-  // 다크 테마
+  /// 다크 테마
   static final darkTheme = baseTheme.copyWith(
     colorScheme: ColorScheme.fromSeed(seedColor: blue50),
     scaffoldBackgroundColor: grey100,

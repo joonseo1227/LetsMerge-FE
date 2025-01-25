@@ -30,7 +30,7 @@ class CButtonStyle {
   /// Primary 스타일
   factory CButtonStyle.primary(bool isDarkMode) {
     return CButtonStyle(
-      backgroundColor: blue60,
+      backgroundColor: ThemeModel.highlight(isDarkMode),
       labelColor: white,
       iconColor: white,
     );
@@ -49,10 +49,10 @@ class CButtonStyle {
   factory CButtonStyle.tertiary(bool isDarkMode) {
     return CButtonStyle(
       backgroundColor: Colors.transparent,
-      labelColor: isDarkMode ? grey10 : blue60,
-      iconColor: isDarkMode ? grey10 : blue60,
+      labelColor: isDarkMode ? grey10 : ThemeModel.highlight(isDarkMode),
+      iconColor: isDarkMode ? grey10 : ThemeModel.highlight(isDarkMode),
       border: Border.all(
-        color: isDarkMode ? grey10 : blue60,
+        color: isDarkMode ? grey10 : ThemeModel.highlight(isDarkMode),
         width: 1,
       ),
     );

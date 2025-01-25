@@ -38,8 +38,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       value: isDarkMode
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.transparent,
-      ),
+              statusBarColor: Colors.transparent,
+            ),
       child: Scaffold(
         appBar: AppBar(
           title: Row(

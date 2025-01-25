@@ -32,7 +32,6 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
     _getCurrentLocation();
   }
 
-  // 내 위치 가져오기
   Future<void> _getCurrentLocation() async {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -341,7 +340,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
         ),
       ),
       bottomNavigationBar: Container(
-        color: blue60,
+        color: ThemeModel.highlight(isDarkMode),
         padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: SafeArea(
           child: CButton(
