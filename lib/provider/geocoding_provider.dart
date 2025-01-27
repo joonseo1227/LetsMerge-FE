@@ -3,17 +3,24 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
+enum GeocodingMode { departure, destination }
+
 final reverseGeocodingProvider =
-StateNotifierProvider<ReverseGeocodingNotifier, String>(
+StateNotifierProvider<ReverseGeocodingNotifier, Map<GeocodingMode, String>>(
       (ref) => ReverseGeocodingNotifier(),
 );
 
-class ReverseGeocodingNotifier extends StateNotifier<String> {
-  ReverseGeocodingNotifier() : super('위치를 가져오는 중...');
+class ReverseGeocodingNotifier extends StateNotifier<Map<GeocodingMode, String>> {
+  ReverseGeocodingNotifier()
+      : super({
+    GeocodingMode.departure: '', //출발지 초기값
+    GeocodingMode.destination: '', //도착지 초기값
+  });
 
-  Future<void> fetchAddress(double latitude, double longitude) async {
+  Future<String> fetchAddress(double latitude, double longitude) async {
     String url =
         'https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=$longitude,$latitude&orders=roadaddr,addr&output=json';
+    String result;
 
     try {
       var response = await http.get(Uri.parse(url), headers: {
@@ -29,29 +36,30 @@ class ReverseGeocodingNotifier extends StateNotifier<String> {
           var region = results[0]['region'];
           var land = results[0]['land'];
 
-          // 행정구역 주소
           String regionAddress = '${region['area1']['name']} '
               '${region['area2']['name']} '
               '${region['area3']['name']} '
               '${region['area4']['name']}';
 
-          // 도로명 주소 또는 지번 주소
           String landAddress = land != null && land['name'] != null
               ? '${land['name']} ${land['number1']}${land['number2'] != '' ? '-${land['number2']}' : ''}'
               : '';
-          
-          // 최종 주소
-          // String fullAddress = landAddress.isNotEmpty ? landAddress : regionAddress;\
-          String fullAddress = regionAddress + landAddress;
-          state = fullAddress;
+
+          result = regionAddress + landAddress;
         } else {
-          state = '주소를 찾을 수 없습니다.';
+          result = '주소를 찾을 수 없습니다.';
         }
       } else {
-        state = '주소 검색 실패';
+        result = '주소 검색 실패';
       }
     } catch (e) {
-      state = '주소 검색 오류';
+      result = '주소 검색 오류';
     }
+
+    return result;
+  }
+
+  void setAddress(GeocodingMode mode, String address) {
+    state = {...state, mode: address};
   }
 }

@@ -8,10 +8,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_create_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 
 class GeocodingPage extends ConsumerStatefulWidget {
-  const GeocodingPage({super.key});
+  final GeocodingMode mode;
+
+  const GeocodingPage({super.key, required this.mode});
 
   @override
   ConsumerState<GeocodingPage> createState() => _GeocodingPageState();
@@ -23,6 +26,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
   Position? _initialPosition;
   StreamSubscription<Position>? _positionStream;
   bool _isLoading = true;
+  String _selectedAddress = '위치를 가져오는 중...';
 
   @override
   void initState() {
@@ -46,7 +50,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
     }
   }
 
-  /// 위치 변화 감지 (스트리밍)
+  /// 위치 변화 감지
   void _startLocationStream() {
     try {
       _positionStream = Geolocator.getPositionStream().listen((pos) {
@@ -67,8 +71,17 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
     if (_mapController != null) {
       NCameraPosition cameraPosition =
           await _mapController!.getCameraPosition();
-      ref.read(reverseGeocodingProvider.notifier).fetchAddress(
-          cameraPosition.target.latitude, cameraPosition.target.longitude);
+
+      String newAddress = await ref
+          .read(reverseGeocodingProvider.notifier)
+          .fetchAddress(
+              cameraPosition.target.latitude, cameraPosition.target.longitude);
+
+      if (mounted) {
+        setState(() {
+          _selectedAddress = newAddress;
+        });
+      }
     }
   }
 
@@ -97,10 +110,10 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-    final selectedAddress = ref.watch(reverseGeocodingProvider);
     final double bottomContainerHeight = 150;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
+
     return AnnotatedRegion(
       value: isDarkMode
           ? SystemUiOverlayStyle.light
@@ -182,7 +195,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      selectedAddress,
+                      _selectedAddress,
                       style: TextStyle(
                           fontSize: 18, color: ThemeModel.text(isDarkMode)),
                       textAlign: TextAlign.center,
@@ -190,10 +203,32 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
                     Spacer(),
                     CButton(
                       onTap: () {
-                        Navigator.pop(context);
+                        ref
+                            .read(reverseGeocodingProvider.notifier)
+                            .setAddress(widget.mode, _selectedAddress);
+
+                        final selectedLocations =
+                            ref.read(reverseGeocodingProvider);
+
+                        //출발지와 목적지가 모두 설정된 경우 이동
+                        if (selectedLocations[GeocodingMode.departure]!
+                                .isNotEmpty &&
+                            selectedLocations[GeocodingMode.destination]!
+                                .isNotEmpty) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TaxiGroupCreatePage(),
+                            ),
+                          );
+                        } else {
+                          Navigator.pop(context);
+                        }
                       },
                       size: CButtonSize.large,
-                      label: '출발지 설정',
+                      label: widget.mode == GeocodingMode.departure
+                          ? '출발지 설정'
+                          : '목적지 설정',
                       width: double.maxFinite,
                     ),
                   ],
