@@ -5,6 +5,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/add_account_number_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_tag.dart';
 
 class MyAccountNumberPage extends ConsumerStatefulWidget {
   const MyAccountNumberPage({super.key});
@@ -32,43 +33,78 @@ class _MyAccountNumberPageState extends ConsumerState<MyAccountNumberPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CInkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    CupertinoPageRoute(
-                      builder: (context) => AddAccountNumberPage(),
-                    ),
-                  );
-                },
-                child: Container(
+          child: SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
                   color: ThemeModel.surface(isDarkMode),
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Icon(
-                        Icons.add,
-                        size: 24,
-                        color: ThemeModel.highlightText(isDarkMode),
+                      CInkWell(
+                        onTap: () {},
+                        child: Container(
+                          color: ThemeModel.surface(isDarkMode),
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '0123-4567-8901',
+                                  style: TextStyle(
+                                    color: ThemeModel.text(isDarkMode),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                Spacer(),
+                                CTag(
+                                  color: TagColor.blue,
+                                  text: '토스뱅크',
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                      SizedBox(
-                        width: 16,
-                      ),
-                      Text(
-                        '계좌 추가하기',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
-                          color: ThemeModel.highlightText(isDarkMode),
+                      CInkWell(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            CupertinoPageRoute(
+                              builder: (context) => AddAccountNumberPage(),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          color: ThemeModel.surface(isDarkMode),
+                          padding: const EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.add,
+                                size: 24,
+                                color: ThemeModel.highlightText(isDarkMode),
+                              ),
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Text(
+                                '계좌 추가하기',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  color: ThemeModel.highlightText(isDarkMode),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

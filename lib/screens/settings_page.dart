@@ -30,9 +30,9 @@ class SettingsPage extends ConsumerWidget {
         titleSpacing: 0,
       ),
       body: SingleChildScrollView(
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -204,7 +204,7 @@ class SettingsPage extends ConsumerWidget {
                           ),
                         ),
                       ),
-
+                    
                       /// 계정 삭제
                       CInkWell(
                         onTap: () {
@@ -216,7 +216,7 @@ class SettingsPage extends ConsumerWidget {
                                   TextEditingController();
                               String? emailError;
                               String? passwordError;
-
+                    
                               return StatefulBuilder(
                                 builder: (context, setState) {
                                   return CDialog(
@@ -278,7 +278,7 @@ class SettingsPage extends ConsumerWidget {
                                               emailController.text.trim();
                                           final password =
                                               passwordController.text.trim();
-
+                    
                                           setState(() {
                                             emailError = email.isEmpty
                                                 ? '이메일을 입력하십시오.'
@@ -287,7 +287,7 @@ class SettingsPage extends ConsumerWidget {
                                                 ? '암호를 입력하십시오.'
                                                 : null;
                                           });
-
+                    
                                           if (emailError == null &&
                                               passwordError == null) {
                                             try {
