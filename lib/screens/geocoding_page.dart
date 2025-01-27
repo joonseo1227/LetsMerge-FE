@@ -8,11 +8,14 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_create_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 
 class GeocodingPage extends ConsumerStatefulWidget {
-  const GeocodingPage({super.key});
+  final GeocodingMode mode;
+
+  const GeocodingPage({super.key, required this.mode});
 
   @override
   ConsumerState<GeocodingPage> createState() => _GeocodingPageState();
@@ -24,6 +27,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
   Position? _initialPosition;
   StreamSubscription<Position>? _positionStream;
   bool _showSkeleton = true;
+  String _selectedAddress = '위치를 가져오는 중...';
 
   @override
   void initState() {
@@ -38,6 +42,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
       if (mounted) {
         setState(() {
           _initialPosition = pos;
+          _showSkeleton = false;
         });
       }
     } catch (e) {
@@ -81,6 +86,24 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
     });
   }
 
+  void _onCameraIdle() async {
+    if (_mapController != null) {
+      NCameraPosition cameraPosition =
+          await _mapController!.getCameraPosition();
+
+      String newAddress = await ref
+          .read(reverseGeocodingProvider.notifier)
+          .fetchAddress(
+              cameraPosition.target.latitude, cameraPosition.target.longitude);
+
+      if (mounted) {
+        setState(() {
+          _selectedAddress = newAddress;
+        });
+      }
+    }
+  }
+
   Future<void> _goToCurrentLocation() async {
     if (_mapController != null && _currentPosition != null) {
       await _mapController!.updateCamera(
@@ -99,17 +122,6 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
           content: Text('GPS 상태를 확인하세요.'),
         ),
       );
-    }
-  }
-
-  void _onCameraIdle() async {
-    if (_mapController != null) {
-      NCameraPosition cameraPosition =
-          await _mapController!.getCameraPosition();
-      ref.read(reverseGeocodingProvider.notifier).fetchAddress(
-            cameraPosition.target.latitude,
-            cameraPosition.target.longitude,
-          );
     }
   }
 
@@ -172,7 +184,9 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
                           color: ThemeModel.highlight(isDarkMode),
                           padding: EdgeInsets.all(8),
                           child: Text(
-                            '출발지',
+                            widget.mode == GeocodingMode.departure
+                                ? '출발지'
+                                : '목적지',
                             style: TextStyle(
                               color: white,
                               fontSize: 16,
@@ -218,11 +232,32 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
               top: false,
               child: CButton(
                 onTap: () {
-                  Navigator.pop(context);
+                  ref
+                      .read(reverseGeocodingProvider.notifier)
+                      .setAddress(widget.mode, _selectedAddress);
+
+                  final selectedLocations =
+                  ref.read(reverseGeocodingProvider);
+
+                  //출발지와 목적지가 모두 설정된 경우 이동
+                  if (selectedLocations[GeocodingMode.departure]!
+                      .isNotEmpty &&
+                      selectedLocations[GeocodingMode.destination]!
+                          .isNotEmpty) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const TaxiGroupCreatePage(),
+                      ),
+                    );
+                  } else {
+                    Navigator.pop(context);
+                  }
                 },
-                size: CButtonSize.extraLarge,
-                label: '출발지 설정',
-                icon: Icons.navigate_next,
+                size: CButtonSize.large,
+                label: widget.mode == GeocodingMode.departure
+                    ? '출발지 설정'
+                    : '목적지 설정',
                 width: double.maxFinite,
               ),
             ),

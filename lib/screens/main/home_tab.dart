@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/geocoding_page.dart';
 import 'package:letsmerge/screens/search_page.dart';
@@ -22,6 +23,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
+    final selectedLocation = ref.watch(reverseGeocodingProvider);
 
     return AnnotatedRegion(
       value: isDarkMode
@@ -94,12 +96,14 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     CupertinoPageRoute(
-                                      builder: (context) => GeocodingPage(),
+                                      builder: (context) => GeocodingPage(mode: GeocodingMode.departure),
                                     ),
                                   );
                                 },
                                 child: Text(
-                                  '출발지: 복정동',
+                                  selectedLocation[GeocodingMode.departure]!.isEmpty
+                                      ? "출발지를 설정해주세요."
+                                      : selectedLocation[GeocodingMode.departure]!,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
@@ -134,12 +138,14 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     CupertinoPageRoute(
-                                      builder: (context) => SearchPage(),
+                                      builder: (context) => GeocodingPage(mode: GeocodingMode.destination),
                                     ),
                                   );
                                 },
                                 child: Text(
-                                  '목적지',
+                                  selectedLocation[GeocodingMode.destination]!.isEmpty
+                                      ? "목적지를 설정해주세요."
+                                      : selectedLocation[GeocodingMode.destination]!,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
