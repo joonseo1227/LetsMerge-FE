@@ -30,7 +30,9 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
         leading: CInkWell(
           onTap: () {
             Navigator.of(context).pushAndRemoveUntil(
-              CupertinoPageRoute(builder: (context) => MainPage()),
+              CupertinoPageRoute(
+                builder: (context) => MainPage(),
+              ),
               (Route<dynamic> route) => false,
             );
           },

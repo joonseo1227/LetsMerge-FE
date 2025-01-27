@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
+import 'package:letsmerge/screens/main/main_page.dart';
+import 'package:letsmerge/widgets/c_ink_well.dart';
 
 class TaxiGroupCreatePage extends ConsumerStatefulWidget {
   const TaxiGroupCreatePage({super.key});
@@ -19,7 +22,29 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
     final selectedLocations = ref.watch(reverseGeocodingProvider);
 
     return Scaffold(
-      appBar: AppBar(title: Text("택시팟 생성")),
+      appBar: AppBar(
+        title: Text("택시팟 생성"),
+        titleSpacing: 0,
+        leading: CInkWell(
+          onTap: () {
+            Navigator.of(context).pushAndRemoveUntil(
+              CupertinoPageRoute(
+                builder: (context) => MainPage(),
+              ),
+              (Route<dynamic> route) => false,
+            );
+          },
+          child: SizedBox(
+            width: 32,
+            height: 32,
+            child: Icon(
+              Icons.close,
+              size: 28,
+              color: ThemeModel.text(isDarkMode),
+            ),
+          ),
+        ),
+      ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -77,7 +102,6 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                         color: ThemeModel.text(isDarkMode),
                       ),
                     ),
-
                   ],
                 ),
               ])

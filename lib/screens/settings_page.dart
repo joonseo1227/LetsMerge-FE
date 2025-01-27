@@ -204,7 +204,7 @@ class SettingsPage extends ConsumerWidget {
                           ),
                         ),
                       ),
-                    
+
                       /// 계정 삭제
                       CInkWell(
                         onTap: () {
@@ -216,7 +216,7 @@ class SettingsPage extends ConsumerWidget {
                                   TextEditingController();
                               String? emailError;
                               String? passwordError;
-                    
+
                               return StatefulBuilder(
                                 builder: (context, setState) {
                                   return CDialog(
@@ -278,16 +278,18 @@ class SettingsPage extends ConsumerWidget {
                                               emailController.text.trim();
                                           final password =
                                               passwordController.text.trim();
-                    
-                                          setState(() {
-                                            emailError = email.isEmpty
-                                                ? '이메일을 입력하십시오.'
-                                                : null;
-                                            passwordError = password.isEmpty
-                                                ? '암호를 입력하십시오.'
-                                                : null;
-                                          });
-                    
+
+                                          setState(
+                                            () {
+                                              emailError = email.isEmpty
+                                                  ? '이메일을 입력하십시오.'
+                                                  : null;
+                                              passwordError = password.isEmpty
+                                                  ? '암호를 입력하십시오.'
+                                                  : null;
+                                            },
+                                          );
+
                                           if (emailError == null &&
                                               passwordError == null) {
                                             try {
@@ -298,7 +300,7 @@ class SettingsPage extends ConsumerWidget {
                                               if (context.mounted) {
                                                 Navigator.of(context)
                                                     .pushAndRemoveUntil(
-                                                  MaterialPageRoute(
+                                                  CupertinoPageRoute(
                                                     builder: (context) =>
                                                         const LogInPage(),
                                                   ),
@@ -306,16 +308,18 @@ class SettingsPage extends ConsumerWidget {
                                                 );
                                               }
                                             } catch (e) {
-                                              setState(() {
-                                                if (e.toString().contains(
-                                                    'invalid-email')) {
-                                                  emailError =
-                                                      '이메일 형식을 확인하십시오.';
-                                                } else {
-                                                  passwordError =
-                                                      '이메일 또는 암호를 확인하십시오.';
-                                                }
-                                              });
+                                              setState(
+                                                () {
+                                                  if (e.toString().contains(
+                                                      'invalid-email')) {
+                                                    emailError =
+                                                        '이메일 형식을 확인하십시오.';
+                                                  } else {
+                                                    passwordError =
+                                                        '이메일 또는 암호를 확인하십시오.';
+                                                  }
+                                                },
+                                              );
                                             }
                                           }
                                         },
