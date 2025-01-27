@@ -128,7 +128,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-    final selectedAddress = ref.watch(reverseGeocodingProvider);
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -217,7 +217,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
               color: ThemeModel.surface(isDarkMode),
             ),
             child: Text(
-              selectedAddress,
+              _selectedAddress,
               maxLines: 2,
               style: TextStyle(
                 fontSize: 18,
@@ -236,12 +236,10 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
                       .read(reverseGeocodingProvider.notifier)
                       .setAddress(widget.mode, _selectedAddress);
 
-                  final selectedLocations =
-                  ref.read(reverseGeocodingProvider);
+                  final selectedLocations = ref.read(reverseGeocodingProvider);
 
                   //출발지와 목적지가 모두 설정된 경우 이동
-                  if (selectedLocations[GeocodingMode.departure]!
-                      .isNotEmpty &&
+                  if (selectedLocations[GeocodingMode.departure]!.isNotEmpty &&
                       selectedLocations[GeocodingMode.destination]!
                           .isNotEmpty) {
                     Navigator.push(
