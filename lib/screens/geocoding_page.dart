@@ -28,6 +28,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
   StreamSubscription<Position>? _positionStream;
   bool _showSkeleton = true;
   String _selectedAddress = '위치를 가져오는 중...';
+  bool isCameraIdle = true;
 
   @override
   void initState() {
@@ -87,21 +88,26 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
   }
 
   void _onCameraIdle() async {
-    if (_mapController != null) {
-      NCameraPosition cameraPosition =
-          await _mapController!.getCameraPosition();
+    if (!isCameraIdle || _mapController == null) return;
+    isCameraIdle = false;
 
-      String newAddress = await ref
-          .read(reverseGeocodingProvider.notifier)
-          .fetchAddress(
-              cameraPosition.target.latitude, cameraPosition.target.longitude);
+    NCameraPosition cameraPosition = await _mapController!.getCameraPosition();
 
-      if (mounted) {
-        setState(() {
-          _selectedAddress = newAddress;
-        });
-      }
+    String newAddress = await ref
+        .read(reverseGeocodingProvider.notifier)
+        .fetchAddress(cameraPosition.target.latitude, cameraPosition.target.longitude);
+
+    debugPrint("_onCameraIdle 실행됨: (${cameraPosition.target.latitude}, ${cameraPosition.target.longitude})");
+
+    if (mounted) {
+      setState(() {
+        _selectedAddress = newAddress;
+      });
     }
+
+    Future.delayed(Duration(milliseconds: 500), () {
+      isCameraIdle = true;
+    });
   }
 
   Future<void> _goToCurrentLocation() async {

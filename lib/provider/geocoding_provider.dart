@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -21,6 +22,7 @@ class ReverseGeocodingNotifier extends StateNotifier<Map<GeocodingMode, String>>
     String url =
         'https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=$longitude,$latitude&orders=roadaddr,addr&output=json';
     String result;
+    debugPrint("Reverse Geocoding API 요청: $url");
 
     try {
       var response = await http.get(Uri.parse(url), headers: {
