@@ -13,7 +13,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
   final String destinationTime;
 
   const TaxiGroupDetailCard({
-    Key? key,
+    super.key,
     required this.remainingSeats,
     required this.closingTime,
     required this.startLocation,
@@ -21,7 +21,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
     required this.startWalkingTime,
     required this.destinationLocation,
     required this.destinationTime,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

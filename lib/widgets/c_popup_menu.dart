@@ -19,13 +19,13 @@ class CPopupMenu extends ConsumerStatefulWidget {
   final double? dropdownWidth;
   final double? dropdownHeight;
 
-  CPopupMenu({
-    Key? key,
+  const CPopupMenu({
+    super.key,
     required this.button,
     required this.dropdown,
     this.dropdownWidth,
     this.dropdownHeight,
-  }) : super(key: key);
+  });
 
   @override
   CPopupMenuState createState() => CPopupMenuState();

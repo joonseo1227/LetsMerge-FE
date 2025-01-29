@@ -7,7 +7,7 @@ import 'package:letsmerge/provider/theme_provider.dart';
 /// [CTextField] 위젯
 ///
 /// Parameter:
-/// - [label]: 필드 상단에 표시될 레이블 텍스트
+/// - [label]: 필드 상단에 표시될 레이블 텍스트 (optional)
 /// - [hint]: 입력 필드에 표시될 힌트 텍스트 (optional)
 /// - [errorText]: 에러 메시지를 표시할 텍스트 (optional)
 /// - [controller]: 텍스트 입력값을 제어하는 컨트롤러 (optional)
@@ -17,7 +17,7 @@ import 'package:letsmerge/provider/theme_provider.dart';
 /// - [focusNode]: 입력 필드의 포커스를 제어하기 위한 FocusNode (optional)
 ///
 class CTextField extends ConsumerStatefulWidget {
-  final String label;
+  final String? label;
   final String? hint;
   final String? errorText;
   final TextEditingController? controller;
@@ -28,7 +28,7 @@ class CTextField extends ConsumerStatefulWidget {
 
   const CTextField({
     super.key,
-    required this.label,
+    this.label,
     this.hint,
     this.errorText,
     this.controller,
@@ -80,14 +80,15 @@ class _CTextFieldState extends ConsumerState<CTextField> {
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         // 레이블 텍스트
-        Text(
-          widget.label,
-          style: TextStyle(
-            fontSize: 14,
-            color: ThemeModel.text(isDarkMode),
+        if (widget.label != null)
+          Text(
+            widget.label!,
+            style: TextStyle(
+              fontSize: 14,
+              color: ThemeModel.text(isDarkMode),
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
+        if (widget.label != null) const SizedBox(height: 4),
         // 텍스트 입력 필드
         TextField(
           keyboardAppearance: isDarkMode ? Brightness.dark : Brightness.light,

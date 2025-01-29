@@ -11,7 +11,7 @@ import 'package:shimmer/shimmer.dart';
 /// - [key]: Flutter의 기본 키 값 (optional)
 ///
 class CSkeleton extends ConsumerStatefulWidget {
-  const CSkeleton({Key? key}) : super(key: key);
+  const CSkeleton({super.key});
 
   @override
   _CSkeletonState createState() => _CSkeletonState();

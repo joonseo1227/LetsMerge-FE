@@ -175,18 +175,26 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
                   ),
                 ),
                 Text(
-                  '선택한 위치의 장소명을 입력하세요',
+                  '선택한 위치의 장소 이름을 입력하세요',
                   style: TextStyle(
                     color: ThemeModel.text(isDarkMode),
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
+                Text(
+                  '장소명은 알아보기 쉽도록 적어주세요.',
+                  style: TextStyle(
+                    color: ThemeModel.text(isDarkMode),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                const SizedBox(height: 24),
                 CTextField(
                   controller: _placeController,
-                  label: '장소명',
-                  hint: '예) 강남역 1번 출구 / 스타벅스 앞',
+                  hint: '예: 강남역 1번 출구, 스타벅스 앞',
                 ),
                 const SizedBox(height: 16),
                 CButton(

@@ -46,6 +46,8 @@ dependencies:
   package_info_plus: ^8.1.3
   shared_preferences: ^2.3.5
 
+  http: any
+  firebase_core: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
