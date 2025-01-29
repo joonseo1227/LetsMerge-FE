@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -8,9 +9,11 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_create_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
+import 'package:letsmerge/widgets/c_text_field.dart';
 
 class GeocodingPage extends ConsumerStatefulWidget {
   final GeocodingMode mode;
@@ -29,6 +32,8 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
   bool _showSkeleton = true;
   String _selectedAddress = '위치를 가져오는 중...';
   bool isCameraIdle = true;
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _placeController = TextEditingController();
 
   @override
   void initState() {
@@ -58,11 +63,13 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
       });
     } catch (e) {
       debugPrint('$e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('GPS 상태를 확인하세요.'),
-        ),
-      );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('GPS 상태를 확인하세요.'),
+          ),
+        );
+      }
     }
   }
 
@@ -95,9 +102,11 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
 
     String newAddress = await ref
         .read(reverseGeocodingProvider.notifier)
-        .fetchAddress(cameraPosition.target.latitude, cameraPosition.target.longitude);
+        .fetchAddress(
+            cameraPosition.target.latitude, cameraPosition.target.longitude);
 
-    debugPrint("_onCameraIdle 실행됨: (${cameraPosition.target.latitude}, ${cameraPosition.target.longitude})");
+    debugPrint(
+        "_onCameraIdle 실행됨: (${cameraPosition.target.latitude}, ${cameraPosition.target.longitude})");
 
     if (mounted) {
       setState(() {
@@ -131,11 +140,109 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
     }
   }
 
+  void _showAddressBottomSheet() {
+    final isDarkMode = ref.read(themeProvider);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: ThemeModel.background(isDarkMode),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Container(
+                    width: 40,
+                    height: 4,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: ThemeModel.sub3(isDarkMode),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+                Text(
+                  '선택한 위치의 장소명을 입력하세요',
+                  style: TextStyle(
+                    color: ThemeModel.text(isDarkMode),
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                CTextField(
+                  controller: _placeController,
+                  label: '장소명',
+                  hint: '예) 강남역 1번 출구 / 스타벅스 앞',
+                ),
+                const SizedBox(height: 16),
+                CButton(
+                  onTap: () {
+                    if (_placeController.text.isNotEmpty) {
+                      ref
+                          .read(reverseGeocodingProvider.notifier)
+                          .setPlaceAndAddress(
+                            widget.mode,
+                            _placeController.text,
+                            _selectedAddress,
+                          );
+
+                      final selectedLocations =
+                          ref.read(reverseGeocodingProvider);
+
+                      if (selectedLocations[GeocodingMode.departure]!['place']!
+                              .isNotEmpty &&
+                          selectedLocations[GeocodingMode.destination]![
+                                  'place']!
+                              .isNotEmpty) {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => const TaxiGroupCreatePage(),
+                          ),
+                        );
+                      } else {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          CupertinoPageRoute(
+                            builder: (context) => MainPage(),
+                          ),
+                          (Route<dynamic> route) => false,
+                        );
+                      }
+                    }
+                  },
+                  label: '확인',
+                  icon: Icons.navigate_next,
+                  width: double.maxFinite,
+                ),
+                SizedBox(height: MediaQuery.of(context).padding.bottom),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         systemOverlayStyle:
@@ -237,31 +344,12 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
             child: SafeArea(
               top: false,
               child: CButton(
-                onTap: () {
-                  ref
-                      .read(reverseGeocodingProvider.notifier)
-                      .setAddress(widget.mode, _selectedAddress);
-
-                  final selectedLocations = ref.read(reverseGeocodingProvider);
-
-                  //출발지와 목적지가 모두 설정된 경우 이동
-                  if (selectedLocations[GeocodingMode.departure]!.isNotEmpty &&
-                      selectedLocations[GeocodingMode.destination]!
-                          .isNotEmpty) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const TaxiGroupCreatePage(),
-                      ),
-                    );
-                  } else {
-                    Navigator.pop(context);
-                  }
-                },
-                size: CButtonSize.large,
+                onTap: _showAddressBottomSheet,
+                size: CButtonSize.extraLarge,
                 label: widget.mode == GeocodingMode.departure
                     ? '출발지 설정'
                     : '목적지 설정',
+                icon: Icons.navigate_next,
                 width: double.maxFinite,
               ),
             ),
@@ -275,6 +363,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
   void dispose() {
     _positionStream?.cancel();
     _mapController?.dispose();
+    _addressController.dispose();
     super.dispose();
   }
 }

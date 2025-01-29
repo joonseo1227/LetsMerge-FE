@@ -6,17 +6,18 @@ import 'package:http/http.dart' as http;
 
 enum GeocodingMode { departure, destination }
 
-final reverseGeocodingProvider =
-    StateNotifierProvider<ReverseGeocodingNotifier, Map<GeocodingMode, String>>(
+final reverseGeocodingProvider = StateNotifierProvider<ReverseGeocodingNotifier,
+    Map<GeocodingMode, Map<String, String>>>(
   (ref) => ReverseGeocodingNotifier(),
 );
 
-class ReverseGeocodingNotifier extends StateNotifier<Map<GeocodingMode, String>> {
+class ReverseGeocodingNotifier
+    extends StateNotifier<Map<GeocodingMode, Map<String, String>>> {
   ReverseGeocodingNotifier()
       : super({
-    GeocodingMode.departure: '', //출발지 초기값
-    GeocodingMode.destination: '', //도착지 초기값
-  });
+          GeocodingMode.departure: {'place': '', 'address': ''},
+          GeocodingMode.destination: {'place': '', 'address': ''},
+        });
 
   Future<String> fetchAddress(double latitude, double longitude) async {
     String url =
@@ -61,7 +62,10 @@ class ReverseGeocodingNotifier extends StateNotifier<Map<GeocodingMode, String>>
     return result;
   }
 
-  void setAddress(GeocodingMode mode, String address) {
-    state = {...state, mode: address};
+  void setPlaceAndAddress(GeocodingMode mode, String place, String address) {
+    state = {
+      ...state,
+      mode: {'place': place, 'address': address},
+    };
   }
 }

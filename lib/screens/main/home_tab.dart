@@ -96,18 +96,26 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     CupertinoPageRoute(
-                                      builder: (context) => GeocodingPage(mode: GeocodingMode.departure),
+                                      builder: (context) => GeocodingPage(
+                                          mode: GeocodingMode.departure),
                                     ),
                                   );
                                 },
                                 child: Text(
-                                  selectedLocation[GeocodingMode.departure]!.isEmpty
-                                      ? "출발지를 설정해주세요."
-                                      : selectedLocation[GeocodingMode.departure]!,
+                                  selectedLocation[GeocodingMode.departure]![
+                                              'place']!
+                                          .isEmpty
+                                      ? "출발지"
+                                      : selectedLocation[
+                                          GeocodingMode.departure]!['place']!,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
-                                    color: ThemeModel.hintText(isDarkMode),
+                                    color: selectedLocation[GeocodingMode
+                                                .departure]!['place']!
+                                            .isEmpty
+                                        ? ThemeModel.hintText(isDarkMode)
+                                        : ThemeModel.text(isDarkMode),
                                   ),
                                 ),
                               ),
@@ -138,18 +146,26 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     CupertinoPageRoute(
-                                      builder: (context) => GeocodingPage(mode: GeocodingMode.destination),
+                                      builder: (context) => GeocodingPage(
+                                          mode: GeocodingMode.destination),
                                     ),
                                   );
                                 },
                                 child: Text(
-                                  selectedLocation[GeocodingMode.destination]!.isEmpty
-                                      ? "목적지를 설정해주세요."
-                                      : selectedLocation[GeocodingMode.destination]!,
+                                  selectedLocation[GeocodingMode.destination]![
+                                              'place']!
+                                          .isEmpty
+                                      ? "목적지"
+                                      : selectedLocation[
+                                          GeocodingMode.destination]!['place']!,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
-                                    color: ThemeModel.hintText(isDarkMode),
+                                    color: selectedLocation[GeocodingMode
+                                                .destination]!['place']!
+                                            .isEmpty
+                                        ? ThemeModel.hintText(isDarkMode)
+                                        : ThemeModel.text(isDarkMode),
                                   ),
                                 ),
                               ),

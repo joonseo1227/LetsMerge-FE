@@ -68,11 +68,22 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        selectedLocations[GeocodingMode.departure]!,
+                        selectedLocations[GeocodingMode.departure]!['place'] ??
+                            '',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: ThemeModel.text(isDarkMode),
+                        ),
+                      ),
+                      Text(
+                        selectedLocations[GeocodingMode.departure]![
+                                'address'] ??
+                            '',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: ThemeModel.sub4(isDarkMode),
                         ),
                       ),
                     ],
@@ -80,31 +91,46 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                 ],
               ),
               const SizedBox(height: 16),
-              Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Container(
-                  width: 8,
-                  height: 8,
-                  margin: const EdgeInsets.all(6),
-                  decoration: ShapeDecoration(
-                    color: ThemeModel.highlight(isDarkMode),
-                    shape: const CircleBorder(),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      selectedLocations[GeocodingMode.destination]!,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: ThemeModel.text(isDarkMode),
-                      ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    margin: const EdgeInsets.all(6),
+                    decoration: ShapeDecoration(
+                      color: ThemeModel.highlight(isDarkMode),
+                      shape: const CircleBorder(),
                     ),
-                  ],
-                ),
-              ])
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        selectedLocations[GeocodingMode.destination]![
+                                'place'] ??
+                            '',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: ThemeModel.text(isDarkMode),
+                        ),
+                      ),
+                      Text(
+                        selectedLocations[GeocodingMode.destination]![
+                                'address'] ??
+                            '',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: ThemeModel.sub4(isDarkMode),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ],
           ),
         ),
