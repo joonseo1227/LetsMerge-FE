@@ -105,7 +105,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                   selectedLocation[GeocodingMode.departure]![
                                               'place']!
                                           .isEmpty
-                                      ? "출발지"
+                                      ? "출발지 선택"
                                       : selectedLocation[
                                           GeocodingMode.departure]!['place']!,
                                   style: TextStyle(
@@ -155,7 +155,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                   selectedLocation[GeocodingMode.destination]![
                                               'place']!
                                           .isEmpty
-                                      ? "목적지"
+                                      ? "목적지 선택"
                                       : selectedLocation[
                                           GeocodingMode.destination]!['place']!,
                                   style: TextStyle(
