@@ -3,20 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:letsmerge/models/location_model.dart';
 
 enum GeocodingMode { departure, destination }
 
 final reverseGeocodingProvider = StateNotifierProvider<ReverseGeocodingNotifier,
-    Map<GeocodingMode, Map<String, String>>>(
+    Map<GeocodingMode, LocationModel?>>(
   (ref) => ReverseGeocodingNotifier(),
 );
 
 class ReverseGeocodingNotifier
-    extends StateNotifier<Map<GeocodingMode, Map<String, String>>> {
+    extends StateNotifier<Map<GeocodingMode, LocationModel?>> {
   ReverseGeocodingNotifier()
       : super({
-          GeocodingMode.departure: {'place': '', 'address': ''},
-          GeocodingMode.destination: {'place': '', 'address': ''},
+          GeocodingMode.departure: null,
+          GeocodingMode.destination: null,
         });
 
   Future<String> fetchAddress(double latitude, double longitude) async {
@@ -62,10 +63,17 @@ class ReverseGeocodingNotifier
     return result;
   }
 
-  void setPlaceAndAddress(GeocodingMode mode, String place, String address) {
+  void setPlaceAndAddress({
+    required GeocodingMode mode,
+    required String address,
+    required String place,
+    required double lat,
+    required double lng,
+  }) {
     state = {
       ...state,
-      mode: {'place': place, 'address': address},
+      mode: LocationModel(
+          latitude: lat, longitude: lng, address: address, place: place),
     };
   }
 }

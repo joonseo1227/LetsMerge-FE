@@ -102,18 +102,20 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                   );
                                 },
                                 child: Text(
-                                  selectedLocation[GeocodingMode.departure]![
-                                              'place']!
-                                          .isEmpty
+                                  selectedLocation[GeocodingMode.departure]
+                                              ?.place ==
+                                          null
                                       ? "출발지 선택"
                                       : selectedLocation[
-                                          GeocodingMode.departure]!['place']!,
+                                              GeocodingMode.departure]!
+                                          .place,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
-                                    color: selectedLocation[GeocodingMode
-                                                .departure]!['place']!
-                                            .isEmpty
+                                    color: selectedLocation[
+                                                    GeocodingMode.departure]
+                                                ?.place ==
+                                            null
                                         ? ThemeModel.hintText(isDarkMode)
                                         : ThemeModel.text(isDarkMode),
                                   ),
@@ -152,18 +154,20 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                   );
                                 },
                                 child: Text(
-                                  selectedLocation[GeocodingMode.destination]![
-                                              'place']!
-                                          .isEmpty
+                                  selectedLocation[GeocodingMode.destination]
+                                              ?.place ==
+                                          null
                                       ? "목적지 선택"
                                       : selectedLocation[
-                                          GeocodingMode.destination]!['place']!,
+                                              GeocodingMode.destination]!
+                                          .place,
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w500,
-                                    color: selectedLocation[GeocodingMode
-                                                .destination]!['place']!
-                                            .isEmpty
+                                    color: selectedLocation[
+                                                    GeocodingMode.destination]
+                                                ?.place ==
+                                            null
                                         ? ThemeModel.hintText(isDarkMode)
                                         : ThemeModel.text(isDarkMode),
                                   ),

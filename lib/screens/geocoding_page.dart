@@ -140,8 +140,12 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
     }
   }
 
-  void _showAddressBottomSheet() {
+  void _showAddressBottomSheet() async {
     final isDarkMode = ref.read(themeProvider);
+
+    NCameraPosition cameraPosition = await _mapController!.getCameraPosition();
+
+    debugPrint('!!!!!cameraPosition: $cameraPosition');
 
     showModalBottomSheet(
       context: context,
@@ -203,19 +207,20 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
                       ref
                           .read(reverseGeocodingProvider.notifier)
                           .setPlaceAndAddress(
-                            widget.mode,
-                            _placeController.text,
-                            _selectedAddress,
+                            mode: widget.mode,
+                            address: _selectedAddress,
+                            place: _placeController.text,
+                            lat: cameraPosition.target.latitude,
+                            lng: cameraPosition.target.longitude,
                           );
 
                       final selectedLocations =
                           ref.read(reverseGeocodingProvider);
 
-                      if (selectedLocations[GeocodingMode.departure]!['place']!
-                              .isNotEmpty &&
-                          selectedLocations[GeocodingMode.destination]![
-                                  'place']!
-                              .isNotEmpty) {
+                      if (selectedLocations[GeocodingMode.departure]?.place !=
+                              null &&
+                          selectedLocations[GeocodingMode.destination]?.place !=
+                              null) {
                         Navigator.push(
                           context,
                           CupertinoPageRoute(
