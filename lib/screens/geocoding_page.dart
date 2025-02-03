@@ -140,7 +140,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
     }
   }
 
-  void _showAddressBottomSheet() async {
+  void _showPlaceBottomSheet() async {
     final isDarkMode = ref.read(themeProvider);
 
     NCameraPosition cameraPosition = await _mapController!.getCameraPosition();
@@ -155,94 +155,104 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
         ),
       ),
       builder: (BuildContext context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 16),
-                    decoration: BoxDecoration(
-                      color: ThemeModel.sub3(isDarkMode),
-                      borderRadius: BorderRadius.circular(2),
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 16),
+                        decoration: BoxDecoration(
+                          color: ThemeModel.sub3(isDarkMode),
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                Text(
-                  '선택한 위치의 장소 이름을 입력하세요',
-                  style: TextStyle(
-                    color: ThemeModel.text(isDarkMode),
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '장소명은 알아보기 쉽도록 적어주세요.',
-                  style: TextStyle(
-                    color: ThemeModel.text(isDarkMode),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                CTextField(
-                  controller: _placeController,
-                  hint: '예: 강남역 1번 출구, 스타벅스 앞',
-                ),
-                const SizedBox(height: 16),
-                CButton(
-                  onTap: () {
-                    if (_placeController.text.isNotEmpty) {
-                      ref
-                          .read(reverseGeocodingProvider.notifier)
-                          .setPlaceAndAddress(
-                            mode: widget.mode,
-                            address: _selectedAddress,
-                            place: _placeController.text,
-                            lat: cameraPosition.target.latitude,
-                            lng: cameraPosition.target.longitude,
-                          );
+                    Text(
+                      '선택한 위치의 장소 이름을 입력하세요',
+                      style: TextStyle(
+                        color: ThemeModel.text(isDarkMode),
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      '장소명은 알아보기 쉽도록 적어주세요.',
+                      style: TextStyle(
+                        color: ThemeModel.text(isDarkMode),
+                        fontSize: 16,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    CTextField(
+                      controller: _placeController,
+                      hint: '예: 강남역 1번 출구, 스타벅스 앞',
+                      onChanged: (value) {
+                        setState(() {});
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    CButton(
+                      onTap: _placeController.text.isEmpty
+                          ? null
+                          : () {
+                              ref
+                                  .read(reverseGeocodingProvider.notifier)
+                                  .setPlaceAndAddress(
+                                    mode: widget.mode,
+                                    address: _selectedAddress,
+                                    place: _placeController.text,
+                                    lat: cameraPosition.target.latitude,
+                                    lng: cameraPosition.target.longitude,
+                                  );
 
-                      final selectedLocations =
-                          ref.read(reverseGeocodingProvider);
+                              final selectedLocations =
+                                  ref.read(reverseGeocodingProvider);
 
-                      if (selectedLocations[GeocodingMode.departure]?.place !=
-                              null &&
-                          selectedLocations[GeocodingMode.destination]?.place !=
-                              null) {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => const TaxiGroupCreatePage(),
-                          ),
-                        );
-                      } else {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          CupertinoPageRoute(
-                            builder: (context) => MainPage(),
-                          ),
-                          (Route<dynamic> route) => false,
-                        );
-                      }
-                    }
-                  },
-                  label: '확인',
-                  icon: Icons.navigate_next,
-                  width: double.maxFinite,
+                              if (selectedLocations[GeocodingMode.departure]
+                                          ?.place !=
+                                      null &&
+                                  selectedLocations[GeocodingMode.destination]
+                                          ?.place !=
+                                      null) {
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) =>
+                                        const TaxiGroupCreatePage(),
+                                  ),
+                                );
+                              } else {
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  CupertinoPageRoute(
+                                    builder: (context) => MainPage(),
+                                  ),
+                                  (Route<dynamic> route) => false,
+                                );
+                              }
+                            },
+                      label: '확인',
+                      icon: Icons.navigate_next,
+                      width: double.maxFinite,
+                    ),
+                    SizedBox(height: MediaQuery.of(context).padding.bottom),
+                  ],
                 ),
-                SizedBox(height: MediaQuery.of(context).padding.bottom),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -355,7 +365,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
             child: SafeArea(
               top: false,
               child: CButton(
-                onTap: _showAddressBottomSheet,
+                onTap: _showPlaceBottomSheet,
                 size: CButtonSize.extraLarge,
                 label: widget.mode == GeocodingMode.departure
                     ? '출발지 설정'
