@@ -4,6 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 final directionsProvider =
     StateNotifierProvider<DirectionsNotifier, List<NLatLng>>(
@@ -13,11 +14,16 @@ final directionsProvider =
 class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
   DirectionsNotifier() : super([]);
 
+  String? _formattedTaxiFare;
+  String? get formattedTaxiFare => _formattedTaxiFare;
+
+
   Future<void> fetchDirections(
       double startLat, double startLng, double endLat, double endLng) async {
     //출발지와 목적지가 동일한 경우
     if (startLat == endLat && startLng == endLng) {
       debugPrint("출발지와 목적지가 동일하여 경로 요청을 취소합니다.");
+      _formattedTaxiFare = null;
       state = [];
       return;
     }
@@ -40,6 +46,7 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
 
         if (data['route'] == null) {
           debugPrint("route 데이터 없음");
+          _formattedTaxiFare = null;
           state = [];
           return;
         }
@@ -47,11 +54,16 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
         var trafast = data['route']['trafast'];
         if (trafast == null || trafast.isEmpty) {
           debugPrint("trafast 경로 없음.");
+          _formattedTaxiFare = null;
           state = [];
           return;
         }
 
-        var route = trafast[0]['path']; // 가장 빠른 경로 가져오기
+        var route = trafast[0]['path'];
+        var summary = trafast[0]['summary'];
+
+        _formattedTaxiFare = NumberFormat('#,###', 'ko_KR').format(summary['taxiFare']);
+        debugPrint("예상 택시비: $_formattedTaxiFare 원");
 
         List<NLatLng> routePoints = route
             .map<NLatLng>(
@@ -61,10 +73,12 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
         state = routePoints;
       } else {
         debugPrint("경로 요청 실패: ${response.statusCode}");
+        _formattedTaxiFare = null;
         state = [];
       }
     } catch (e) {
       debugPrint("경로 요청 오류: $e");
+      _formattedTaxiFare = null;
       state = [];
     }
   }

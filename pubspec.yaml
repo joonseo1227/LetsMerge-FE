@@ -48,6 +48,7 @@ dependencies:
 
   http: any
   firebase_core: any
+  intl: ^0.20.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
