@@ -7,6 +7,7 @@ import 'package:letsmerge/provider/directions_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
+import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 
@@ -30,13 +31,13 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
     final destination = selectedLocations[GeocodingMode.destination];
 
     if (departure == null || destination == null) {
-      debugPrint("🚨 출발지 또는 목적지 정보가 없음.");
+      debugPrint("출발지 또는 목적지 정보가 없음.");
       return;
     }
 
     if (departure.latitude == destination.latitude &&
         departure.longitude == destination.longitude) {
-      debugPrint("🚨 출발지와 목적지가 동일하여 요청을 중단합니다.");
+      debugPrint("출발지와 목적지가 동일하여 요청을 중단합니다.");
       return;
     }
 
@@ -174,7 +175,6 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
 
                 SizedBox(height: 16),
 
-                /// 출발지 정보
                 Container(
                   color: ThemeModel.surface(isDarkMode),
                   width: double.maxFinite,
@@ -197,7 +197,8 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                selectedLocations[GeocodingMode.departure]!.place,
+                                selectedLocations[GeocodingMode.departure]!
+                                    .place,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
@@ -205,7 +206,8 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                 ),
                               ),
                               Text(
-                                selectedLocations[GeocodingMode.departure]!.address,
+                                selectedLocations[GeocodingMode.departure]!
+                                    .address,
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -214,7 +216,6 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                               ),
                             ],
                           ),
-
                         ],
                       ),
                       const SizedBox(height: 12),
@@ -234,7 +235,8 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                selectedLocations[GeocodingMode.destination]!.place,
+                                selectedLocations[GeocodingMode.destination]!
+                                    .place,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w500,
@@ -242,7 +244,8 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                 ),
                               ),
                               Text(
-                                selectedLocations[GeocodingMode.destination]!.address,
+                                selectedLocations[GeocodingMode.destination]!
+                                    .address,
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -282,13 +285,12 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                   _showSkeleton || taxiFare == null ? 0.0 : 1.0,
                               duration: const Duration(milliseconds: 200),
                               child: Text(
-                                "$taxiFare 원",
+                                "$taxiFare원",
                                 style: TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.highlightText(isDarkMode),
-                                    height: 1
-                                ),
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.highlightText(isDarkMode),
+                                    height: 1),
                               ),
                             ),
                             if (_showSkeleton || taxiFare == null)
@@ -301,6 +303,19 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                 )
               ],
             ),
+          ),
+        ),
+      ),
+      bottomNavigationBar: Container(
+        color: ThemeModel.highlight(isDarkMode),
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+        child: SafeArea(
+          child: CButton(
+            onTap: () {},
+            size: CButtonSize.extraLarge,
+            label: '택시팟 만들기',
+            icon: Icons.navigate_next,
+            width: double.maxFinite,
           ),
         ),
       ),
