@@ -15,8 +15,8 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
   DirectionsNotifier() : super([]);
 
   String? _formattedTaxiFare;
-  String? get formattedTaxiFare => _formattedTaxiFare;
 
+  String? get formattedTaxiFare => _formattedTaxiFare;
 
   Future<void> fetchDirections(
       double startLat, double startLng, double endLat, double endLng) async {
@@ -62,13 +62,18 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
         var route = trafast[0]['path'];
         var summary = trafast[0]['summary'];
 
-        _formattedTaxiFare = NumberFormat('#,###', 'ko_KR').format(summary['taxiFare']);
+        _formattedTaxiFare =
+            NumberFormat('#,###', 'ko_KR').format(summary['taxiFare']);
         debugPrint("예상 택시비: $_formattedTaxiFare 원");
 
         List<NLatLng> routePoints = route
             .map<NLatLng>(
-                (point) => NLatLng(point[1], point[0])) // 위도, 경도 순서 변환
-            .toList();
+              (point) => NLatLng(
+                point[1],
+                point[0],
+              ),
+            )
+            .toList(); // 위도, 경도 순서 변환
 
         state = routePoints;
       } else {

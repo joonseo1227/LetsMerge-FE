@@ -34,22 +34,21 @@ class TaxiGroupDetailCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 8,
-                height: 8,
-                margin: const EdgeInsets.all(6),
-                decoration: ShapeDecoration(
-                  color: ThemeModel.sub2(isDarkMode),
-                  shape: const CircleBorder(),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    margin: const EdgeInsets.all(6),
+                    decoration: ShapeDecoration(
+                      color: ThemeModel.sub2(isDarkMode),
+                      shape: const CircleBorder(),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
                   Text(
                     startLocation,
                     style: TextStyle(
@@ -58,61 +57,61 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                       color: ThemeModel.text(isDarkMode),
                     ),
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.access_time_filled,
-                        size: 14,
-                        color: ThemeModel.sub2(isDarkMode),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        startTime,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: ThemeModel.sub4(isDarkMode),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 12,
-                        child: VerticalDivider(
-                          thickness: 1,
-                          color: ThemeModel.sub2(isDarkMode),
-                        ),
-                      ),
-                      Text(
-                        '현재 위치에서 도보 $startWalkingTime분',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: ThemeModel.sub4(isDarkMode),
-                        ),
-                      ),
-                    ],
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(width: 32),
+                  Icon(
+                    Icons.access_time_filled,
+                    size: 14,
+                    color: ThemeModel.sub2(isDarkMode),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    startTime,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: ThemeModel.sub4(isDarkMode),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 12,
+                    child: VerticalDivider(
+                      thickness: 1,
+                      color: ThemeModel.sub2(isDarkMode),
+                    ),
+                  ),
+                  Text(
+                    '현재 위치에서 도보 $startWalkingTime분',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: ThemeModel.sub4(isDarkMode),
+                    ),
                   ),
                 ],
               ),
             ],
           ),
           const SizedBox(height: 16),
-          Row(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 8,
-                height: 8,
-                margin: const EdgeInsets.all(6),
-                decoration: ShapeDecoration(
-                  color: ThemeModel.highlight(isDarkMode),
-                  shape: const CircleBorder(),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Row(
                 children: [
+                  Container(
+                    width: 8,
+                    height: 8,
+                    margin: const EdgeInsets.all(6),
+                    decoration: ShapeDecoration(
+                      color: ThemeModel.highlight(isDarkMode),
+                      shape: const CircleBorder(),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
                   Text(
                     destinationLocation,
                     style: TextStyle(
@@ -121,24 +120,25 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                       color: ThemeModel.text(isDarkMode),
                     ),
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.access_time_filled,
-                        size: 14,
-                        color: ThemeModel.sub2(isDarkMode),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        destinationTime,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: ThemeModel.sub4(isDarkMode),
-                        ),
-                      ),
-                    ],
+                ],
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(width: 32),
+                  Icon(
+                    Icons.access_time_filled,
+                    size: 14,
+                    color: ThemeModel.sub2(isDarkMode),
+                  ),
+                  const SizedBox(width: 4),
+                  Text(
+                    destinationTime,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: ThemeModel.sub4(isDarkMode),
+                    ),
                   ),
                 ],
               ),

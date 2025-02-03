@@ -55,12 +55,16 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
 
     if (_mapController != null && routePoints.isNotEmpty) {
       _mapController!.clearOverlays();
-      _mapController!.addOverlay(NPolylineOverlay(
-        id: "directions",
-        coords: routePoints,
-        color: ThemeModel.highlight(ref.watch(themeProvider)),
-        width: 9,
-      ));
+      _mapController!.addOverlay(
+        NPolylineOverlay(
+          id: "directions",
+          coords: routePoints,
+          color: ThemeModel.text(
+            ref.watch(themeProvider),
+          ),
+          width: 4,
+        ),
+      );
       debugPrint("경로 오버레이 추가");
     }
   }
@@ -180,22 +184,23 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                   width: double.maxFinite,
                   padding: EdgeInsets.all(16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            margin: const EdgeInsets.all(6),
-                            decoration: ShapeDecoration(
-                              color: ThemeModel.sub2(isDarkMode),
-                              shape: const CircleBorder(),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                margin: const EdgeInsets.all(6),
+                                decoration: ShapeDecoration(
+                                  color: ThemeModel.sub2(isDarkMode),
+                                  shape: const CircleBorder(),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
                               Text(
                                 selectedLocations[GeocodingMode.departure]!
                                     .place,
@@ -205,35 +210,42 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                   color: ThemeModel.text(isDarkMode),
                                 ),
                               ),
-                              Text(
-                                selectedLocations[GeocodingMode.departure]!
-                                    .address,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.sub4(isDarkMode),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const SizedBox(width: 32),
+                              Flexible(
+                                child: Text(
+                                  selectedLocations[GeocodingMode.departure]!
+                                      .address,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.sub4(isDarkMode),
+                                  ),
                                 ),
                               ),
                             ],
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-                      Row(
+                      const SizedBox(height: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            width: 8,
-                            height: 8,
-                            margin: const EdgeInsets.all(6),
-                            decoration: ShapeDecoration(
-                              color: ThemeModel.highlight(isDarkMode),
-                              shape: const CircleBorder(),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
                             children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                margin: const EdgeInsets.all(6),
+                                decoration: ShapeDecoration(
+                                  color: ThemeModel.highlight(isDarkMode),
+                                  shape: const CircleBorder(),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
                               Text(
                                 selectedLocations[GeocodingMode.destination]!
                                     .place,
@@ -243,13 +255,20 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                   color: ThemeModel.text(isDarkMode),
                                 ),
                               ),
-                              Text(
-                                selectedLocations[GeocodingMode.destination]!
-                                    .address,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.sub4(isDarkMode),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const SizedBox(width: 32),
+                              Flexible(
+                                child: Text(
+                                  selectedLocations[GeocodingMode.destination]!
+                                      .address,
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.sub4(isDarkMode),
+                                  ),
                                 ),
                               ),
                             ],
@@ -259,7 +278,12 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+
+                const SizedBox(
+                  height: 16,
+                ),
+
+                /// 비용 정보
                 Container(
                   color: ThemeModel.surface(isDarkMode),
                   width: double.infinity,
@@ -272,31 +296,33 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
-                          color: ThemeModel.sub6(isDarkMode),
+                          color: ThemeModel.sub4(isDarkMode),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        height: 32,
-                        child: Stack(
-                          children: [
-                            AnimatedOpacity(
-                              opacity:
-                                  _showSkeleton || taxiFare == null ? 0.0 : 1.0,
-                              duration: const Duration(milliseconds: 200),
-                              child: Text(
-                                "$taxiFare원",
-                                style: TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w500,
-                                    color: ThemeModel.highlightText(isDarkMode),
-                                    height: 1),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      Stack(
+                        children: [
+                          AnimatedOpacity(
+                            opacity:
+                                _showSkeleton || taxiFare == null ? 0.0 : 1.0,
+                            duration: const Duration(milliseconds: 200),
+                            child: Text(
+                              "$taxiFare원",
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.w500,
+                                color: ThemeModel.text(isDarkMode),
                               ),
                             ),
-                            if (_showSkeleton || taxiFare == null)
-                              const CSkeleton()
-                          ],
-                        ),
+                          ),
+                          if (_showSkeleton || taxiFare == null)
+                            SizedBox(
+                              height: 32,
+                              child: const CSkeleton(),
+                            ),
+                        ],
                       ),
                     ],
                   ),
