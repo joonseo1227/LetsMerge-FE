@@ -15,6 +15,7 @@ import 'package:letsmerge/provider/theme_provider.dart';
 /// - [keyboardType]: 입력 필드의 키보드 타입 (default: TextInputType.text)
 /// - [backgroundColor]: 입력 필드 배경 색상 (optional)
 /// - [focusNode]: 입력 필드의 포커스를 제어하기 위한 FocusNode (optional)
+/// - [onChanged]: 입력값이 변경될 때 호출되는 콜백 함수 (optional)
 ///
 class CTextField extends ConsumerStatefulWidget {
   final String? label;
@@ -25,6 +26,7 @@ class CTextField extends ConsumerStatefulWidget {
   final TextInputType keyboardType;
   final Color? backgroundColor;
   final FocusNode? focusNode;
+  final ValueChanged<String>? onChanged;
 
   const CTextField({
     super.key,
@@ -36,6 +38,7 @@ class CTextField extends ConsumerStatefulWidget {
     this.keyboardType = TextInputType.text,
     this.backgroundColor,
     this.focusNode,
+    this.onChanged,
   });
 
   @override
@@ -43,28 +46,25 @@ class CTextField extends ConsumerStatefulWidget {
 }
 
 class _CTextFieldState extends ConsumerState<CTextField> {
-  late FocusNode _focusNode; // Focus 상태를 감지하기 위한 FocusNode
-  bool _hasFocus = false; // 현재 Focus 상태를 나타냄
+  late FocusNode _focusNode;
+  bool _hasFocus = false;
 
   @override
   void initState() {
     super.initState();
-    // 전달된 FocusNode가 있으면 사용하고, 없으면 새로 생성
     _focusNode = widget.focusNode ?? FocusNode();
-    _focusNode.addListener(_onFocusChange); // Focus 상태 변화 감지 리스너 추가
+    _focusNode.addListener(_onFocusChange);
   }
 
   @override
   void dispose() {
-    // 외부에서 전달받은 FocusNode는 해제하지 않음
     if (widget.focusNode == null) {
-      _focusNode.removeListener(_onFocusChange); // 리스너 제거
+      _focusNode.removeListener(_onFocusChange);
       _focusNode.dispose();
     }
     super.dispose();
   }
 
-  // Focus 상태 변화 시 호출되는 메서드
   void _onFocusChange() {
     setState(() {
       _hasFocus = _focusNode.hasFocus;
@@ -79,7 +79,6 @@ class _CTextFieldState extends ConsumerState<CTextField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        // 레이블 텍스트
         if (widget.label != null)
           Text(
             widget.label!,
@@ -89,7 +88,6 @@ class _CTextFieldState extends ConsumerState<CTextField> {
             ),
           ),
         if (widget.label != null) const SizedBox(height: 4),
-        // 텍스트 입력 필드
         TextField(
           keyboardAppearance: isDarkMode ? Brightness.dark : Brightness.light,
           controller: widget.controller,
@@ -128,12 +126,16 @@ class _CTextFieldState extends ConsumerState<CTextField> {
                     icon: const Icon(Icons.clear),
                     onPressed: () {
                       widget.controller?.clear();
+                      if (widget.onChanged != null) {
+                        widget.onChanged!('');
+                      }
+                      setState(() {});
                     },
                   )
                 : null,
           ),
+          onChanged: widget.onChanged,
         ),
-        // 에러 메시지 표시
         if (widget.errorText != null && widget.errorText!.isNotEmpty)
           Column(
             children: [
@@ -152,19 +154,15 @@ class _CTextFieldState extends ConsumerState<CTextField> {
     );
   }
 
-  // 에러 발생 시의 경계선 색상 반환
   Color _getErrorBorderColor() {
     final isDarkMode = ref.watch(themeProvider);
-
     return widget.errorText != null && widget.errorText!.isNotEmpty
         ? ThemeModel.danger(isDarkMode)
         : ThemeModel.sub5(isDarkMode);
   }
 
-  // Focus 상태에 따른 경계선 색상 반환
   Color _getFocusBorderColor() {
     final isDarkMode = ref.watch(themeProvider);
-
     return _hasFocus
         ? ThemeModel.highlight(isDarkMode)
         : ThemeModel.sub5(isDarkMode);
