@@ -145,8 +145,6 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
 
     NCameraPosition cameraPosition = await _mapController!.getCameraPosition();
 
-    debugPrint('!!!!!cameraPosition: $cameraPosition');
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,

@@ -8,6 +8,7 @@ import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 
@@ -37,7 +38,38 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
 
     if (departure.latitude == destination.latitude &&
         departure.longitude == destination.longitude) {
-      debugPrint("출발지와 목적지가 동일하여 요청을 중단합니다.");
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CDialog(
+            title: '출발지와 목적지가 같아요',
+            content: Text(
+              '다른 장소를 선택해 주세요.',
+              style: TextStyle(
+                color: ThemeModel.text(
+                  ref.read(themeProvider),
+                ),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            buttons: [
+              CButton(
+                size: CButtonSize.extraLarge,
+                label: '확인',
+                onTap: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    CupertinoPageRoute(
+                      builder: (context) => MainPage(),
+                    ),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
       return;
     }
 
@@ -50,12 +82,16 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
     _addPolylineOverlay();
   }
 
-  void _addPolylineOverlay() {
+  // 경로 오버레이 추가 및 경로 전체 영역을 표시하는 함수
+  void _addPolylineOverlay() async {
     final routePoints = ref.read(directionsProvider);
 
     if (_mapController != null && routePoints.isNotEmpty) {
-      _mapController!.clearOverlays();
-      _mapController!.addOverlay(
+      // 기존 오버레이 모두 제거
+      await _mapController!.clearOverlays();
+
+      // 경로 오버레이 추가
+      await _mapController!.addOverlay(
         NPolylineOverlay(
           id: "directions",
           coords: routePoints,
@@ -65,7 +101,19 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
           width: 4,
         ),
       );
-      debugPrint("경로 오버레이 추가");
+
+      // routePoints의 모든 좌표를 포함하는 bounds 계산
+      final bounds = NLatLngBounds.from(routePoints);
+
+      // padding을 적용하여 bounds 내 영역을 온전히 보여주는 카메라 업데이트 생성
+      final cameraUpdate = NCameraUpdate.fitBounds(
+        bounds,
+        padding: EdgeInsets.all(40),
+      );
+
+      await _mapController!.updateCamera(cameraUpdate);
+
+      debugPrint("경로 오버레이 추가 및 카메라 업데이트");
     }
   }
 
@@ -73,7 +121,6 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
     final selectedLocations = ref.watch(reverseGeocodingProvider);
-    final routePoints = ref.watch(directionsProvider);
     final taxiFare = ref.watch(directionsProvider.notifier).formattedTaxiFare;
 
     ref.listen<List<NLatLng>>(directionsProvider, (prev, next) {
@@ -126,48 +173,22 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                             options: NaverMapViewOptions(
                               mapType: NMapType.navi,
                               nightModeEnable: isDarkMode,
-                              initialCameraPosition: NCameraPosition(
-                                target: selectedLocations[
-                                            GeocodingMode.departure] !=
-                                        null
-                                    ? NLatLng(
-                                        selectedLocations[
-                                                GeocodingMode.departure]!
-                                            .latitude,
-                                        selectedLocations[
-                                                GeocodingMode.departure]!
-                                            .longitude,
-                                      )
-                                    : NLatLng(37.5665, 126.9780),
-                                zoom: 11.0,
-                              ),
                             ),
                             onMapReady: (controller) async {
                               debugPrint('Naver Map Ready');
                               _mapController = controller;
-                              controller.setLocationTrackingMode(
-                                  NLocationTrackingMode.follow);
 
                               _fetchDirections();
 
                               await Future.delayed(
-                                  const Duration(milliseconds: 800));
+                                const Duration(milliseconds: 800),
+                              );
                               if (mounted) {
-                                setState(() {
-                                  _showSkeleton = false;
-                                });
-                              }
-
-                              if (routePoints.isNotEmpty) {
-                                controller.addOverlay(NPolylineOverlay(
-                                  id: "directions",
-                                  coords: routePoints
-                                      .map((p) =>
-                                          NLatLng(p.latitude, p.longitude))
-                                      .toList(),
-                                  color: ThemeModel.highlight(isDarkMode),
-                                  width: 9,
-                                ));
+                                setState(
+                                  () {
+                                    _showSkeleton = false;
+                                  },
+                                );
                               }
                             },
                           ),

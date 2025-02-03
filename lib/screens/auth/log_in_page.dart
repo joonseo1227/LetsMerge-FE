@@ -82,7 +82,9 @@ class _LogInPageState extends ConsumerState<LogInPage> {
 
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
-        CupertinoPageRoute(builder: (context) => MainPage()),
+        CupertinoPageRoute(
+          builder: (context) => MainPage(),
+        ),
         (Route<dynamic> route) => false,
       );
     } catch (e) {
