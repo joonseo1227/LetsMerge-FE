@@ -36,15 +36,14 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       return;
     }
 
-    if (departure.latitude == destination.latitude &&
-        departure.longitude == destination.longitude) {
+    if (departure.address == destination.address) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return CDialog(
             title: '출발지와 목적지가 같아요',
             content: Text(
-              '다른 장소를 선택해 주세요.',
+              '확인 후 다시 지정해주세요.',
               style: TextStyle(
                 color: ThemeModel.text(
                   ref.read(themeProvider),
