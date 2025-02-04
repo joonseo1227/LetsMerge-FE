@@ -6,10 +6,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/auth/auth_service.dart';
 import 'package:letsmerge/screens/auth/create_account_page.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class LogInPage extends ConsumerStatefulWidget {
   const LogInPage({super.key});
@@ -19,6 +21,9 @@ class LogInPage extends ConsumerStatefulWidget {
 }
 
 class _LogInPageState extends ConsumerState<LogInPage> {
+  final supabase = Supabase.instance.client;
+  final authService = AuthService();
+
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final ValueNotifier<bool> _isButtonEnabled = ValueNotifier(false);
@@ -70,15 +75,16 @@ class _LogInPageState extends ConsumerState<LogInPage> {
 
     if (!_validate()) return;
 
+    final email = _emailController.text;
+    final password = _passwordController.text;
+
     setState(() {
       _isLoading = true;
     });
 
     try {
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
 
-      await authNotifier.signInWithEmail(email, password);
+      await authService.SignInWithEmailPassword(email, password);
 
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(

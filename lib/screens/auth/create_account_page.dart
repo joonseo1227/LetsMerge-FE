@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
+import 'package:letsmerge/screens/auth/auth_service.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CreateAccountPage extends ConsumerStatefulWidget {
   const CreateAccountPage({super.key});
@@ -12,6 +14,9 @@ class CreateAccountPage extends ConsumerStatefulWidget {
 }
 
 class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
+  final supabase = Supabase.instance.client;
+  final authService = AuthService();
+
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -27,7 +32,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   @override
   void initState() {
     super.initState();
-    _nameController.addListener(_updateButtonState);
+    // _nameController.addListener(_updateButtonState);
     _emailController.addListener(_updateButtonState);
     _passwordController.addListener(_updateButtonState);
     _confirmPasswordController.addListener(_updateButtonState);
@@ -35,13 +40,13 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
 
   // 버튼 활성화 상태 업데이트
   void _updateButtonState() {
-    final isNameNotEmpty = _nameController.text.trim().isNotEmpty;
+    // final isNameNotEmpty = _nameController.text.trim().isNotEmpty;
     final isEmailNotEmpty = _emailController.text.trim().isNotEmpty;
     final isPasswordNotEmpty = _passwordController.text.trim().isNotEmpty;
     final isConfirmPasswordNotEmpty =
         _confirmPasswordController.text.trim().isNotEmpty;
 
-    _isButtonEnabled.value = isNameNotEmpty &&
+    _isButtonEnabled.value =
         isEmailNotEmpty &&
         isPasswordNotEmpty &&
         isConfirmPasswordNotEmpty;
@@ -61,10 +66,10 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   bool _validate() {
     _clearError();
 
-    if (_nameController.text.isEmpty) {
-      setState(() => _nameError = '이름을 입력하십시오.');
-      return false;
-    }
+    // if (_nameController.text.isEmpty) {
+    //   setState(() => _nameError = '이름을 입력하십시오.');
+    //   return false;
+    // }
     if (_emailController.text.isEmpty) {
       setState(() => _emailError = '이메일을 입력하십시오.');
       return false;
@@ -85,6 +90,10 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   Future<void> _signUp() async {
     final authNotifier = ref.read(authProvider.notifier);
 
+    final name = _nameController.text.trim();
+    final email = _emailController.text.trim();
+    final password = _confirmPasswordController.text.trim();
+
     if (!_validate()) return;
 
     setState(() {
@@ -92,11 +101,8 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     });
 
     try {
-      final name = _nameController.text.trim();
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
 
-      await authNotifier.signUpWithEmail(email, password, name);
+      await authService.signUpWithEmailPassword(email, password);
 
       if (!mounted) return;
       Navigator.pop(context);
@@ -130,15 +136,15 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CTextField(
-                  label: '이름',
-                  controller: _nameController,
-                  errorText: _nameError,
-                  hint: '홍길동',
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
+                // CTextField(
+                //   label: '이름',
+                //   controller: _nameController,
+                //   errorText: _nameError,
+                //   hint: '홍길동',
+                // ),
+                // const SizedBox(
+                //   height: 16,
+                // ),
                 CTextField(
                   label: '이메일',
                   controller: _emailController,

@@ -11,6 +11,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +28,11 @@ Future<void> main() async {
   // 환경변수 로드
   await dotenv.load(fileName: 'assets/config/.env');
   debugPrint('4. Environment variables loaded.');
+
+  await Supabase.initialize(
+    url: dotenv.env['SUPABASE_PROJECT_URL'] ?? "",
+    anonKey: dotenv.env['SUPABASE_API_KEY'] ?? "",
+  );
 
   // 네이버 지도 API 초기화
   await NaverMapSdk.instance.initialize(
