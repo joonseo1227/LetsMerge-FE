@@ -61,7 +61,8 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       return;
     }
 
-    if (departure.address == destination.address) {
+    if (departure.latitude == destination.latitude &&
+        departure.longitude == destination.longitude) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -528,6 +529,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                       ),
                     ),
                     const SizedBox(width: 16),
+
                     /// 태그 추가 버튼
                     CButton(
                       onTap: () {
