@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
@@ -27,6 +28,7 @@ class CTextField extends ConsumerStatefulWidget {
   final Color? backgroundColor;
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
+  final List<TextInputFormatter>? inputFormatters;
 
   const CTextField({
     super.key,
@@ -39,6 +41,7 @@ class CTextField extends ConsumerStatefulWidget {
     this.backgroundColor,
     this.focusNode,
     this.onChanged,
+    this.inputFormatters,
   });
 
   @override
@@ -94,6 +97,7 @@ class _CTextFieldState extends ConsumerState<CTextField> {
           focusNode: _focusNode,
           obscureText: widget.obscureText,
           keyboardType: widget.keyboardType,
+          inputFormatters: widget.inputFormatters,
           textAlign: TextAlign.start,
           textAlignVertical: TextAlignVertical.center,
           style: TextStyle(

@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:letsmerge/models/bank_model.dart';
+import 'package:letsmerge/models/user_model.dart';
+import 'package:letsmerge/provider/account_provider.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
+import 'package:letsmerge/widgets/c_popup_menu.dart';
 
 class AddAccountNumberPage extends ConsumerStatefulWidget {
   const AddAccountNumberPage({super.key});
@@ -15,10 +21,37 @@ class AddAccountNumberPage extends ConsumerStatefulWidget {
 }
 
 class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
-  @override
-  void initState() {
-    super.initState();
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CDialog(
+          title: '계좌 등록',
+          content: Text(
+            message,
+            style: TextStyle(
+              color: ThemeModel.text(ref.read(themeProvider)),
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          buttons: [
+            CButton(
+              size: CButtonSize.extraLarge,
+              label: '확인',
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
+
+  BankInfo? selectedBank;
+  final TextEditingController accountController = TextEditingController();
+  final GlobalKey<CPopupMenuState> popupMenuKey = GlobalKey<CPopupMenuState>();
 
   @override
   Widget build(BuildContext context) {
@@ -44,36 +77,128 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
       ),
       body: Column(
         children: [
-          // 스크롤 가능한 콘텐츠
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     CTextField(
-                      keyboardType: TextInputType.number,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: false,
+                        signed: false,
+                      ),
                       label: '계좌번호',
+                      controller: accountController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(14),
+                      ],
                     ),
-                    SizedBox(
-                      height: 16,
+                    const SizedBox(height: 32),
+                    Text(
+                      '은행 선택',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: ThemeModel.text(isDarkMode),
+                      ),
                     ),
-                    CTextField(
-                      label: '이름',
+                    const SizedBox(height: 8),
+                    CPopupMenu(
+                      key: popupMenuKey,
+                      button: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
+                        decoration: BoxDecoration(
+                          color: ThemeModel.surface(isDarkMode),
+                          border: Border(
+                              bottom: BorderSide(
+                            color: ThemeModel.sub5(isDarkMode),
+                          )),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              selectedBank?.name ?? '은행을 선택하세요.',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: selectedBank != null
+                                    ? ThemeModel.text(isDarkMode)
+                                    : ThemeModel.hintText(isDarkMode),
+                              ),
+                            ),
+                            Transform.rotate(
+                              angle: 1.57,
+                              child: Icon(
+                                Icons.navigate_next_rounded,
+                                color: ThemeModel.hintText(isDarkMode),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      dropdownWidth: MediaQuery.of(context).size.width - 32,
+                      dropdown: Container(
+                        constraints: const BoxConstraints(maxHeight: 300),
+                        child: ListView(
+                          shrinkWrap: true,
+                          padding: EdgeInsets.zero,
+                          children: bankList.map((bank) {
+                            return CInkWell(
+                              onTap: () {
+                                setState(() => selectedBank = bank);
+                                popupMenuKey.currentState?.hideDropdown();
+                              },
+                              child: Container(
+                                alignment: Alignment.centerLeft,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 16, horizontal: 16),
+                                child: Text(
+                                  bank.name,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: ThemeModel.text(isDarkMode),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
           ),
-          // 버튼 영역
           Container(
             color: ThemeModel.highlight(isDarkMode),
             child: SafeArea(
               top: false,
               child: CButton(
                 onTap: () {
+                  final accountNumber = accountController.text;
+                  if (accountController.text.isEmpty) {
+                    _showErrorDialog('계좌번호를 입력해주세요.');
+                    return;
+                  } else if (accountNumber.length < 10 ||
+                      accountNumber.length > 14) {
+                    _showErrorDialog('유효한 계좌번호를 입력해주세요.');
+                    return;
+                  }
+                  if (selectedBank == null) {
+                    _showErrorDialog('은행을 선택해주세요.');
+                    return;
+                  }
+
+                  ref.read(userProvider.notifier).addAccount(
+                        Account(
+                          accountNumber: accountController.text,
+                          bankName: selectedBank!.name,
+                        ),
+                      );
                   Navigator.pop(context);
                 },
                 size: CButtonSize.extraLarge,
