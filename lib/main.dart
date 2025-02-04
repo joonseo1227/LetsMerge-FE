@@ -54,7 +54,7 @@ Future<void> main() async {
       overrides: [
         themeProvider.overrideWith((ref) => themeNotifier),
       ],
-      child: const MyApp(),
+      child: MyApp(),
     ),
   );
   debugPrint('7. App started.');
@@ -79,14 +79,12 @@ Future<void> _handleLocationPermission() async {
 }
 
 class MyApp extends ConsumerWidget {
-  const MyApp({super.key});
+  final SupabaseClient _supabase = Supabase.instance.client;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 다크모드 상태 값
     final isDarkMode = ref.watch(themeProvider);
-    // 사용자 인증 상태
-    final user = ref.watch(authProvider);
 
     return MaterialApp(
       title: '렛츠머지',
@@ -97,7 +95,24 @@ class MyApp extends ConsumerWidget {
       theme: ThemeModel.lightTheme,
       darkTheme: ThemeModel.darkTheme,
       // 로그인 여부에 따라 다른 첫 화면을 보여줌
-      home: user != null ? const MainPage() : const LogInPage(),
+      home: StreamBuilder(
+        stream: _supabase.auth.onAuthStateChange,
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting) {
+            return Scaffold(
+              body: Center(child: CircularProgressIndicator(),),
+            );
+          }
+
+          final session = snapshot.hasData ? snapshot.data!.session : null;
+
+          if (session != null) {
+            return MainPage();
+          } else {
+            return LogInPage();
+          }
+        },
+      ),
     );
   }
 }

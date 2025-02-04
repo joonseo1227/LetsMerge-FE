@@ -4,13 +4,12 @@ import 'package:letsmerge/server/rest_api.dart';
 class NaverSearchProvider {
   Future<dynamic> SearchPlace({
     required String query,
-    int display = 10,
+    int display = 5,
   }) async {
     final params = {
       'query': query,
       'display': display.toString()
     };
-
     try {
       final api = NaverSearchAPIRequest('local.json');
       Map<String, dynamic> response = await api.send(HTTPMethod.get, params: params);
