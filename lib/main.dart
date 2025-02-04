@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
@@ -90,6 +91,16 @@ class MyApp extends ConsumerWidget {
       // 라이트/다크 테마 설정
       theme: ThemeModel.lightTheme,
       darkTheme: ThemeModel.darkTheme,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      locale: const Locale('ko', 'KR'),
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('ko', 'KR'),
+      ],
       // 로그인 여부에 따라 다른 첫 화면을 보여줌
       home: user != null ? const MainPage() : const LogInPage(),
     );

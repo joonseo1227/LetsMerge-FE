@@ -14,16 +14,16 @@ final directionsProvider =
 class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
   DirectionsNotifier() : super([]);
 
-  String? _formattedTaxiFare;
+  int? _taxiFare;
 
-  String? get formattedTaxiFare => _formattedTaxiFare;
+  int? get taxiFare => _taxiFare;
 
   Future<void> fetchDirections(
       double startLat, double startLng, double endLat, double endLng) async {
     //출발지와 목적지가 동일한 경우
     if (startLat == endLat && startLng == endLng) {
       debugPrint("출발지와 목적지가 동일하여 경로 요청을 취소합니다.");
-      _formattedTaxiFare = null;
+      _taxiFare = null;
       state = [];
       return;
     }
@@ -46,7 +46,7 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
 
         if (data['route'] == null) {
           debugPrint("route 데이터 없음");
-          _formattedTaxiFare = null;
+          _taxiFare = null;
           state = [];
           return;
         }
@@ -54,7 +54,7 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
         var trafast = data['route']['trafast'];
         if (trafast == null || trafast.isEmpty) {
           debugPrint("trafast 경로 없음.");
-          _formattedTaxiFare = null;
+          _taxiFare = null;
           state = [];
           return;
         }
@@ -62,9 +62,8 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
         var route = trafast[0]['path'];
         var summary = trafast[0]['summary'];
 
-        _formattedTaxiFare =
-            NumberFormat('#,###', 'ko_KR').format(summary['taxiFare']);
-        debugPrint("예상 택시비: $_formattedTaxiFare 원");
+        _taxiFare = summary['taxiFare'];
+        debugPrint("예상 택시비: $_taxiFare");
 
         List<NLatLng> routePoints = route
             .map<NLatLng>(
@@ -76,15 +75,17 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
             .toList(); // 위도, 경도 순서 변환
 
         state = routePoints;
+        state = [...state];
       } else {
         debugPrint("경로 요청 실패: ${response.statusCode}");
-        _formattedTaxiFare = null;
+        _taxiFare = null;
         state = [];
       }
     } catch (e) {
       debugPrint("경로 요청 오류: $e");
-      _formattedTaxiFare = null;
+      _taxiFare = null;
       state = [];
     }
   }
 }
+

@@ -2,15 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/directions_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_datetime_picker.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
+import 'package:letsmerge/widgets/c_tag.dart';
+import 'package:letsmerge/widgets/c_text_field.dart';
 
 class TaxiGroupCreatePage extends ConsumerStatefulWidget {
   const TaxiGroupCreatePage({super.key});
@@ -24,6 +29,26 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   NaverMapController? _mapController;
   bool _showSkeleton = true;
   final _mapKey = UniqueKey();
+  final TextEditingController _clothingController = TextEditingController();
+  final GlobalKey<CPopupMenuState> popupMenuKey = GlobalKey<CPopupMenuState>();
+  final List<String> _clothingTags = [];
+  int? selectedMemberCount;
+  DateTime? selectedDateTime;
+
+  void _addClothingTag(String tag) {
+    if (tag.isNotEmpty && !_clothingTags.contains(tag)) {
+      setState(() {
+        _clothingTags.add(tag);
+      });
+      _clothingController.clear();
+    }
+  }
+
+  void _removeClothingTag(String tag) {
+    setState(() {
+      _clothingTags.remove(tag);
+    });
+  }
 
   void _fetchDirections() async {
     final selectedLocations = ref.read(reverseGeocodingProvider);
@@ -120,7 +145,10 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
     final selectedLocations = ref.watch(reverseGeocodingProvider);
-    final taxiFare = ref.watch(directionsProvider.notifier).formattedTaxiFare;
+    final taxiFare = ref.watch(directionsProvider.notifier).taxiFare;
+    final formattedTaxiFare = taxiFare != null
+        ? NumberFormat('#,###', 'ko_KR').format(taxiFare)
+        : '-';
 
     ref.listen<List<NLatLng>>(directionsProvider, (prev, next) {
       _addPolylineOverlay();
@@ -328,13 +356,32 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                             opacity:
                                 _showSkeleton || taxiFare == null ? 0.0 : 1.0,
                             duration: const Duration(milliseconds: 200),
-                            child: Text(
-                              "$taxiFare원",
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w500,
-                                color: ThemeModel.text(isDarkMode),
-                              ),
+                            child: Row(
+                              children: [
+                                Text(
+                                  "${formattedTaxiFare}원",
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.text(isDarkMode),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                if (selectedMemberCount != null &&
+                                    taxiFare != null)
+                                  Text(
+                                    // 인원수에 따라 택시비 분할
+                                    "1인당 ${NumberFormat('#,###', 'ko_KR').format((taxiFare / selectedMemberCount!).round())}원",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color:
+                                          ThemeModel.highlightText(isDarkMode),
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                           if (_showSkeleton || taxiFare == null)
@@ -346,7 +393,191 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                       ),
                     ],
                   ),
-                )
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Row(
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '최대 인원 수',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: ThemeModel.text(isDarkMode),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        CPopupMenu(
+                          key: popupMenuKey,
+                          button: Container(
+                            width: 130,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 16),
+                            decoration: BoxDecoration(
+                              color: ThemeModel.surface(isDarkMode),
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: ThemeModel.sub5(isDarkMode),
+                                ),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  selectedMemberCount != null
+                                      ? '$selectedMemberCount명'
+                                      : '인원 선택',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: selectedMemberCount != null
+                                        ? ThemeModel.text(isDarkMode)
+                                        : ThemeModel.hintText(isDarkMode),
+                                  ),
+                                ),
+                                Transform.rotate(
+                                  angle: 1.57,
+                                  child: Icon(
+                                    Icons.navigate_next_rounded,
+                                    color: ThemeModel.hintText(isDarkMode),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          dropdownWidth: 120,
+                          dropdown: Container(
+                            constraints: const BoxConstraints(maxHeight: 300),
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: 3,
+                              itemBuilder: (context, index) {
+                                final count = index + 2;
+                                return CInkWell(
+                                  onTap: () {
+                                    setState(() => selectedMemberCount = count);
+                                    popupMenuKey.currentState?.hideDropdown();
+                                  },
+                                  child: Container(
+                                    alignment: Alignment.centerLeft,
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16, horizontal: 16),
+                                    child: Text(
+                                      '$count명',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: ThemeModel.text(isDarkMode),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      width: 16,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '택시팟 날짜/시간',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: ThemeModel.text(isDarkMode),
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          CDateTimePicker(
+                            onDateTimeSelected: (dateTime) {
+                              setState(() {
+                                selectedDateTime = dateTime;
+                              });
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+                Text(
+                  '알아보기 쉬운 옷차림 입력',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: ThemeModel.text(isDarkMode),
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: CTextField(
+                        hint: "예: 검정 코트, 청바지",
+                        controller: _clothingController,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    /// 태그 추가 버튼
+                    CButton(
+                      onTap: () {
+                        _addClothingTag(_clothingController.text.trim());
+                      },
+                      style: CButtonStyle.secondary(isDarkMode),
+                      label: '추가',
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+
+                /// 옷차림 태그 리스트
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: _clothingTags.map((tag) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 8),
+                      decoration: ShapeDecoration(
+                        color: TagColor.grey.backgroundColor(isDarkMode),
+                        shape: const StadiumBorder(),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            tag,
+                            style: TextStyle(
+                              color: TagColor.blue.textColor(isDarkMode),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          GestureDetector(
+                            onTap: () => _removeClothingTag(tag),
+                            child: Icon(
+                              Icons.close,
+                              size: 14,
+                              color: TagColor.blue.textColor(isDarkMode),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
               ],
             ),
           ),
@@ -357,7 +588,9 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
         padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: SafeArea(
           child: CButton(
-            onTap: () {},
+            onTap: () {
+              Navigator.pop(context);
+            },
             size: CButtonSize.extraLarge,
             label: '택시팟 만들기',
             icon: Icons.navigate_next,
