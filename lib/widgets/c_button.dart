@@ -71,7 +71,7 @@ class CButtonStyle {
   factory CButtonStyle.ghost(bool isDarkMode) {
     return CButtonStyle(
       backgroundColor: Colors.transparent,
-      labelColor: ThemeModel.highlight(isDarkMode),
+      labelColor: ThemeModel.highlightText(isDarkMode),
       iconColor: ThemeModel.highlight(isDarkMode),
     );
   }

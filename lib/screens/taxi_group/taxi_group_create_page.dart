@@ -360,7 +360,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                             child: Row(
                               children: [
                                 Text(
-                                  "${formattedTaxiFare}원",
+                                  "$formattedTaxiFare원",
                                   style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.w500,
@@ -374,7 +374,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                     taxiFare != null)
                                   Text(
                                     // 인원수에 따라 택시비 분할
-                                    "1인당 ${NumberFormat('#,###', 'ko_KR').format((taxiFare / selectedMemberCount!).round())}원",
+                                    "1인당 ${NumberFormat('#,###', 'ko_KR').format((taxiFare / (selectedMemberCount! + 1)).round())}원",
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -398,127 +398,87 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                 const SizedBox(
                   height: 16,
                 ),
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '최대 인원 수',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: ThemeModel.text(isDarkMode),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        CPopupMenu(
-                          key: popupMenuKey,
-                          button: Container(
-                            width: 130,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 16),
-                            decoration: BoxDecoration(
-                              color: ThemeModel.surface(isDarkMode),
-                              border: Border(
-                                bottom: BorderSide(
-                                  color: ThemeModel.sub5(isDarkMode),
-                                ),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  selectedMemberCount != null
-                                      ? '$selectedMemberCount명'
-                                      : '인원 선택',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: selectedMemberCount != null
-                                        ? ThemeModel.text(isDarkMode)
-                                        : ThemeModel.hintText(isDarkMode),
-                                  ),
-                                ),
-                                Transform.rotate(
-                                  angle: 1.57,
-                                  child: Icon(
-                                    Icons.navigate_next_rounded,
-                                    color: ThemeModel.hintText(isDarkMode),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          dropdownWidth: 120,
-                          dropdown: Container(
-                            constraints: const BoxConstraints(maxHeight: 300),
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              padding: EdgeInsets.zero,
-                              itemCount: 3,
-                              itemBuilder: (context, index) {
-                                final count = index + 2;
-                                return CInkWell(
-                                  onTap: () {
-                                    setState(() => selectedMemberCount = count);
-                                    popupMenuKey.currentState?.hideDropdown();
-                                  },
-                                  child: Container(
-                                    alignment: Alignment.centerLeft,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16, horizontal: 16),
-                                    child: Text(
-                                      '$count명',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: ThemeModel.text(isDarkMode),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ],
+                    Text(
+                      '모집 인원',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: ThemeModel.text(isDarkMode),
+                      ),
                     ),
                     const SizedBox(
-                      width: 16,
+                      height: 4,
                     ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '택시팟 날짜/시간',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: ThemeModel.text(isDarkMode),
+                    Container(
+                      color: ThemeModel.surface(isDarkMode),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(3, (index) {
+                          final count = index + 1;
+                          final isSelected = selectedMemberCount == count;
+
+                          return Expanded(
+                            child: CButton(
+                              style: isSelected
+                                  ? CButtonStyle.primary(isDarkMode)
+                                  : CButtonStyle.ghost(isDarkMode),
+                              onTap: () {
+                                setState(
+                                  () {
+                                    selectedMemberCount = count;
+                                  },
+                                );
+                              },
+                              label: '$count명',
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          CDateTimePicker(
-                            onDateTimeSelected: (dateTime) {
-                              setState(() {
-                                selectedDateTime = dateTime;
-                              });
-                            },
-                          ),
-                        ],
+                          );
+                        }),
                       ),
                     ),
                   ],
                 ),
-
-                const SizedBox(height: 16),
+                const SizedBox(
+                  height: 16,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '출발 시각',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: ThemeModel.text(isDarkMode),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    CDateTimePicker(
+                      onDateTimeSelected: (dateTime) {
+                        setState(
+                          () {
+                            selectedDateTime = dateTime;
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
                 Text(
-                  '알아보기 쉬운 옷차림 입력',
+                  '내 옷차림',
                   style: TextStyle(
                     fontSize: 14,
                     color: ThemeModel.text(isDarkMode),
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(
+                  height: 4,
+                ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -536,49 +496,55 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                         _addClothingTag(_clothingController.text.trim());
                       },
                       style: CButtonStyle.secondary(isDarkMode),
-                      label: '추가',
+                      icon: Icons.add,
                     ),
                   ],
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(
+                  height: 16,
+                ),
 
                 /// 옷차림 태그 리스트
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: _clothingTags.map((tag) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 8),
-                      decoration: ShapeDecoration(
-                        color: TagColor.grey.backgroundColor(isDarkMode),
-                        shape: const StadiumBorder(),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            tag,
-                            style: TextStyle(
-                              color: TagColor.blue.textColor(isDarkMode),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
+                  children: _clothingTags.map(
+                    (tag) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        decoration: ShapeDecoration(
+                          color: TagColor.grey.backgroundColor(isDarkMode),
+                          shape: const StadiumBorder(),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              tag,
+                              style: TextStyle(
+                                color: TagColor.blue.textColor(isDarkMode),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 4),
-                          GestureDetector(
-                            onTap: () => _removeClothingTag(tag),
-                            child: Icon(
-                              Icons.close,
-                              size: 14,
-                              color: TagColor.blue.textColor(isDarkMode),
+                            const SizedBox(width: 4),
+                            GestureDetector(
+                              onTap: () => _removeClothingTag(tag),
+                              child: Icon(
+                                Icons.close,
+                                size: 14,
+                                color: TagColor.blue.textColor(isDarkMode),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                          ],
+                        ),
+                      );
+                    },
+                  ).toList(),
                 ),
               ],
             ),

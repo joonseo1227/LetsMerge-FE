@@ -5,6 +5,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/dev/button_gallery_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_datetime_picker.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
@@ -73,6 +74,14 @@ class _DevPageState extends ConsumerState<DevPage> {
                 SizedBox(height: 16),
                 CSearchBar(
                   hint: 'hint',
+                ),
+                SizedBox(height: 16),
+                CDateTimePicker(
+                  onDateTimeSelected: (dateTime) {
+                    setState(
+                      () {},
+                    );
+                  },
                 ),
                 SizedBox(height: 16),
                 CSwitch(
