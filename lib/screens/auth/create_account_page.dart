@@ -91,9 +91,9 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   Future<void> _signUp() async {
     final authNotifier = ref.read(authProvider.notifier);
 
-    final name = _nameController.text.trim();
-    final email = _emailController.text.trim();
-    final password = _confirmPasswordController.text.trim();
+    final name = _nameController.text;
+    final email = _emailController.text;
+    final password = _confirmPasswordController.text;
 
     if (!_validate()) return;
 
@@ -103,7 +103,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
 
     try {
 
-      await authService.signUpWithEmailPassword(email, password);
+      await authService.signUpWithEmailPassword(email, password, name);
 
       if (!mounted) return;
       Navigator.pop(context);

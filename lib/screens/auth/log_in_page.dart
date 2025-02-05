@@ -84,7 +84,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
 
     try {
 
-      await authService.SignInWithEmailPassword(email, password);
+      await authService.signInWithEmailPassword(email, password);
 
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(

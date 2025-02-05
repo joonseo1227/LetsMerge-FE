@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/provider/auth_provider.dart';
 import 'package:letsmerge/screens/customer_support_page.dart';
 import 'package:letsmerge/screens/dev/dev_page.dart';
 import 'package:letsmerge/screens/history_page.dart';
@@ -14,6 +13,7 @@ import 'package:letsmerge/screens/profile_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/screens/terms_and_policies_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AllTab extends ConsumerStatefulWidget {
   const AllTab({super.key});
@@ -23,10 +23,17 @@ class AllTab extends ConsumerStatefulWidget {
 }
 
 class _AllTabState extends ConsumerState<AllTab> {
+  final supabase = Supabase.instance.client;
+
+  String? userName() {
+    final User? user = supabase.auth.currentUser;
+    final Map<String, dynamic>? metadata = user?.userMetadata;
+    return metadata?['name'];
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-    final user = ref.watch(authProvider);
 
     return AnnotatedRegion(
       value: isDarkMode
@@ -92,7 +99,7 @@ class _AllTabState extends ConsumerState<AllTab> {
                             width: 16,
                           ),
                           Text(
-                            user?.displayName ?? '사용자 이름 없음',
+                            userName() ?? '사용자 이름 없음',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w600,

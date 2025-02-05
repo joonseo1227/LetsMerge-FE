@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
+import 'package:letsmerge/screens/auth/auth_service.dart';
 import 'package:letsmerge/screens/auth/log_in_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
@@ -22,6 +23,7 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final authService = AuthService();
     final isDarkMode = ref.watch(themeProvider);
 
     return Scaffold(
@@ -157,9 +159,7 @@ class SettingsPage extends ConsumerWidget {
                                     label: '로그아웃',
                                     onTap: () async {
                                       try {
-                                        await ref
-                                            .read(authProvider.notifier)
-                                            .signOut();
+                                        authService.signOut();
                                         if (context.mounted) {
                                           Navigator.of(context)
                                               .pushAndRemoveUntil(
@@ -291,10 +291,7 @@ class SettingsPage extends ConsumerWidget {
                                           if (emailError == null &&
                                               passwordError == null) {
                                             try {
-                                              await ref
-                                                  .read(authProvider.notifier)
-                                                  .deleteAccount(
-                                                      email, password);
+                                              authService.deleteUser(email, password);
                                               if (context.mounted) {
                                                 Navigator.of(context)
                                                     .pushAndRemoveUntil(
