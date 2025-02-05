@@ -15,19 +15,37 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
   DirectionsNotifier() : super([]);
 
   int? _taxiFare;
+  double _roundPrecision = 0.0001; // 약 11m 오차
 
   int? get taxiFare => _taxiFare;
 
-  Future<void> fetchDirections(
-      double startLat, double startLng, double endLat, double endLng) async {
-    //출발지와 목적지가 동일한 경우
-    if (startLat == endLat && startLng == endLng) {
-      debugPrint("출발지와 목적지가 동일하여 경로 요청을 취소합니다.");
-      _taxiFare = null;
-      state = [];
-      return;
+  // 좌표 반올림
+  double _roundCoordinate(double value) {
+    return (value / _roundPrecision).round() * _roundPrecision;
+  }
+
+  // 두 좌표가 같은 위치인지 확인
+  bool isSameLocation(double lat1, double lng1, double lat2, double lng2) {
+    return _roundCoordinate(lat1) == _roundCoordinate(lat2) &&
+        _roundCoordinate(lng1) == _roundCoordinate(lng2);
+  }
+
+  Future<bool> checkFetchDirections(
+      double startLat,
+      double startLng,
+      double endLat,
+      double endLng,
+      ) async {
+    if (isSameLocation(startLat, startLng, endLat, endLng)) {
+      return false; // 출발지와 목적지가 동일하다고 판단
     }
 
+    await fetchDirections(startLat, startLng, endLat, endLng);
+    return true; // 정상적으로 경로 요청
+  }
+
+  Future<void> fetchDirections(
+      double startLat, double startLng, double endLat, double endLng) async {
     String url =
         'https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=$startLng,$startLat&goal=$endLng,$endLat&option=trafast';
 
@@ -68,11 +86,11 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
         List<NLatLng> routePoints = route
             .map<NLatLng>(
               (point) => NLatLng(
-                point[1],
-                point[0],
-              ),
-            )
-            .toList(); // 위도, 경도 순서 변환
+            point[1],
+            point[0],
+          ),
+        )
+            .toList();
 
         state = routePoints;
         state = [...state];
@@ -88,4 +106,3 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
     }
   }
 }
-

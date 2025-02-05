@@ -52,6 +52,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
 
   void _fetchDirections() async {
     final selectedLocations = ref.read(reverseGeocodingProvider);
+    final directionsNotifier = ref.read(directionsProvider.notifier);
 
     final departure = selectedLocations[GeocodingMode.departure];
     final destination = selectedLocations[GeocodingMode.destination];
@@ -61,8 +62,17 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       return;
     }
 
-    if (departure.latitude == destination.latitude &&
-        departure.longitude == destination.longitude) {
+    // 동일한 위치인지 확인 및 경로 요청
+    final checkFetchDirections = await directionsNotifier.checkFetchDirections(
+      departure.latitude,
+      departure.longitude,
+      destination.latitude,
+      destination.longitude,
+    );
+
+    if (!checkFetchDirections) {
+      if (!mounted) return;
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -71,9 +81,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
             content: Text(
               '확인 후 다시 지정해주세요.',
               style: TextStyle(
-                color: ThemeModel.text(
-                  ref.read(themeProvider),
-                ),
+                color: ThemeModel.text(ref.read(themeProvider)),
                 fontSize: 16,
                 fontWeight: FontWeight.w400,
               ),
@@ -84,10 +92,8 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                 label: '확인',
                 onTap: () {
                   Navigator.of(context).pushAndRemoveUntil(
-                    CupertinoPageRoute(
-                      builder: (context) => MainPage(),
-                    ),
-                    (Route<dynamic> route) => false,
+                    CupertinoPageRoute(builder: (context) => MainPage()),
+                        (Route<dynamic> route) => false,
                   );
                 },
               ),
@@ -98,12 +104,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       return;
     }
 
-    ref.read(directionsProvider.notifier).fetchDirections(
-          departure.latitude,
-          departure.longitude,
-          destination.latitude,
-          destination.longitude,
-        );
+    // 정상적인 경우 경로 오버레이 추가
     _addPolylineOverlay();
   }
 
