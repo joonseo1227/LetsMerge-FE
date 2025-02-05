@@ -74,17 +74,44 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CalendarDatePicker(
-                initialDate: _selectedDate,
-                firstDate: DateTime(2020),
-                lastDate: DateTime(2030),
-                onDateChanged: (date) {
-                  if (mounted) {
-                    setState(() {
-                      _selectedDate = date;
-                    });
-                  }
-                },
+              Theme(
+                data: (isDarkMode ? ThemeModel.darkTheme : ThemeModel.lightTheme).copyWith(
+                  datePickerTheme: DatePickerThemeData(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                    dayBackgroundColor: WidgetStateProperty.resolveWith(
+                      (states) {
+                        return states.contains(WidgetState.selected)
+                            ? ThemeModel.highlight(isDarkMode)
+                            : ThemeModel.surface(isDarkMode);
+                      },
+                    ),
+                    dayShape: WidgetStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(0),
+                      ),
+                    ),
+                    weekdayStyle: TextStyle(
+                      color: ThemeModel.text(isDarkMode),
+                      fontWeight: FontWeight.bold,
+                    ),
+                    headerForegroundColor: ThemeModel.text(isDarkMode),
+                    headerBackgroundColor: ThemeModel.surface(isDarkMode),
+                  ),
+                ),
+                child: CalendarDatePicker(
+                  initialDate: _selectedDate,
+                  firstDate: DateTime(2020),
+                  lastDate: DateTime(2030),
+                  onDateChanged: (date) {
+                    if (mounted) {
+                      setState(() {
+                        _selectedDate = date;
+                      });
+                    }
+                  },
+                ),
               ),
               Stack(
                 alignment: Alignment.center,
@@ -243,8 +270,7 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
                     style: TextStyle(
                       fontSize: 20,
                       color: isSelected
-                          ? ThemeModel.highlightText(
-                              ref.watch(themeProvider))
+                          ? ThemeModel.highlightText(ref.watch(themeProvider))
                           : ThemeModel.sub5(ref.watch(themeProvider)),
                       fontWeight:
                           isSelected ? FontWeight.bold : FontWeight.normal,
