@@ -37,8 +37,8 @@ class NaverSearchAPIRequest {
 
       final headers = {
         'Content-Type': 'application/json',
-        'X-Naver-Client-Id': "IVNoHjXB7itw9IFlQPxT",
-        'X-Naver-Client-Secret': "zDvcSlFCE0",
+        'X-Naver-Client-Id': dotenv.env['X-Naver-Client-Id'] ?? "",
+        'X-Naver-Client-Secret': dotenv.env['X-Naver-Client-Secret'] ?? "",
       };
 
       request.headers.addAll(headers);
