@@ -81,6 +81,8 @@ Future<void> _handleLocationPermission() async {
 class MyApp extends ConsumerWidget {
   final SupabaseClient _supabase = Supabase.instance.client;
 
+  MyApp({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // 다크모드 상태 값
@@ -108,9 +110,11 @@ class MyApp extends ConsumerWidget {
       home: StreamBuilder(
         stream: _supabase.auth.onAuthStateChange,
         builder: (context, snapshot) {
-          if(snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Scaffold(
-              body: Center(child: CircularProgressIndicator(),),
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
             );
           }
 

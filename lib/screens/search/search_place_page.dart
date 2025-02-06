@@ -1,22 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/map_model.dart';
 import 'package:letsmerge/provider/map_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/marker_page.dart';
-import 'package:letsmerge/server/rest_api.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 
-class SearchPage extends ConsumerStatefulWidget {
-  const SearchPage({super.key});
+class SearchPlacePage extends ConsumerStatefulWidget {
+  const SearchPlacePage({super.key});
 
   @override
-  ConsumerState<SearchPage> createState() => _SearchPageState();
+  ConsumerState<SearchPlacePage> createState() => _SearchPlacePageState();
 }
 
-class _SearchPageState extends ConsumerState<SearchPage> {
+class _SearchPlacePageState extends ConsumerState<SearchPlacePage> {
   final TextEditingController _searchController = TextEditingController();
   List<NaverSearchResult> _searchResults = [];
   final FocusNode _focusNode = FocusNode();
@@ -45,15 +43,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
     try {
       final provider = NaverSearchProvider();
-      List<NaverSearchResult> results = await provider.SearchPlace(query: query);
+      List<NaverSearchResult> results =
+          await provider.SearchPlace(query: query);
       setState(() => _searchResults = results);
     } catch (e) {
-      print("[Error] 검색 실패: $e");
+      debugPrint("[Error] 검색 실패: $e");
     } finally {
       setState(() => _isLoading = false);
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +70,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               Expanded(
                 child: CSearchBar(
                   hint: '검색',
-                  focusNode: _focusNode, // 포커스 노드 전달
+                  focusNode: _focusNode,
                   controller: _searchController,
                   onSubmitted: (value) {
                     _searchPlaces();
@@ -90,26 +88,30 @@ class _SearchPageState extends ConsumerState<SearchPage> {
           children: [
             Expanded(
               child: ListView.separated(
-                  itemCount: _searchResults.length,
-                  itemBuilder: (context, index) {
-                    final place = _searchResults[index];
-                    return ListTile(
-                      title: Text(
-                        place.title,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle: Text(place.address),
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context)=>MarkerPage(title: place.title, mapX: place.mapX / 1e7, mapY: place.mapY / 1e7,))
-                        );
-                      },
-                    );
-                  },
-                  separatorBuilder: (context,index) {
-                    return Divider();
-                  },
+                itemCount: _searchResults.length,
+                itemBuilder: (context, index) {
+                  final place = _searchResults[index];
+                  return ListTile(
+                    title: Text(
+                      place.title,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(place.address),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MarkerPage(
+                                    title: place.title,
+                                    mapX: place.mapX / 1e7,
+                                    mapY: place.mapY / 1e7,
+                                  )));
+                    },
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return Divider();
+                },
               ),
             ),
           ],

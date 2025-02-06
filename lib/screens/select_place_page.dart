@@ -10,23 +10,23 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
-import 'package:letsmerge/screens/search_page.dart';
+import 'package:letsmerge/screens/search/search_place_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_create_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
-class GeocodingPage extends ConsumerStatefulWidget {
+class SelectPlacePage extends ConsumerStatefulWidget {
   final GeocodingMode mode;
 
-  const GeocodingPage({super.key, required this.mode});
+  const SelectPlacePage({super.key, required this.mode});
 
   @override
-  ConsumerState<GeocodingPage> createState() => _GeocodingPageState();
+  ConsumerState<SelectPlacePage> createState() => _SelectPlacePageState();
 }
 
-class _GeocodingPageState extends ConsumerState<GeocodingPage> {
+class _SelectPlacePageState extends ConsumerState<SelectPlacePage> {
   NaverMapController? _mapController;
   Position? _currentPosition;
   Position? _initialPosition;
@@ -277,7 +277,7 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
             onTap: () {
               Navigator.of(context).push(
                 CupertinoPageRoute(
-                  builder: (context) => SearchPage(),
+                  builder: (context) => SearchPlacePage(),
                 ),
               );
             },

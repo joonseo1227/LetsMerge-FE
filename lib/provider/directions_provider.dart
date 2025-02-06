@@ -4,7 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 final directionsProvider =
     StateNotifierProvider<DirectionsNotifier, List<NLatLng>>(
@@ -15,7 +14,7 @@ class DirectionsNotifier extends StateNotifier<List<NLatLng>> {
   DirectionsNotifier() : super([]);
 
   int? _taxiFare;
-  double _roundPrecision = 0.0001; // 약 11m 오차
+  final double _roundPrecision = 0.0001; // 약 11m 오차
 
   int? get taxiFare => _taxiFare;
 

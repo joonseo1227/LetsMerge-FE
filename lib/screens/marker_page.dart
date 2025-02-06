@@ -1,9 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/models/map_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 
 class MarkerPage extends ConsumerStatefulWidget {
@@ -31,8 +29,8 @@ class _MarkerPageState extends ConsumerState<MarkerPage> {
       value: isDarkMode
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.transparent,
-      ),
+              statusBarColor: Colors.transparent,
+            ),
       child: Scaffold(
         appBar: AppBar(title: Text(widget.title)),
         body: NaverMap(
@@ -42,7 +40,7 @@ class _MarkerPageState extends ConsumerState<MarkerPage> {
             scrollGesturesEnable: true,
             consumeSymbolTapEvents: true,
             initialCameraPosition: NCameraPosition(
-              target: NLatLng(widget.mapY,widget.mapX),
+              target: NLatLng(widget.mapY, widget.mapX),
               zoom: 10,
               bearing: 0,
               tilt: 0,
@@ -52,14 +50,13 @@ class _MarkerPageState extends ConsumerState<MarkerPage> {
           ),
           onMapReady: (controller) {
             final marker = NMarker(
-                id: 'test',
-                position: NLatLng(widget.mapY, widget.mapX));
+                id: 'test', position: NLatLng(widget.mapY, widget.mapX));
             controller.addOverlayAll({marker});
-            final onMarkerInfoWindow = NInfoWindow.onMarker(id: marker.info.id, text: widget.title);
+            final onMarkerInfoWindow =
+                NInfoWindow.onMarker(id: marker.info.id, text: widget.title);
             marker.openInfoWindow(onMarkerInfoWindow);
           },
         ),
-
       ),
     );
   }

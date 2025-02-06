@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
-import 'package:letsmerge/screens/auth/auth_service.dart';
+import 'package:letsmerge/service/auth_service.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';

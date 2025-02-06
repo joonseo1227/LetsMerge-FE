@@ -6,8 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/screens/geocoding_page.dart';
-import 'package:letsmerge/screens/search_page.dart';
+import 'package:letsmerge/screens/select_place_page.dart';
+import 'package:letsmerge/screens/search/search_place_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_preview_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
@@ -45,7 +45,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               onTap: () {
                 Navigator.of(context).push(
                   CupertinoPageRoute(
-                    builder: (context) => SearchPage(),
+                    builder: (context) => SearchPlacePage(),
                   ),
                 );
               },
@@ -96,7 +96,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     CupertinoPageRoute(
-                                      builder: (context) => GeocodingPage(
+                                      builder: (context) => SelectPlacePage(
                                           mode: GeocodingMode.departure),
                                     ),
                                   );
@@ -148,7 +148,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 onTap: () {
                                   Navigator.of(context).push(
                                     CupertinoPageRoute(
-                                      builder: (context) => GeocodingPage(
+                                      builder: (context) => SelectPlacePage(
                                           mode: GeocodingMode.destination),
                                     ),
                                   );
