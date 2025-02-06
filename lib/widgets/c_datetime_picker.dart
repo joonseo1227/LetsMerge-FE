@@ -4,6 +4,7 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_ink_well.dart';
 
 class CDateTimePicker extends ConsumerStatefulWidget {
   final Function(DateTime) onDateTimeSelected;
@@ -75,7 +76,9 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Theme(
-                data: (isDarkMode ? ThemeModel.darkTheme : ThemeModel.lightTheme).copyWith(
+                data:
+                    (isDarkMode ? ThemeModel.darkTheme : ThemeModel.lightTheme)
+                        .copyWith(
                   datePickerTheme: DatePickerThemeData(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(0),
@@ -118,16 +121,16 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
                 children: [
                   Container(
                     height: 40,
-                    color: Colors.grey.withOpacity(0.2),
+                    color: isDarkMode ? grey80 : grey10,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      _buildPeriodPicker(),
                       _buildPicker(
                           1, 12, _hourController, _selectedHourNotifier),
                       _buildPicker(
                           0, 59, _minuteController, _selectedMinuteNotifier),
-                      _buildPeriodPicker(),
                     ],
                   ),
                 ],
@@ -301,26 +304,32 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
 
-    return GestureDetector(
+    return CInkWell(
       onTap: () => _pickDateTime(context),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: ThemeModel.surface(isDarkMode),
           border: Border(
-            bottom: BorderSide(color: ThemeModel.sub5(isDarkMode)),
+            bottom: BorderSide(
+              color: ThemeModel.sub5(
+                isDarkMode,
+              ),
+            ),
           ),
         ),
         child: Row(
           children: [
             Icon(
-              Icons.calendar_month_sharp,
-              color: ThemeModel.text(isDarkMode),
+              Icons.calendar_month_outlined,
+              color: ThemeModel.sub5(isDarkMode),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(
+              width: 8,
+            ),
             Text(
               '${_selectedDate.year}/${_selectedDate.month.toString().padLeft(2, '0')}/${_selectedDate.day.toString().padLeft(2, '0')} '
-              '${_period} ${_selectedHour.toString().padLeft(2, '0')}:${_selectedMinute.toString().padLeft(2, '0')}',
+              '$_period ${_selectedHour.toString().padLeft(2, '0')}:${_selectedMinute.toString().padLeft(2, '0')}',
               style: TextStyle(
                 fontSize: 16,
                 color: ThemeModel.text(isDarkMode),
