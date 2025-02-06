@@ -75,65 +75,75 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Theme(
-                data:
-                    (isDarkMode ? ThemeModel.darkTheme : ThemeModel.lightTheme)
-                        .copyWith(
-                  datePickerTheme: DatePickerThemeData(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0),
-                    ),
-                    dayBackgroundColor: WidgetStateProperty.resolveWith(
-                      (states) {
-                        return states.contains(WidgetState.selected)
-                            ? ThemeModel.highlight(isDarkMode)
-                            : ThemeModel.surface(isDarkMode);
-                      },
-                    ),
-                    dayShape: WidgetStateProperty.all(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(0),
-                      ),
-                    ),
-                    weekdayStyle: TextStyle(
-                      color: ThemeModel.text(isDarkMode),
-                      fontWeight: FontWeight.bold,
-                    ),
-                    headerForegroundColor: ThemeModel.text(isDarkMode),
-                    headerBackgroundColor: ThemeModel.surface(isDarkMode),
-                  ),
-                ),
-                child: CalendarDatePicker(
-                  initialDate: _selectedDate,
-                  firstDate: DateTime(2020),
-                  lastDate: DateTime(2030),
-                  onDateChanged: (date) {
-                    if (mounted) {
-                      setState(() {
-                        _selectedDate = date;
-                      });
-                    }
-                  },
-                ),
-              ),
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    height: 40,
-                    color: isDarkMode ? grey80 : grey10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+              Flexible(
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      _buildPeriodPicker(),
-                      _buildPicker(
-                          1, 12, _hourController, _selectedHourNotifier),
-                      _buildPicker(
-                          0, 59, _minuteController, _selectedMinuteNotifier),
+                      Theme(
+                        data: (isDarkMode
+                                ? ThemeModel.darkTheme
+                                : ThemeModel.lightTheme)
+                            .copyWith(
+                          datePickerTheme: DatePickerThemeData(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(0),
+                            ),
+                            dayBackgroundColor: WidgetStateProperty.resolveWith(
+                              (states) {
+                                return states.contains(WidgetState.selected)
+                                    ? ThemeModel.highlight(isDarkMode)
+                                    : ThemeModel.surface(isDarkMode);
+                              },
+                            ),
+                            dayShape: WidgetStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(0),
+                              ),
+                            ),
+                            weekdayStyle: TextStyle(
+                              color: ThemeModel.text(isDarkMode),
+                              fontWeight: FontWeight.bold,
+                            ),
+                            headerForegroundColor: ThemeModel.text(isDarkMode),
+                            headerBackgroundColor:
+                                ThemeModel.surface(isDarkMode),
+                          ),
+                        ),
+                        child: CalendarDatePicker(
+                          initialDate: _selectedDate,
+                          firstDate: DateTime(2020),
+                          lastDate: DateTime(2030),
+                          onDateChanged: (date) {
+                            if (mounted) {
+                              setState(() {
+                                _selectedDate = date;
+                              });
+                            }
+                          },
+                        ),
+                      ),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            height: 40,
+                            color: isDarkMode ? grey80 : grey10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _buildPeriodPicker(),
+                              _buildPicker(1, 12, _hourController,
+                                  _selectedHourNotifier),
+                              _buildPicker(0, 59, _minuteController,
+                                  _selectedMinuteNotifier),
+                            ],
+                          ),
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
               Row(
                 children: [
@@ -330,8 +340,16 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
             Text(
               // 월, 일, 요일(한글 약어), 기간, 시간(분은 2자리) 순서로 표시
               '${_selectedDate.month}월 ${_selectedDate.day}일 '
-                  '(${['월', '화', '수', '목', '금', '토', '일'][_selectedDate.weekday - 1]}) '
-                  '$_period ${_selectedHour}:${_selectedMinute.toString().padLeft(2, '0')}',
+              '(${[
+                '월',
+                '화',
+                '수',
+                '목',
+                '금',
+                '토',
+                '일'
+              ][_selectedDate.weekday - 1]}) '
+              '$_period ${_selectedHour}:${_selectedMinute.toString().padLeft(2, '0')}',
               style: TextStyle(
                 fontSize: 16,
                 color: ThemeModel.text(isDarkMode),
