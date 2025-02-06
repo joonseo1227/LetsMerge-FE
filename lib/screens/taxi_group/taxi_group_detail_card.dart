@@ -82,6 +82,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                     child: VerticalDivider(
                       thickness: 1,
                       color: ThemeModel.sub2(isDarkMode),
+                      width: 12,
                     ),
                   ),
                   Text(
