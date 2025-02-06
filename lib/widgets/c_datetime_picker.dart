@@ -328,8 +328,10 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
               width: 8,
             ),
             Text(
-              '${_selectedDate.year}/${_selectedDate.month.toString().padLeft(2, '0')}/${_selectedDate.day.toString().padLeft(2, '0')} '
-              '$_period ${_selectedHour.toString().padLeft(2, '0')}:${_selectedMinute.toString().padLeft(2, '0')}',
+              // 월, 일, 요일(한글 약어), 기간, 시간(분은 2자리) 순서로 표시
+              '${_selectedDate.month}월 ${_selectedDate.day}일 '
+                  '(${['월', '화', '수', '목', '금', '토', '일'][_selectedDate.weekday - 1]}) '
+                  '$_period ${_selectedHour}:${_selectedMinute.toString().padLeft(2, '0')}',
               style: TextStyle(
                 fontSize: 16,
                 color: ThemeModel.text(isDarkMode),
