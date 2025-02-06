@@ -351,7 +351,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
               );
             },
             size: CButtonSize.extraLarge,
-            label: '참여하기',
+            label: '참여 신청',
             icon: Icons.navigate_next,
             width: double.maxFinite,
           ),

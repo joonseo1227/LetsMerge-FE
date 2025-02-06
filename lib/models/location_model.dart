@@ -4,7 +4,11 @@ class LocationModel {
   final String address;
   final String place;
 
-  LocationModel({required this.latitude, required this.longitude, required this.address, required this.place});
+  LocationModel(
+      {required this.latitude,
+      required this.longitude,
+      required this.address,
+      required this.place});
 
   Map<String, dynamic> toJson() {
     return {

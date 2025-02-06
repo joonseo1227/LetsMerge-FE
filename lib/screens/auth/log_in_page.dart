@@ -83,7 +83,6 @@ class _LogInPageState extends ConsumerState<LogInPage> {
     });
 
     try {
-
       await authService.signInWithEmailPassword(email, password);
 
       if (!mounted) return;

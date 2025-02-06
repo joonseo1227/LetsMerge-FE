@@ -27,13 +27,18 @@ class _CSkeletonState extends ConsumerState<CSkeleton> {
   }
 
   void _fadeIn() {
-    Future.delayed(const Duration(milliseconds: 250), () {
-      if (mounted) {
-        setState(() {
-          _opacity = 1.0;
-        });
-      }
-    });
+    Future.delayed(
+      const Duration(milliseconds: 250),
+      () {
+        if (mounted) {
+          setState(
+            () {
+              _opacity = 1.0;
+            },
+          );
+        }
+      },
+    );
   }
 
   @override

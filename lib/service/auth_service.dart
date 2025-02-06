@@ -19,7 +19,7 @@ class AuthService {
       password: password,
       data: {
         'name': name,
-      }
+      },
     );
   }
 

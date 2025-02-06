@@ -46,8 +46,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     final isConfirmPasswordNotEmpty =
         _confirmPasswordController.text.trim().isNotEmpty;
 
-    _isButtonEnabled.value =
-        isNameNotEmpty &&
+    _isButtonEnabled.value = isNameNotEmpty &&
         isEmailNotEmpty &&
         isPasswordNotEmpty &&
         isConfirmPasswordNotEmpty;
@@ -102,7 +101,6 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     });
 
     try {
-
       await authService.signUpWithEmailPassword(email, password, name);
 
       if (!mounted) return;

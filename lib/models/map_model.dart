@@ -1,5 +1,3 @@
-
-
 class NaverSearchResult {
   final String title;
   final String link;
@@ -26,7 +24,8 @@ class NaverSearchResult {
   // JSON에서 객체 변환 (Factory Constructor)
   factory NaverSearchResult.fromJson(Map<String, dynamic> json) {
     return NaverSearchResult(
-      title: json['title']?.replaceAll(RegExp(r'<[^>]*>'), '') ?? 'No Title', // HTML 태그 제거
+      title: json['title']?.replaceAll(RegExp(r'<[^>]*>'), '') ?? 'No Title',
+      // HTML 태그 제거
       link: json['link'] ?? '',
       category: json['category'] ?? 'No Category',
       description: json['description'] ?? '',

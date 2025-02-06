@@ -292,7 +292,8 @@ class SettingsPage extends ConsumerWidget {
                                           if (emailError == null &&
                                               passwordError == null) {
                                             try {
-                                              authService.deleteUser(email, password);
+                                              authService.deleteUser(
+                                                  email, password);
                                               if (context.mounted) {
                                                 Navigator.of(context)
                                                     .pushAndRemoveUntil(

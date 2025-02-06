@@ -27,10 +27,14 @@ class _TermsAndPoliciesPageState extends ConsumerState<TermsAndPoliciesPage> {
 
   Future<Map<String, TermsModel>> _loadTermsData() async {
     final data =
-    await rootBundle.loadString('assets/data/terms_and_policies.json');
+        await rootBundle.loadString('assets/data/terms_and_policies.json');
     final jsonData = json.decode(data) as Map<String, dynamic>;
-    return jsonData
-        .map((key, value) => MapEntry(key, TermsModel.fromJson(value)));
+    return jsonData.map(
+      (key, value) => MapEntry(
+        key,
+        TermsModel.fromJson(value),
+      ),
+    );
   }
 
   @override

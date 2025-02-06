@@ -48,7 +48,7 @@ class _SearchTaxiGroupPageState extends ConsumerState<SearchTaxiGroupPage> {
             children: [
               Expanded(
                 child: CSearchBar(
-                  hint: '검색',
+                  hint: '택시팟 검색',
                   focusNode: _focusNode,
                   controller: _searchController,
                   onSubmitted: (value) {},

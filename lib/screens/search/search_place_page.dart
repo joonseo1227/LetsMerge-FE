@@ -52,7 +52,7 @@ class _SearchPlacePageState extends ConsumerState<SearchPlacePage> {
     try {
       final provider = NaverSearchProvider();
       List<NaverSearchResult> results =
-          await provider.SearchPlace(query: query);
+          await provider.searchPlace(query: query);
       setState(() => _searchResults = results);
     } catch (e) {
       debugPrint("[Error] 검색 실패: $e");
@@ -77,7 +77,7 @@ class _SearchPlacePageState extends ConsumerState<SearchPlacePage> {
             children: [
               Expanded(
                 child: CSearchBar(
-                  hint: '검색',
+                  hint: '장소 검색',
                   focusNode: _focusNode,
                   controller: _searchController,
                   onSubmitted: (value) {
@@ -119,11 +119,6 @@ class _SearchPlacePageState extends ConsumerState<SearchPlacePage> {
                       Navigator.push(
                         context,
                         CupertinoPageRoute(
-                          // builder: (context) => MarkerPage(
-                          //   title: place.title,
-                          //   mapX: place.mapX / 1e7,
-                          //   mapY: place.mapY / 1e7,
-                          // ),
                           builder: (context) => SelectPlacePage(
                             mode: widget.mode,
                             longitude: place.mapX / 1e7,

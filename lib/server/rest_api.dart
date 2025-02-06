@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-enum HTTPMethod {get, post}
+enum HTTPMethod { get, post }
 
 class NaverSearchAPIRequest {
   static const String _baseUrl = "https://openapi.naver.com/v1/search/";
@@ -17,7 +17,8 @@ class NaverSearchAPIRequest {
 
   set setPath(String val) => _path = val;
 
-  Future<dynamic> send(HTTPMethod method, {Map<String, dynamic>? params}) async {
+  Future<dynamic> send(HTTPMethod method,
+      {Map<String, dynamic>? params}) async {
     try {
       // URL과 쿼리 파라미터 처리
       final uri = method == HTTPMethod.get

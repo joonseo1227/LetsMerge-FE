@@ -6,6 +6,12 @@ import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
+///
+/// [CDateTimePicker] 위젯
+///
+/// Parameter:
+/// - [onDateTimeSelected]: 선택된 날짜 및 시간을 반환하는 콜백 함수
+///
 class CDateTimePicker extends ConsumerStatefulWidget {
   final Function(DateTime) onDateTimeSelected;
 
