@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
+import 'package:letsmerge/screens/auth/auth_service.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CreateAccountPage extends ConsumerStatefulWidget {
   const CreateAccountPage({super.key});
@@ -12,6 +14,9 @@ class CreateAccountPage extends ConsumerStatefulWidget {
 }
 
 class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
+  final supabase = Supabase.instance.client;
+  final authService = AuthService();
+
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -41,7 +46,8 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     final isConfirmPasswordNotEmpty =
         _confirmPasswordController.text.trim().isNotEmpty;
 
-    _isButtonEnabled.value = isNameNotEmpty &&
+    _isButtonEnabled.value =
+        isNameNotEmpty &&
         isEmailNotEmpty &&
         isPasswordNotEmpty &&
         isConfirmPasswordNotEmpty;
@@ -85,6 +91,10 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   Future<void> _signUp() async {
     final authNotifier = ref.read(authProvider.notifier);
 
+    final name = _nameController.text;
+    final email = _emailController.text;
+    final password = _confirmPasswordController.text;
+
     if (!_validate()) return;
 
     setState(() {
@@ -92,11 +102,8 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     });
 
     try {
-      final name = _nameController.text.trim();
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
 
-      await authNotifier.signUpWithEmail(email, password, name);
+      await authService.signUpWithEmailPassword(email, password, name);
 
       if (!mounted) return;
       Navigator.pop(context);
