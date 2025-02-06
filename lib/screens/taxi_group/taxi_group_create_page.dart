@@ -353,8 +353,8 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                             opacity:
                                 _showSkeleton || taxiFare == null ? 0.0 : 1.0,
                             duration: const Duration(milliseconds: 200),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   "$formattedTaxiFare원",
@@ -364,6 +364,21 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                     color: ThemeModel.text(isDarkMode),
                                   ),
                                 ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                if (selectedMemberCount != null &&
+                                    taxiFare != null)
+                                  Text(
+                                    // 인원수에 따라 택시비 분할
+                                    "1인당 ${NumberFormat('#,###', 'ko_KR').format((taxiFare / (selectedMemberCount! + 1)).round())}원",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                      color:
+                                          ThemeModel.highlightText(isDarkMode),
+                                    ),
+                                  ),
                               ],
                             ),
                           ),
