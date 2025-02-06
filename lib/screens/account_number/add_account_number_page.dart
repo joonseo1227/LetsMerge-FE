@@ -11,6 +11,7 @@ import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddAccountNumberPage extends ConsumerStatefulWidget {
   const AddAccountNumberPage({super.key});
@@ -21,6 +22,8 @@ class AddAccountNumberPage extends ConsumerStatefulWidget {
 }
 
 class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
+  final supabase = Supabase.instance.client;
+
   void _showErrorDialog(String message) {
     showDialog(
       context: context,
@@ -84,19 +87,6 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CTextField(
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: false,
-                        signed: false,
-                      ),
-                      label: '계좌번호',
-                      controller: accountController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.digitsOnly,
-                        LengthLimitingTextInputFormatter(14),
-                      ],
-                    ),
-                    const SizedBox(height: 32),
                     Text(
                       '은행 선택',
                       style: TextStyle(
@@ -104,7 +94,9 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
                         color: ThemeModel.text(isDarkMode),
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(
+                      height: 8,
+                    ),
                     CPopupMenu(
                       key: popupMenuKey,
                       button: Container(
@@ -113,9 +105,10 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
                         decoration: BoxDecoration(
                           color: ThemeModel.surface(isDarkMode),
                           border: Border(
-                              bottom: BorderSide(
-                            color: ThemeModel.sub5(isDarkMode),
-                          )),
+                            bottom: BorderSide(
+                              color: ThemeModel.sub5(isDarkMode),
+                            ),
+                          ),
                         ),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -129,12 +122,9 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
                                     : ThemeModel.hintText(isDarkMode),
                               ),
                             ),
-                            Transform.rotate(
-                              angle: 1.57,
-                              child: Icon(
-                                Icons.navigate_next_rounded,
-                                color: ThemeModel.hintText(isDarkMode),
-                              ),
+                            Icon(
+                              Icons.keyboard_arrow_down,
+                              color: ThemeModel.hintText(isDarkMode),
                             ),
                           ],
                         ),
@@ -166,6 +156,29 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
                             );
                           }).toList(),
                         ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    CTextField(
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: false,
+                        signed: false,
+                      ),
+                      label: '계좌번호',
+                      controller: accountController,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(14),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 4,
+                    ),
+                    Text(
+                      "'${supabase.auth.currentUser?.userMetadata?['name']}'님 본인 명의의 계좌 번호를 입력하세요.",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: ThemeModel.highlightText(isDarkMode),
                       ),
                     ),
                   ],

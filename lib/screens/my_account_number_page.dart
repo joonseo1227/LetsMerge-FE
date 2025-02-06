@@ -5,7 +5,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/models/bank_model.dart';
 import 'package:letsmerge/provider/account_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/screens/add_account_number_page.dart';
+import 'package:letsmerge/screens/account_number/add_account_number_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
 
