@@ -85,6 +85,11 @@ class ThemeModel {
       selectedItemColor: grey100,
       unselectedItemColor: grey40,
     ),
+    dividerTheme: const DividerThemeData(
+      color: grey20,
+      space: 0,
+      thickness: 1,
+    ),
   );
 
   /// 다크 테마
@@ -113,6 +118,11 @@ class ThemeModel {
       backgroundColor: grey100,
       selectedItemColor: grey10,
       unselectedItemColor: grey70,
+    ),
+    dividerTheme: const DividerThemeData(
+      color: grey80,
+      space: 0,
+      thickness: 1,
     ),
   );
 }

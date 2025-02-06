@@ -74,107 +74,112 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                   Container(
                     color: ThemeModel.surface(isDarkMode),
                     width: double.maxFinite,
-                    padding: const EdgeInsets.all(16),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 8,
-                              height: 8,
-                              margin: const EdgeInsets.all(6),
-                              decoration: ShapeDecoration(
-                                color: ThemeModel.sub2(isDarkMode),
-                                shape: const CircleBorder(),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: CInkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    CupertinoPageRoute(
-                                      builder: (context) => SelectPlacePage(
-                                          mode: GeocodingMode.departure),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  selectedLocation[GeocodingMode.departure]
-                                              ?.place ==
-                                          null
-                                      ? "출발지 선택"
-                                      : selectedLocation[
-                                              GeocodingMode.departure]!
-                                          .place,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: selectedLocation[
-                                                    GeocodingMode.departure]
-                                                ?.place ==
-                                            null
-                                        ? ThemeModel.hintText(isDarkMode)
-                                        : ThemeModel.text(isDarkMode),
-                                  ),
+                        CInkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => SelectPlacePage(
+                                  mode: GeocodingMode.departure,
                                 ),
                               ),
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  margin: const EdgeInsets.all(6),
+                                  decoration: ShapeDecoration(
+                                    color: ThemeModel.sub2(isDarkMode),
+                                    shape: const CircleBorder(),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    selectedLocation[GeocodingMode.departure]
+                                                ?.place ==
+                                            null
+                                        ? "출발지 선택"
+                                        : selectedLocation[
+                                                GeocodingMode.departure]!
+                                            .place,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      color: selectedLocation[
+                                                      GeocodingMode.departure]
+                                                  ?.place ==
+                                              null
+                                          ? ThemeModel.hintText(isDarkMode)
+                                          : ThemeModel.text(isDarkMode),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(32, 8, 0, 8),
-                          child: Divider(
-                            color: ThemeModel.sub1(isDarkMode),
                           ),
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 8,
-                              height: 8,
-                              margin: const EdgeInsets.all(6),
-                              decoration: ShapeDecoration(
-                                color: ThemeModel.highlight(isDarkMode),
-                                shape: const CircleBorder(),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: CInkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(
-                                    CupertinoPageRoute(
-                                      builder: (context) => SelectPlacePage(
-                                          mode: GeocodingMode.destination),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  selectedLocation[GeocodingMode.destination]
-                                              ?.place ==
-                                          null
-                                      ? "목적지 선택"
-                                      : selectedLocation[
-                                              GeocodingMode.destination]!
-                                          .place,
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: selectedLocation[
-                                                    GeocodingMode.destination]
-                                                ?.place ==
-                                            null
-                                        ? ThemeModel.hintText(isDarkMode)
-                                        : ThemeModel.text(isDarkMode),
-                                  ),
+                        Divider(
+                          indent: 48,
+                          endIndent: 16,
+                        ),
+                        CInkWell(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              CupertinoPageRoute(
+                                builder: (context) => SelectPlacePage(
+                                  mode: GeocodingMode.destination,
                                 ),
                               ),
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.all(16),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 8,
+                                  height: 8,
+                                  margin: const EdgeInsets.all(6),
+                                  decoration: ShapeDecoration(
+                                    color: ThemeModel.highlight(isDarkMode),
+                                    shape: const CircleBorder(),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    selectedLocation[GeocodingMode.destination]
+                                                ?.place ==
+                                            null
+                                        ? "목적지 선택"
+                                        : selectedLocation[
+                                                GeocodingMode.destination]!
+                                            .place,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500,
+                                      color: selectedLocation[
+                                                      GeocodingMode.destination]
+                                                  ?.place ==
+                                              null
+                                          ? ThemeModel.hintText(isDarkMode)
+                                          : ThemeModel.text(isDarkMode),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ],
                     ),

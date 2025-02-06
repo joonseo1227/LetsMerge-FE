@@ -19,8 +19,15 @@ import 'package:letsmerge/widgets/c_text_field.dart';
 
 class SelectPlacePage extends ConsumerStatefulWidget {
   final GeocodingMode mode;
+  final double? longitude;
+  final double? latitude;
 
-  const SelectPlacePage({super.key, required this.mode});
+  const SelectPlacePage({
+    super.key,
+    required this.mode,
+    this.longitude,
+    this.latitude,
+  });
 
   @override
   ConsumerState<SelectPlacePage> createState() => _SelectPlacePageState();
@@ -78,7 +85,17 @@ class _SelectPlacePageState extends ConsumerState<SelectPlacePage> {
   void _onMapReady(NaverMapController controller) {
     _mapController = controller;
     controller.setLocationTrackingMode(NLocationTrackingMode.noFollow);
-    if (_initialPosition != null) {
+
+    // 만약 widget.mapX, widget.mapY가 null이 아니라면 선택한 장소의 좌표를 사용
+    if (widget.longitude != null && widget.latitude != null) {
+      controller.updateCamera(
+        NCameraUpdate.scrollAndZoomTo(
+          target: NLatLng(widget.latitude!, widget.longitude!),
+          zoom: 15.0,
+        ),
+      );
+    } else if (_initialPosition != null) {
+      // 그렇지 않으면 현재 위치로 설정
       controller.updateCamera(
         NCameraUpdate.scrollAndZoomTo(
           target:
@@ -87,6 +104,7 @@ class _SelectPlacePageState extends ConsumerState<SelectPlacePage> {
         ),
       );
     }
+
     Future.delayed(const Duration(milliseconds: 800), () {
       if (mounted) {
         setState(() {
@@ -277,7 +295,9 @@ class _SelectPlacePageState extends ConsumerState<SelectPlacePage> {
             onTap: () {
               Navigator.of(context).push(
                 CupertinoPageRoute(
-                  builder: (context) => SearchPlacePage(),
+                  builder: (context) => SearchPlacePage(
+                    mode: widget.mode,
+                  ),
                 ),
               );
             },

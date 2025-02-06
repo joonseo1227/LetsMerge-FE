@@ -1,14 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/map_model.dart';
+import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/map_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/screens/marker_page.dart';
+import 'package:letsmerge/screens/select_place_page.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 
 class SearchPlacePage extends ConsumerStatefulWidget {
-  const SearchPlacePage({super.key});
+  final GeocodingMode mode;
+
+  const SearchPlacePage({
+    super.key,
+    required this.mode,
+  });
 
   @override
   ConsumerState<SearchPlacePage> createState() => _SearchPlacePageState();
@@ -94,23 +102,43 @@ class _SearchPlacePageState extends ConsumerState<SearchPlacePage> {
                   return ListTile(
                     title: Text(
                       place.title,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: ThemeModel.text(isDarkMode),
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-                    subtitle: Text(place.address),
+                    subtitle: Text(
+                      place.address,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: ThemeModel.sub4(isDarkMode),
+                      ),
+                    ),
                     onTap: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => MarkerPage(
-                                    title: place.title,
-                                    mapX: place.mapX / 1e7,
-                                    mapY: place.mapY / 1e7,
-                                  )));
+                        context,
+                        CupertinoPageRoute(
+                          // builder: (context) => MarkerPage(
+                          //   title: place.title,
+                          //   mapX: place.mapX / 1e7,
+                          //   mapY: place.mapY / 1e7,
+                          // ),
+                          builder: (context) => SelectPlacePage(
+                            mode: widget.mode,
+                            longitude: place.mapX / 1e7,
+                            latitude: place.mapY / 1e7,
+                          ),
+                        ),
+                      );
                     },
                   );
                 },
                 separatorBuilder: (context, index) {
-                  return Divider();
+                  return Divider(
+                    indent: 16,
+                    endIndent: 16,
+                  );
                 },
               ),
             ),
