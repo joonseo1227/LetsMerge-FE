@@ -14,7 +14,6 @@ import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
-import 'package:letsmerge/widgets/c_tag.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
 class TaxiGroupCreatePage extends ConsumerStatefulWidget {
@@ -93,7 +92,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                 onTap: () {
                   Navigator.of(context).pushAndRemoveUntil(
                     CupertinoPageRoute(builder: (context) => MainPage()),
-                        (Route<dynamic> route) => false,
+                    (Route<dynamic> route) => false,
                   );
                 },
               ),
@@ -359,6 +358,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                 _showSkeleton || taxiFare == null ? 0.0 : 1.0,
                             duration: const Duration(milliseconds: 200),
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
                                   "$formattedTaxiFare원",
@@ -368,21 +368,6 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                     color: ThemeModel.text(isDarkMode),
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                if (selectedMemberCount != null &&
-                                    taxiFare != null)
-                                  Text(
-                                    // 인원수에 따라 택시비 분할
-                                    "1인당 ${NumberFormat('#,###', 'ko_KR').format((taxiFare / (selectedMemberCount! + 1)).round())}원",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                      color:
-                                          ThemeModel.highlightText(isDarkMode),
-                                    ),
-                                  ),
                               ],
                             ),
                           ),
@@ -501,6 +486,16 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     ),
                   ],
                 ),
+                const SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  "옷차림은 다른 사람이 알아보기 쉽게 작성해 주세요.",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: ThemeModel.highlightText(isDarkMode),
+                  ),
+                ),
 
                 const SizedBox(
                   height: 16,
@@ -518,7 +513,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                           vertical: 8,
                         ),
                         decoration: ShapeDecoration(
-                          color: TagColor.grey.backgroundColor(isDarkMode),
+                          color: ThemeModel.surface(isDarkMode),
                           shape: const StadiumBorder(),
                         ),
                         child: Row(
@@ -527,7 +522,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                             Text(
                               tag,
                               style: TextStyle(
-                                color: TagColor.blue.textColor(isDarkMode),
+                                color: ThemeModel.text(isDarkMode),
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -538,7 +533,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                               child: Icon(
                                 Icons.close,
                                 size: 14,
-                                color: TagColor.blue.textColor(isDarkMode),
+                                color: ThemeModel.text(isDarkMode),
                               ),
                             ),
                           ],
