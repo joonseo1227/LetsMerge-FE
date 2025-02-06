@@ -10,8 +10,10 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
+import 'package:letsmerge/screens/search_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_create_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
@@ -270,6 +272,29 @@ class _GeocodingPageState extends ConsumerState<GeocodingPage> {
             isDarkMode ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
         backgroundColor: Colors.transparent,
         elevation: 0,
+        actions: [
+          CInkWell(
+            onTap: () {
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => SearchPage(),
+                ),
+              );
+            },
+            child: SizedBox(
+              width: 32,
+              height: 32,
+              child: Icon(
+                Icons.search,
+                size: 28,
+                color: ThemeModel.text(isDarkMode),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 16,
+          ),
+        ],
       ),
       body: Column(
         children: [
