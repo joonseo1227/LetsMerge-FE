@@ -34,6 +34,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   int? selectedMemberCount;
   DateTime? selectedDateTime;
 
+  // 옷차림 태그 추가 함수
   void _addClothingTag(String tag) {
     if (tag.isNotEmpty && !_clothingTags.contains(tag)) {
       setState(() {
@@ -43,12 +44,14 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
     }
   }
 
+  // 옷차림 태그 제거 함수
   void _removeClothingTag(String tag) {
     setState(() {
       _clothingTags.remove(tag);
     });
   }
 
+  // directionsProvider를 통해 경로 요청하는 함수
   void _fetchDirections() async {
     final selectedLocations = ref.read(reverseGeocodingProvider);
     final directionsNotifier = ref.read(directionsProvider.notifier);
@@ -61,7 +64,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       return;
     }
 
-    // 동일한 위치인지 확인 및 경로 요청
+    // 동일한 위치인지 확인 후 경로 요청
     final checkFetchDirections = await directionsNotifier.checkFetchDirections(
       departure.latitude,
       departure.longitude,
@@ -107,9 +110,9 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
     _addPolylineOverlay();
   }
 
-  // 경로 오버레이 추가 및 경로 전체 영역을 표시하는 함수
+  // 지도에 경로 오버레이 추가 및 카메라 업데이트 함수
   void _addPolylineOverlay() async {
-    final routePoints = ref.read(directionsProvider);
+    final routePoints = ref.read(directionsProvider).routePoints;
 
     if (_mapController != null && routePoints.isNotEmpty) {
       // 기존 오버레이 모두 제거
@@ -120,14 +123,12 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
         NPolylineOverlay(
           id: "directions",
           coords: routePoints,
-          color: ThemeModel.text(
-            ref.watch(themeProvider),
-          ),
+          color: ThemeModel.text(ref.watch(themeProvider)),
           width: 4,
         ),
       );
 
-      // routePoints의 모든 좌표를 포함하는 bounds 계산
+      // 모든 좌표를 포함하는 bounds 계산
       final bounds = NLatLngBounds.from(routePoints);
 
       // padding을 적용하여 bounds 내 영역을 온전히 보여주는 카메라 업데이트 생성
@@ -146,12 +147,14 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
     final selectedLocations = ref.watch(reverseGeocodingProvider);
-    final taxiFare = ref.watch(directionsProvider.notifier).taxiFare;
+    final directionsState = ref.watch(directionsProvider);
+    final taxiFare = directionsState.taxiFare;
     final formattedTaxiFare = taxiFare != null
         ? NumberFormat('#,###', 'ko_KR').format(taxiFare)
         : '-';
 
-    ref.listen<List<NLatLng>>(directionsProvider, (prev, next) {
+    // directionsProvider 상태 변경 시 지도 오버레이를 업데이트합니다.
+    ref.listen<DirectionsState>(directionsProvider, (prev, next) {
       _addPolylineOverlay();
     });
 
@@ -162,9 +165,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
         leading: CInkWell(
           onTap: () {
             Navigator.of(context).pushAndRemoveUntil(
-              CupertinoPageRoute(
-                builder: (context) => MainPage(),
-              ),
+              CupertinoPageRoute(builder: (context) => MainPage()),
               (Route<dynamic> route) => false,
             );
           },
@@ -186,7 +187,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// 지도
+                /// 지도 영역
                 SizedBox(
                   height: 400,
                   child: Stack(
@@ -212,11 +213,9 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                 const Duration(milliseconds: 800),
                               );
                               if (mounted) {
-                                setState(
-                                  () {
-                                    _showSkeleton = false;
-                                  },
-                                );
+                                setState(() {
+                                  _showSkeleton = false;
+                                });
                               }
                             },
                           ),
@@ -228,6 +227,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
 
                 SizedBox(height: 16),
 
+                // 출발지와 목적지 정보 영역
                 Container(
                   color: ThemeModel.surface(isDarkMode),
                   width: double.maxFinite,
@@ -328,11 +328,9 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                   ),
                 ),
 
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
 
-                /// 비용 정보
+                /// 비용 정보 영역
                 Container(
                   color: ThemeModel.surface(isDarkMode),
                   width: double.infinity,
@@ -348,9 +346,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                           color: ThemeModel.sub4(isDarkMode),
                         ),
                       ),
-                      const SizedBox(
-                        height: 4,
-                      ),
+                      const SizedBox(height: 4),
                       Stack(
                         children: [
                           AnimatedOpacity(
@@ -381,9 +377,9 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
+
+                // 모집 인원 선택 영역
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -394,9 +390,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                         color: ThemeModel.text(isDarkMode),
                       ),
                     ),
-                    const SizedBox(
-                      height: 4,
-                    ),
+                    const SizedBox(height: 4),
                     Container(
                       color: ThemeModel.surface(isDarkMode),
                       child: Row(
@@ -411,11 +405,9 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                   ? CButtonStyle.primary(isDarkMode)
                                   : CButtonStyle.ghost(isDarkMode),
                               onTap: () {
-                                setState(
-                                  () {
-                                    selectedMemberCount = count;
-                                  },
-                                );
+                                setState(() {
+                                  selectedMemberCount = count;
+                                });
                               },
                               label: '$count명',
                             ),
@@ -425,9 +417,9 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
+
+                // 출발 시각 선택 영역
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -438,23 +430,19 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                         color: ThemeModel.text(isDarkMode),
                       ),
                     ),
-                    const SizedBox(
-                      height: 4,
-                    ),
+                    const SizedBox(height: 4),
                     CDateTimePicker(
                       onDateTimeSelected: (dateTime) {
-                        setState(
-                          () {
-                            selectedDateTime = dateTime;
-                          },
-                        );
+                        setState(() {
+                          selectedDateTime = dateTime;
+                        });
                       },
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
+
+                // 내 옷차림 입력 영역
                 Text(
                   '내 옷차림',
                   style: TextStyle(
@@ -462,9 +450,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     color: ThemeModel.text(isDarkMode),
                   ),
                 ),
-                const SizedBox(
-                  height: 4,
-                ),
+                const SizedBox(height: 4),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -475,8 +461,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                       ),
                     ),
                     const SizedBox(width: 16),
-
-                    /// 태그 추가 버튼
+                    // 태그 추가 버튼
                     CButton(
                       onTap: () {
                         _addClothingTag(_clothingController.text.trim());
@@ -486,9 +471,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 4,
-                ),
+                const SizedBox(height: 4),
                 Text(
                   "옷차림은 다른 사람이 알아보기 쉽게 작성해 주세요.",
                   style: TextStyle(
@@ -496,51 +479,45 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     color: ThemeModel.highlightText(isDarkMode),
                   ),
                 ),
-
-                const SizedBox(
-                  height: 16,
-                ),
-
-                /// 옷차림 태그 리스트
+                const SizedBox(height: 16),
+                // 옷차림 태그 리스트
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
-                  children: _clothingTags.map(
-                    (tag) {
-                      return Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 8,
-                        ),
-                        decoration: ShapeDecoration(
-                          color: ThemeModel.surface(isDarkMode),
-                          shape: const StadiumBorder(),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              tag,
-                              style: TextStyle(
-                                color: ThemeModel.text(isDarkMode),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
+                  children: _clothingTags.map((tag) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      decoration: ShapeDecoration(
+                        color: ThemeModel.surface(isDarkMode),
+                        shape: const StadiumBorder(),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            tag,
+                            style: TextStyle(
+                              color: ThemeModel.text(isDarkMode),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
                             ),
-                            const SizedBox(width: 4),
-                            GestureDetector(
-                              onTap: () => _removeClothingTag(tag),
-                              child: Icon(
-                                Icons.close,
-                                size: 14,
-                                color: ThemeModel.text(isDarkMode),
-                              ),
+                          ),
+                          const SizedBox(width: 4),
+                          GestureDetector(
+                            onTap: () => _removeClothingTag(tag),
+                            child: Icon(
+                              Icons.close,
+                              size: 14,
+                              color: ThemeModel.text(isDarkMode),
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                  ).toList(),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
             ),
@@ -568,6 +545,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   @override
   void dispose() {
     _mapController?.dispose();
+    _clothingController.dispose();
     super.dispose();
   }
 }
