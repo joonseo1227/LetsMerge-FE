@@ -172,6 +172,7 @@ class _LogInPageState extends ConsumerState<LogInPage> {
                     builder: (context, isEnabled, child) {
                       return CButton(
                         onTap: isEnabled ? _login : null,
+                        isLoading: _isLoading,
                         label: '로그인',
                         icon: Icons.navigate_next,
                         width: double.maxFinite,

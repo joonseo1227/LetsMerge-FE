@@ -179,6 +179,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
                   builder: (context, isEnabled, child) {
                     return CButton(
                       onTap: isEnabled ? _signUp : null,
+                      isLoading: _isLoading,
                       label: '다음',
                       icon: Icons.navigate_next,
                       width: double.maxFinite,

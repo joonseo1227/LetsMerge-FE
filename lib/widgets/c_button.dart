@@ -111,6 +111,7 @@ class CButtonSizes {
 /// - [style]: 버튼의 스타일 (CButtonStyle.primary, CButtonStyle.tertiary 등)
 /// - [width]: 버튼의 고정 너비
 /// - [onTap]: 버튼을 눌렀을 때 실행되는 콜백 함수
+/// - [isLoading]: 버튼에 로딩 인디케이터 표시
 ///
 class CButton extends ConsumerWidget {
   final String? label;
@@ -119,6 +120,7 @@ class CButton extends ConsumerWidget {
   final CButtonStyle? style;
   final double? width;
   final VoidCallback? onTap;
+  final bool isLoading;
 
   const CButton({
     super.key,
@@ -128,12 +130,13 @@ class CButton extends ConsumerWidget {
     this.style,
     this.width,
     this.onTap,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = ref.watch(themeProvider);
-    final bool isDisabled = onTap == null;
+    final bool isDisabled = onTap == null || isLoading == true;
 
     final CButtonStyle effectiveStyle =
         style ?? CButtonStyle.primary(isDarkMode);
@@ -152,6 +155,18 @@ class CButton extends ConsumerWidget {
           child: Row(
             mainAxisSize: width != null ? MainAxisSize.max : MainAxisSize.min,
             children: [
+              if(isLoading)
+                Padding(
+                  padding: EdgeInsets.only(right: 16),
+                  child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(
+                      color: ThemeModel.text(isDarkMode),
+                      strokeWidth: 1,
+                    ),
+                  ),
+                ),
               if (label != null)
                 Text(
                   label!,
