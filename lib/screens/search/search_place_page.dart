@@ -8,6 +8,7 @@ import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/map_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/select_place_page.dart';
+import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 
 class SearchPlacePage extends ConsumerStatefulWidget {
@@ -99,22 +100,7 @@ class _SearchPlacePageState extends ConsumerState<SearchPlacePage> {
                 itemCount: _searchResults.length,
                 itemBuilder: (context, index) {
                   final place = _searchResults[index];
-                  return ListTile(
-                    title: Text(
-                      place.title,
-                      style: TextStyle(
-                        color: ThemeModel.text(isDarkMode),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    subtitle: Text(
-                      place.address,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: ThemeModel.sub4(isDarkMode),
-                      ),
-                    ),
+                  return CInkWell(
                     onTap: () {
                       Navigator.push(
                         context,
@@ -127,6 +113,23 @@ class _SearchPlacePageState extends ConsumerState<SearchPlacePage> {
                         ),
                       );
                     },
+                    child: ListTile(
+                      title: Text(
+                        place.title,
+                        style: TextStyle(
+                          color: ThemeModel.text(isDarkMode),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      subtitle: Text(
+                        place.address,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: ThemeModel.sub4(isDarkMode),
+                        ),
+                      ),
+                    ),
                   );
                 },
                 separatorBuilder: (context, index) {
