@@ -59,6 +59,7 @@ class _TaxiGroupSplitMoneyPageState
                     CTextField(
                       keyboardType: TextInputType.number,
                       label: '택시비',
+                      hint: '총 금액 입력',
                       focusNode: _focusNode,
                     ),
                     Text('1인당 택시비: 1,600원'),
@@ -66,7 +67,11 @@ class _TaxiGroupSplitMoneyPageState
                     Text('대표자 계좌번호: '),
                     CButton(
                       onTap: () {
-                        Clipboard.setData(ClipboardData(text: '계좌번호'));
+                        Clipboard.setData(
+                          ClipboardData(
+                            text: '계좌번호',
+                          ),
+                        );
                       },
                       style: CButtonStyle.ghost(isDarkMode),
                       size: CButtonSize.small,
