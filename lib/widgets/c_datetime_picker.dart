@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
@@ -217,6 +218,8 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
             physics: const FixedExtentScrollPhysics(),
             onSelectedItemChanged: (index) {
               if (mounted) {
+                HapticFeedback.lightImpact();
+
                 selectedNotifier.value = index;
 
                 if (controller == _hourController) {
@@ -271,6 +274,8 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
             physics: const FixedExtentScrollPhysics(),
             onSelectedItemChanged: (index) {
               if (mounted) {
+                HapticFeedback.lightImpact();
+
                 _selectedPeriodNotifier.value = index;
                 _period = index == 0 ? '오전' : '오후';
               }
