@@ -22,8 +22,7 @@ class ReverseGeocodingNotifier
 
   Future<String> fetchAddress(double latitude, double longitude) async {
     String url =
-        'https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=$longitude,$latitude&orders=roadaddr,addr&output=json';
-    String result;
+        'https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc?coords=$longitude,$latitude&orders=roadaddr,addr,legalcode&output=json';
     debugPrint("Reverse Geocoding API 요청: $url");
 
     try {
@@ -37,30 +36,55 @@ class ReverseGeocodingNotifier
         var results = data['results'];
 
         if (results.isNotEmpty) {
-          var region = results[0]['region'];
-          var land = results[0]['land'];
+          // 주소 유형별 분리
+          var roadaddr = _findAddress(results, 'roadaddr');
+          var addr = _findAddress(results, 'addr');
+          var legalcode = _findAddress(results, 'legalcode');
 
-          String regionAddress = '${region['area1']['name']} '
-              '${region['area2']['name']} '
-              '${region['area3']['name']} '
-              '${region['area4']['name']}';
-
-          String landAddress = land != null && land['name'] != null
-              ? '${land['name']} ${land['number1']}${land['number2'] != '' ? '-${land['number2']}' : ''}'
-              : '';
-
-          result = regionAddress + landAddress;
-        } else {
-          result = '주소를 찾을 수 없습니다.';
+          // 우선순위 (도로명 -> 지번(동+지번) -> 법정동)
+          return roadaddr ?? addr ?? legalcode ?? '주소를 찾을 수 없습니다.';
         }
-      } else {
-        result = '주소 검색 실패';
+        return '주소를 찾을 수 없습니다.';
       }
+      return '주소 검색 실패';
     } catch (e) {
-      result = '주소 검색 오류';
+      return '주소 검색 오류';
+    }
+  }
+
+// 주소 유형별 포맷팅
+  String? _findAddress(List results, String type) {
+    var result = results.firstWhere(
+          (res) => res['name'] == type,
+      orElse: () => null,
+    );
+    if (result == null) return null;
+
+    var region = result['region'];
+    var land = result['land'];
+    String base = '${region['area1']['name']} ${region['area2']['name']}';
+
+    if (type == 'roadaddr' && land != null) {
+      // 도로명 주소: 시/군/구 + 도로명 + 번호
+      return '$base ${land['name']} ${_formatNumber(land)}';
+    } else if (type == 'addr' && land != null) {
+      // 지번 주소: 시/군/구 + 동 + 지번
+      return '$base ${region['area3']['name']} ${_formatNumber(land)}';
+    } else if (type == 'legalcode') {
+      // 법정동 주소: 시/군/구 + 동
+      return '$base ${region['area3']['name']}';
     }
 
-    return result;
+    return null;
+  }
+
+// 번호 포맷탕
+  String _formatNumber(Map land) {
+    String number = land['number1'] ?? '';
+    if (land['number2'] != null && land['number2'].isNotEmpty) {
+      number += '-${land['number2']}';
+    }
+    return number;
   }
 
   void setPlaceAndAddress({
