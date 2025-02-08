@@ -19,12 +19,14 @@ import 'package:letsmerge/widgets/c_text_field.dart';
 
 class SelectPlacePage extends ConsumerStatefulWidget {
   final GeocodingMode mode;
+  final String? title;
   final double? longitude;
   final double? latitude;
 
   const SelectPlacePage({
     super.key,
     required this.mode,
+    this.title,
     this.longitude,
     this.latitude,
   });
@@ -49,6 +51,10 @@ class _SelectPlacePageState extends ConsumerState<SelectPlacePage> {
     super.initState();
     _initializeInitialPosition();
     _startLocationStream();
+
+    if (widget.title != null) {
+      _placeController.text = widget.title!;
+    };
   }
 
   Future<void> _initializeInitialPosition() async {

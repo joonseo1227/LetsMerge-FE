@@ -107,6 +107,7 @@ class _SearchPlacePageState extends ConsumerState<SearchPlacePage> {
                         CupertinoPageRoute(
                           builder: (context) => SelectPlacePage(
                             mode: widget.mode,
+                            title: place.title,
                             longitude: place.mapX / 1e7,
                             latitude: place.mapY / 1e7,
                           ),
