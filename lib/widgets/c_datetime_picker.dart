@@ -5,6 +5,7 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
 ///
@@ -350,7 +351,10 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
     );
   }
 
+  // 확인 버튼 클릭 시 선택된 날짜와 시간이 현재 시간 이후인지 검증
   void _handleConfirmation(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+    final now = DateTime.now();
     final hour = _convertTo24Hour();
     final dateTime = DateTime(
       _selectedDate.year,
@@ -359,6 +363,32 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
       hour,
       _selectedMinute,
     );
+
+    // 선택된 날짜/시간이 현재 시간 이후가 아니라면 에러 다이얼로그 표시
+    if (!dateTime.isAfter(now)) {
+      showDialog(
+        context: context,
+        builder: (context) => CDialog(
+          title: '날짜/시간을 확인하세요',
+          content: Text(
+            '현재 시간 이후만 선택할 수 있어요.',
+            style: TextStyle(
+              color: ThemeModel.text(isDarkMode),
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          buttons: [
+            CButton(
+              size: CButtonSize.extraLarge,
+              label: '확인',
+              onTap: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
 
     widget.onDateTimeSelected(dateTime);
     Navigator.pop(context);
