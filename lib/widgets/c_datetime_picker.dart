@@ -23,7 +23,18 @@ class CDateTimePicker extends ConsumerStatefulWidget {
 }
 
 class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
-  DateTime _selectedDate = DateTime.now();
+  static const List<String> _weekdays = ['월', '화', '수', '목', '금', '토', '일'];
+  static final DateTime _firstDate = DateTime.now();
+  static final DateTime _lastDate = DateTime(
+    _firstDate.year,
+    _firstDate.month + 1,
+    _firstDate.day,
+  );
+  late final ValueNotifier<int> _selectedHourNotifier;
+  late final ValueNotifier<int> _selectedMinuteNotifier;
+  late final ValueNotifier<int> _selectedPeriodNotifier;
+
+  late DateTime _selectedDate;
   late int _selectedHour;
   late int _selectedMinute;
   late String _period;
@@ -32,178 +43,151 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
   late FixedExtentScrollController _minuteController;
   late FixedExtentScrollController _periodController;
 
-  int _selectedHourIndex = 0;
-  int _selectedMinuteIndex = 0;
-  int _selectedPeriodIndex = 0;
-
-  final ValueNotifier<int> _selectedHourNotifier = ValueNotifier<int>(0);
-  final ValueNotifier<int> _selectedMinuteNotifier = ValueNotifier<int>(0);
-  final ValueNotifier<int> _selectedPeriodNotifier = ValueNotifier<int>(0);
-
   @override
   void initState() {
     super.initState();
+    _initializeNotifiers();
     _initializeDateTime();
+    _initializeControllers();
+  }
+
+  void _initializeNotifiers() {
+    _selectedHourNotifier = ValueNotifier<int>(0);
+    _selectedMinuteNotifier = ValueNotifier<int>(0);
+    _selectedPeriodNotifier = ValueNotifier<int>(0);
   }
 
   void _initializeDateTime() {
     final now = DateTime.now();
-    _selectedHour = now.hour % 12 == 0 ? 12 : now.hour % 12;
+    _selectedDate = now;
+    _selectedHour = _convert24To12Hour(now.hour);
     _selectedMinute = now.minute;
     _period = now.hour >= 12 ? '오후' : '오전';
-
-    _selectedHourIndex = _selectedHour - 1;
-    _selectedMinuteIndex = _selectedMinute;
-    _selectedPeriodIndex = _period == '오전' ? 0 : 1;
-
-    _hourController =
-        FixedExtentScrollController(initialItem: _selectedHourIndex);
-    _minuteController =
-        FixedExtentScrollController(initialItem: _selectedMinuteIndex);
-    _periodController =
-        FixedExtentScrollController(initialItem: _selectedPeriodIndex);
-
-    //초기값
-    _selectedHourNotifier.value = _selectedHourIndex;
-    _selectedMinuteNotifier.value = _selectedMinuteIndex;
-    _selectedPeriodNotifier.value = _selectedPeriodIndex;
   }
 
-  void _pickDateTime(BuildContext context) async {
+  void _initializeControllers() {
+    // 시간 선택기(시)의 인덱스를 12시가 최상단(인덱스 0)에 오도록 설정
+    int initialHourIndex;
+    if (_selectedHour == 12) {
+      initialHourIndex = 0;
+    } else {
+      // 1시부터 11시는 인덱스가 그대로 1~11
+      initialHourIndex = _selectedHour;
+    }
+    _hourController =
+        FixedExtentScrollController(initialItem: initialHourIndex);
+    _minuteController =
+        FixedExtentScrollController(initialItem: _selectedMinute);
+    _periodController =
+        FixedExtentScrollController(initialItem: _period == '오전' ? 0 : 1);
+
+    _selectedHourNotifier.value = initialHourIndex;
+    _selectedMinuteNotifier.value = _selectedMinute;
+    _selectedPeriodNotifier.value = _period == '오전' ? 0 : 1;
+  }
+
+  int _convert24To12Hour(int hour) {
+    return hour % 12 == 0 ? 12 : hour % 12;
+  }
+
+  Future<void> _pickDateTime(BuildContext context) async {
     final isDarkMode = ref.watch(themeProvider);
 
     _initializeDateTime();
+    _initializeControllers();
 
     await showDialog(
       context: context,
-      builder: (context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Theme(
-                        data: (isDarkMode
-                                ? ThemeModel.darkTheme
-                                : ThemeModel.lightTheme)
-                            .copyWith(
-                          datePickerTheme: DatePickerThemeData(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(0),
-                            ),
-                            dayBackgroundColor: WidgetStateProperty.resolveWith(
-                              (states) {
-                                return states.contains(WidgetState.selected)
-                                    ? ThemeModel.highlight(isDarkMode)
-                                    : ThemeModel.surface(isDarkMode);
-                              },
-                            ),
-                            dayShape: WidgetStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(0),
-                              ),
-                            ),
-                            weekdayStyle: TextStyle(
-                              color: ThemeModel.text(isDarkMode),
-                              fontWeight: FontWeight.bold,
-                            ),
-                            headerForegroundColor: ThemeModel.text(isDarkMode),
-                            headerBackgroundColor:
-                                ThemeModel.surface(isDarkMode),
-                          ),
-                        ),
-                        child: CalendarDatePicker(
-                          initialDate: _selectedDate,
-                          firstDate: DateTime(2020),
-                          lastDate: DateTime(2030),
-                          onDateChanged: (date) {
-                            if (mounted) {
-                              setState(() {
-                                _selectedDate = date;
-                              });
-                            }
-                          },
-                        ),
-                      ),
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            height: 40,
-                            color: isDarkMode ? grey80 : grey10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _buildPeriodPicker(),
-                              _buildPicker(1, 12, _hourController,
-                                  _selectedHourNotifier),
-                              _buildPicker(0, 59, _minuteController,
-                                  _selectedMinuteNotifier),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      color: isDarkMode ? grey70 : grey80,
-                      child: CButton(
-                        style: CButtonStyle.secondary(isDarkMode),
-                        size: CButtonSize.extraLarge,
-                        label: '취소',
-                        onTap: () => Navigator.pop(context),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      color: ThemeModel.highlight(isDarkMode),
-                      child: CButton(
-                        size: CButtonSize.extraLarge,
-                        label: '확인',
-                        onTap: () {
-                          int hour = _period == '오후' && _selectedHour != 12
-                              ? _selectedHour + 12
-                              : _period == '오전' && _selectedHour == 12
-                                  ? 0
-                                  : _selectedHour;
-                          DateTime dateTime = DateTime(
-                            _selectedDate.year,
-                            _selectedDate.month,
-                            _selectedDate.day,
-                            hour,
-                            _selectedMinute,
-                          );
-                          widget.onDateTimeSelected(dateTime);
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
+      builder: (context) => _buildDialog(context, isDarkMode),
     );
   }
 
-  Widget _buildPicker(
-      int minValue,
-      int maxValue,
-      FixedExtentScrollController controller,
-      ValueNotifier<int> selectedNotifier) {
+  Widget _buildDialog(BuildContext context, bool isDarkMode) {
+    return Dialog(
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildCalendarPicker(isDarkMode),
+                  _buildTimePicker(isDarkMode),
+                ],
+              ),
+            ),
+          ),
+          _buildActionButtons(context, isDarkMode),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCalendarPicker(bool isDarkMode) {
+    return Theme(
+      data: _getCalendarTheme(isDarkMode),
+      child: CalendarDatePicker(
+        initialDate: _selectedDate,
+        firstDate: _firstDate,
+        lastDate: _lastDate,
+        onDateChanged: (date) {
+          if (mounted) setState(() => _selectedDate = date);
+        },
+      ),
+    );
+  }
+
+  ThemeData _getCalendarTheme(bool isDarkMode) {
+    return (isDarkMode ? ThemeModel.darkTheme : ThemeModel.lightTheme).copyWith(
+      datePickerTheme: DatePickerThemeData(
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+        dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
+              ? ThemeModel.highlight(isDarkMode)
+              : ThemeModel.surface(isDarkMode);
+        }),
+        dayShape: WidgetStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        ),
+        weekdayStyle: TextStyle(
+          color: ThemeModel.text(isDarkMode),
+          fontWeight: FontWeight.bold,
+        ),
+        headerForegroundColor: ThemeModel.text(isDarkMode),
+        headerBackgroundColor: ThemeModel.surface(isDarkMode),
+      ),
+    );
+  }
+
+  Widget _buildTimePicker(bool isDarkMode) {
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          height: 40,
+          color: isDarkMode ? grey80 : grey10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildPeriodPicker(),
+            // 시간 선택기의 경우 1~12 대신 12, 1, 2, ... 11 순으로 표시됨
+            _buildNumberPicker(1, 12, _hourController, _selectedHourNotifier),
+            _buildNumberPicker(
+                0, 59, _minuteController, _selectedMinuteNotifier),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildNumberPicker(
+    int minValue,
+    int maxValue,
+    FixedExtentScrollController controller,
+    ValueNotifier<int> selectedNotifier,
+  ) {
     return ValueListenableBuilder<int>(
       valueListenable: selectedNotifier,
       builder: (context, selectedIndex, _) {
@@ -216,46 +200,68 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
             diameterRatio: 1.5,
             perspective: 0.004,
             physics: const FixedExtentScrollPhysics(),
-            onSelectedItemChanged: (index) {
-              if (mounted) {
-                HapticFeedback.lightImpact();
-
-                selectedNotifier.value = index;
-
-                if (controller == _hourController) {
-                  _selectedHour = minValue + index;
-                } else if (controller == _minuteController) {
-                  _selectedMinute = minValue + index;
-                }
-              }
-            },
+            onSelectedItemChanged: (index) =>
+                _handleNumberSelection(index, controller, selectedNotifier),
             childDelegate: ListWheelChildBuilderDelegate(
-              builder: (context, index) {
-                if (index < 0 || index > maxValue - minValue) return null;
-                final value = minValue + index;
-                final isSelected = selectedIndex == index;
-
-                return Container(
-                  height: 40,
-                  alignment: Alignment.center,
-                  child: Text(
-                    value.toString().padLeft(2, '0'),
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: isSelected
-                          ? ThemeModel.highlightText(ref.watch(themeProvider))
-                          : ThemeModel.sub5(ref.watch(themeProvider)),
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
-                );
-              },
+              builder: (context, index) => _buildNumberPickerItem(
+                  index, selectedIndex, minValue, maxValue),
               childCount: maxValue - minValue + 1,
             ),
           ),
         );
       },
+    );
+  }
+
+  // 선택한 숫자(시, 분)에 대해 햅틱 피드백 후 값 업데이트
+  void _handleNumberSelection(
+    int index,
+    FixedExtentScrollController controller,
+    ValueNotifier<int> selectedNotifier,
+  ) {
+    if (!mounted) return;
+
+    HapticFeedback.lightImpact();
+    selectedNotifier.value = index;
+
+    if (controller == _hourController) {
+      // 시간 선택기의 경우, 인덱스 0이면 12시, 그 외에는 인덱스 값을 그대로 시간으로 사용
+      if (index == 0) {
+        _selectedHour = 12;
+      } else {
+        _selectedHour = index;
+      }
+    } else if (controller == _minuteController) {
+      _selectedMinute = index;
+    }
+  }
+
+  // 시간 선택기 아이템 빌더
+  Widget? _buildNumberPickerItem(
+    int index,
+    int selectedIndex,
+    int minValue,
+    int maxValue,
+  ) {
+    if (index < 0 || index > maxValue - minValue) return null;
+
+    int value;
+    // 시간 선택기의 경우 (minValue 1, maxValue 12) 12시를 첫 번째 아이템으로 표시
+    if (minValue == 1 && maxValue == 12) {
+      value = index == 0 ? 12 : index;
+    } else {
+      value = minValue + index;
+    }
+
+    final isSelected = selectedIndex == index;
+
+    return Container(
+      height: 40,
+      alignment: Alignment.center,
+      child: Text(
+        value.toString().padLeft(2, '0'),
+        style: _getPickerTextStyle(isSelected),
+      ),
     );
   }
 
@@ -272,36 +278,10 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
             diameterRatio: 1.5,
             perspective: 0.004,
             physics: const FixedExtentScrollPhysics(),
-            onSelectedItemChanged: (index) {
-              if (mounted) {
-                HapticFeedback.lightImpact();
-
-                _selectedPeriodNotifier.value = index;
-                _period = index == 0 ? '오전' : '오후';
-              }
-            },
+            onSelectedItemChanged: _handlePeriodSelection,
             childDelegate: ListWheelChildBuilderDelegate(
-              builder: (context, index) {
-                if (index < 0 || index > 1) return null;
-                final period = index == 0 ? '오전' : '오후';
-                final isSelected = selectedIndex == index;
-
-                return Container(
-                  height: 40,
-                  alignment: Alignment.center,
-                  child: Text(
-                    period,
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: isSelected
-                          ? ThemeModel.highlightText(ref.watch(themeProvider))
-                          : ThemeModel.sub5(ref.watch(themeProvider)),
-                      fontWeight:
-                          isSelected ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
-                );
-              },
+              builder: (context, index) =>
+                  _buildPeriodPickerItem(index, selectedIndex),
               childCount: 2,
             ),
           ),
@@ -310,15 +290,94 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
     );
   }
 
-  @override
-  void dispose() {
-    _hourController.dispose();
-    _minuteController.dispose();
-    _periodController.dispose();
-    _selectedHourNotifier.dispose();
-    _selectedMinuteNotifier.dispose();
-    _selectedPeriodNotifier.dispose();
-    super.dispose();
+  void _handlePeriodSelection(int index) {
+    if (!mounted) return;
+
+    HapticFeedback.lightImpact();
+    _selectedPeriodNotifier.value = index;
+    _period = index == 0 ? '오전' : '오후';
+  }
+
+  Widget? _buildPeriodPickerItem(int index, int selectedIndex) {
+    if (index < 0 || index > 1) return null;
+
+    final period = index == 0 ? '오전' : '오후';
+    final isSelected = selectedIndex == index;
+
+    return Container(
+      height: 40,
+      alignment: Alignment.center,
+      child: Text(period, style: _getPickerTextStyle(isSelected)),
+    );
+  }
+
+  TextStyle _getPickerTextStyle(bool isSelected) {
+    final isDarkMode = ref.watch(themeProvider);
+    return TextStyle(
+      fontSize: 20,
+      color: isSelected
+          ? ThemeModel.highlightText(isDarkMode)
+          : ThemeModel.sub5(isDarkMode),
+      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+    );
+  }
+
+  Widget _buildActionButtons(BuildContext context, bool isDarkMode) {
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            color: isDarkMode ? grey70 : grey80,
+            child: CButton(
+              style: CButtonStyle.secondary(isDarkMode),
+              size: CButtonSize.extraLarge,
+              label: '취소',
+              onTap: () => Navigator.pop(context),
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            color: ThemeModel.highlight(isDarkMode),
+            child: CButton(
+              size: CButtonSize.extraLarge,
+              label: '확인',
+              onTap: () => _handleConfirmation(context),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _handleConfirmation(BuildContext context) {
+    final hour = _convertTo24Hour();
+    final dateTime = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+      hour,
+      _selectedMinute,
+    );
+
+    widget.onDateTimeSelected(dateTime);
+    Navigator.pop(context);
+  }
+
+  int _convertTo24Hour() {
+    if (_period == '오후' && _selectedHour != 12) {
+      return _selectedHour + 12;
+    }
+    if (_period == '오전' && _selectedHour == 12) {
+      return 0;
+    }
+    return _selectedHour;
+  }
+
+  String _formatDateTime() {
+    return '${_selectedDate.month}월 ${_selectedDate.day}일 '
+        '(${_weekdays[_selectedDate.weekday - 1]}) '
+        '$_period $_selectedHour:${_selectedMinute.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -333,9 +392,7 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
           color: ThemeModel.surface(isDarkMode),
           border: Border(
             bottom: BorderSide(
-              color: ThemeModel.sub5(
-                isDarkMode,
-              ),
+              color: ThemeModel.sub5(isDarkMode),
             ),
           ),
         ),
@@ -345,22 +402,9 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
               Icons.calendar_month_outlined,
               color: ThemeModel.sub5(isDarkMode),
             ),
-            const SizedBox(
-              width: 8,
-            ),
+            const SizedBox(width: 8),
             Text(
-              // 월, 일, 요일(한글 약어), 기간, 시간(분은 2자리) 순서로 표시
-              '${_selectedDate.month}월 ${_selectedDate.day}일 '
-              '(${[
-                '월',
-                '화',
-                '수',
-                '목',
-                '금',
-                '토',
-                '일'
-              ][_selectedDate.weekday - 1]}) '
-              '$_period ${_selectedHour}:${_selectedMinute.toString().padLeft(2, '0')}',
+              _formatDateTime(),
               style: TextStyle(
                 fontSize: 16,
                 color: ThemeModel.text(isDarkMode),
@@ -370,5 +414,16 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _hourController.dispose();
+    _minuteController.dispose();
+    _periodController.dispose();
+    _selectedHourNotifier.dispose();
+    _selectedMinuteNotifier.dispose();
+    _selectedPeriodNotifier.dispose();
+    super.dispose();
   }
 }
