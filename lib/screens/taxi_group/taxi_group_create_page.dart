@@ -496,43 +496,49 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                 ),
                 const SizedBox(height: 16),
                 // 옷차림 태그 리스트
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: _clothingTags.map((tag) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 8,
-                      ),
-                      decoration: ShapeDecoration(
-                        color: ThemeModel.surface(isDarkMode),
-                        shape: const StadiumBorder(),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            tag,
-                            style: TextStyle(
-                              color: ThemeModel.text(isDarkMode),
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    spacing: 8,
+                    children: _clothingTags.map(
+                      (tag) {
+                        return Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
                           ),
-                          const SizedBox(width: 4),
-                          GestureDetector(
-                            onTap: () => _removeClothingTag(tag),
-                            child: Icon(
-                              Icons.close,
-                              size: 14,
-                              color: ThemeModel.text(isDarkMode),
-                            ),
+                          decoration: ShapeDecoration(
+                            color: ThemeModel.surface(isDarkMode),
+                            shape: const StadiumBorder(),
                           ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                tag,
+                                style: TextStyle(
+                                  color: ThemeModel.text(isDarkMode),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              CInkWell(
+                                onTap: () => _removeClothingTag(tag),
+                                child: Icon(
+                                  Icons.close,
+                                  size: 18,
+                                  color: ThemeModel.text(isDarkMode),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ).toList(),
+                  ),
                 ),
               ],
             ),
