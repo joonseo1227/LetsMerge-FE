@@ -162,7 +162,7 @@ class CButton extends ConsumerWidget {
                     width: 16,
                     height: 16,
                     child: CircularProgressIndicator(
-                      color: ThemeModel.text(isDarkMode),
+                      color: effectiveStyle.labelColor,
                       strokeWidth: 1,
                     ),
                   ),
