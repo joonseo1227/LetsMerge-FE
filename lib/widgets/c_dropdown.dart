@@ -89,13 +89,17 @@ class _CDropdownState<T> extends ConsumerState<CDropdown<T>> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  _getDisplayText(),
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: selectedItem != null
-                        ? ThemeModel.text(isDarkMode)
-                        : ThemeModel.hintText(isDarkMode),
+                Expanded(
+                  child: Text(
+                    _getDisplayText(),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: selectedItem != null
+                          ? ThemeModel.text(isDarkMode)
+                          : ThemeModel.hintText(isDarkMode),
+                    ),
+                    overflow: TextOverflow.ellipsis, // 길면 "..." 표시
+                    maxLines: 1, // 한 줄로 제한
                   ),
                 ),
                 Icon(
