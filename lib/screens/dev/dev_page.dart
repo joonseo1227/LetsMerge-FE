@@ -4,6 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/dev/button_gallery_page.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_request_money_page.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_datetime_picker.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
@@ -138,6 +140,28 @@ class _DevPageState extends ConsumerState<DevPage> {
                     Navigator.of(context).push(
                       CupertinoPageRoute(
                         builder: (context) => ButtonGalleryPage(),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  label: 'TaxiGroupSplitMoneyPage\n(내가 대표가 아닐 때->대표에게 송금)',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => TaxiGroupSplitMoneyPage(),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: 16),
+                CButton(
+                  label: 'TaxiGroupRequestMoneyPage\n(내가 대표일 때->정산 요청)',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => TaxiGroupRequestMoneyPage(),
                       ),
                     );
                   },

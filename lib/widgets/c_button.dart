@@ -72,7 +72,7 @@ class CButtonStyle {
     return CButtonStyle(
       backgroundColor: Colors.transparent,
       labelColor: ThemeModel.highlightText(isDarkMode),
-      iconColor: ThemeModel.highlight(isDarkMode),
+      iconColor: ThemeModel.highlightText(isDarkMode),
     );
   }
 }

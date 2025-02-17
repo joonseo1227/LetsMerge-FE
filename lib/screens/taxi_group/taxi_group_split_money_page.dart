@@ -6,7 +6,6 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
-import 'package:letsmerge/widgets/c_text_field.dart';
 
 class TaxiGroupSplitMoneyPage extends ConsumerStatefulWidget {
   const TaxiGroupSplitMoneyPage({super.key});
@@ -44,6 +43,7 @@ class _TaxiGroupSplitMoneyPageState
 
     return Scaffold(
       appBar: AppBar(
+        title: Text('정산하기'),
         titleSpacing: 0,
       ),
       body: Column(
@@ -56,20 +56,23 @@ class _TaxiGroupSplitMoneyPageState
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CTextField(
-                      keyboardType: TextInputType.number,
-                      label: '택시비',
-                      hint: '총 금액 입력',
-                      focusNode: _focusNode,
+                    Text(
+                      '홍길동 님에게 1,200원 송금해 주세요.',
+                      style: TextStyle(
+                        color: ThemeModel.text(isDarkMode),
+                      ),
                     ),
-                    Text('1인당 택시비: 1,600원'),
-                    Text('3,200원 절약'),
-                    Text('대표자 계좌번호: '),
+                    Text(
+                      '토스뱅크 123456789012345',
+                      style: TextStyle(
+                        color: ThemeModel.text(isDarkMode),
+                      ),
+                    ),
                     CButton(
                       onTap: () {
                         Clipboard.setData(
                           ClipboardData(
-                            text: '계좌번호',
+                            text: '토스뱅크 123456789012345',
                           ),
                         );
                       },
@@ -78,7 +81,6 @@ class _TaxiGroupSplitMoneyPageState
                       label: '계좌번호 복사',
                       icon: Icons.copy,
                     ),
-                    Text('참여자 평가하기'),
                   ],
                 ),
               ),
