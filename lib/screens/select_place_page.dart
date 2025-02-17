@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,7 +55,8 @@ class _SelectPlacePageState extends ConsumerState<SelectPlacePage> {
 
     if (widget.title != null) {
       _placeController.text = widget.title!;
-    };
+    }
+    ;
   }
 
   Future<void> _initializeInitialPosition() async {

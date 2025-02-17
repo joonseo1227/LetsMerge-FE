@@ -155,7 +155,7 @@ class CButton extends ConsumerWidget {
           child: Row(
             mainAxisSize: width != null ? MainAxisSize.max : MainAxisSize.min,
             children: [
-              if(isLoading)
+              if (isLoading)
                 Padding(
                   padding: EdgeInsets.only(right: 16),
                   child: SizedBox(

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/models/bank_model.dart';
+import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/account_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/account_number/add_account_number_page.dart';
@@ -33,7 +33,7 @@ class MyAccountNumberPage extends ConsumerWidget {
                 children: [
                   ...accounts.map((account) {
                     final bankInfo = bankList.firstWhere(
-                          (bank) => bank.name == account.bankName,
+                      (bank) => bank.name == account.bankName,
                     );
 
                     return CInkWell(
@@ -63,14 +63,20 @@ class MyAccountNumberPage extends ConsumerWidget {
                   CInkWell(
                     onTap: () {
                       Navigator.of(context).push(
-                        CupertinoPageRoute(builder: (_) => const AddAccountNumberPage()),
+                        CupertinoPageRoute(
+                          builder: (_) => const AddAccountNumberPage(),
+                        ),
                       );
                     },
                     child: Container(
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         children: [
-                          Icon(Icons.add, size: 24, color: ThemeModel.highlightText(isDarkMode)),
+                          Icon(
+                            Icons.add,
+                            size: 24,
+                            color: ThemeModel.highlightText(isDarkMode),
+                          ),
                           const SizedBox(width: 16),
                           Text(
                             '계좌 추가하기',

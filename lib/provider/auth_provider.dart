@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:letsmerge/models/user_model.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, UserDTO?>((ref) {

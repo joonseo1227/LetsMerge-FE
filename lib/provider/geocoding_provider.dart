@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -55,7 +56,7 @@ class ReverseGeocodingNotifier
 // 주소 유형별 포맷팅
   String? _findAddress(List results, String type) {
     var result = results.firstWhere(
-          (res) => res['name'] == type,
+      (res) => res['name'] == type,
       orElse: () => null,
     );
     if (result == null) return null;

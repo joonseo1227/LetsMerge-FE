@@ -1,12 +1,13 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/terms_model.dart';
+import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/terms_detail_page.dart';
-import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
 class TermsAndPoliciesPage extends ConsumerStatefulWidget {
