@@ -56,7 +56,6 @@ class _SelectPlacePageState extends ConsumerState<SelectPlacePage> {
     if (widget.title != null) {
       _placeController.text = widget.title!;
     }
-    ;
   }
 
   Future<void> _initializeInitialPosition() async {
@@ -185,54 +184,60 @@ class _SelectPlacePageState extends ConsumerState<SelectPlacePage> {
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Center(
-                      child: Container(
-                        width: 40,
-                        height: 4,
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          color: ThemeModel.sub3(isDarkMode),
-                          borderRadius: BorderRadius.circular(2),
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Container(
+                          width: 40,
+                          height: 4,
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: ThemeModel.sub3(isDarkMode),
+                            borderRadius: BorderRadius.circular(2),
+                          ),
                         ),
                       ),
-                    ),
-                    Text(
-                      '선택한 위치의 장소 이름을 입력하세요',
-                      style: TextStyle(
-                        color: ThemeModel.text(isDarkMode),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500,
+                      Text(
+                        '선택한 위치의 장소 이름을 입력하세요',
+                        style: TextStyle(
+                          color: ThemeModel.text(isDarkMode),
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '장소명은 알아보기 쉽도록 적어주세요.',
-                      style: TextStyle(
-                        color: ThemeModel.text(isDarkMode),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
+                      const SizedBox(height: 8),
+                      Text(
+                        '장소명은 알아보기 쉽도록 적어주세요.',
+                        style: TextStyle(
+                          color: ThemeModel.text(isDarkMode),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 24),
-                    CTextField(
-                      controller: _placeController,
-                      hint: '예: 강남역 1번 출구, 스타벅스 앞',
-                      onChanged: (value) {
-                        setState(() {});
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    CButton(
+                      const SizedBox(height: 24),
+                      CTextField(
+                        controller: _placeController,
+                        hint: '예: 강남역 1번 출구, 스타벅스 앞',
+                        onChanged: (value) {
+                          setState(() {});
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+                Container(
+                  color: ThemeModel.highlight(isDarkMode),
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: SafeArea(
+                    child: CButton(
                       onTap: _placeController.text.isEmpty
                           ? null
                           : () {
@@ -275,10 +280,9 @@ class _SelectPlacePageState extends ConsumerState<SelectPlacePage> {
                       icon: Icons.navigate_next,
                       width: double.maxFinite,
                     ),
-                    SizedBox(height: MediaQuery.of(context).padding.bottom),
-                  ],
+                  ),
                 ),
-              ),
+              ],
             );
           },
         );
@@ -415,6 +419,7 @@ class _SelectPlacePageState extends ConsumerState<SelectPlacePage> {
           ),
           Container(
             color: ThemeModel.highlight(isDarkMode),
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
             child: SafeArea(
               top: false,
               child: CButton(

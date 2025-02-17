@@ -126,6 +126,7 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
           ),
           Container(
             color: ThemeModel.highlight(isDarkMode),
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
             child: SafeArea(
               top: false,
               child: CButton(
@@ -153,7 +154,7 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
                   Navigator.pop(context);
                 },
                 size: CButtonSize.extraLarge,
-                label: '계좌 등록',
+                label: '계좌 추가',
                 icon: Icons.navigate_next,
                 width: double.maxFinite,
               ),

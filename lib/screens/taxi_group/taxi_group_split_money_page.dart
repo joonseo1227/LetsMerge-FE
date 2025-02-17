@@ -89,6 +89,7 @@ class _TaxiGroupSplitMoneyPageState
           // 버튼 영역
           Container(
             color: ThemeModel.highlight(isDarkMode),
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
             child: SafeArea(
               top: false,
               child: CButton(

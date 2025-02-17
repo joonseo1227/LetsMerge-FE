@@ -73,6 +73,7 @@ class _ReportPageState extends ConsumerState<ReportPage> {
           ),
           Container(
             color: ThemeModel.highlight(isDarkMode),
+            padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
             child: SafeArea(
               top: false,
               child: CButton(
