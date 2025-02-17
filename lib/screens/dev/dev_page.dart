@@ -9,6 +9,7 @@ import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_datetime_picker.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
+import 'package:letsmerge/widgets/c_dropdown.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
@@ -23,6 +24,7 @@ class DevPage extends ConsumerStatefulWidget {
 
 class _DevPageState extends ConsumerState<DevPage> {
   bool isSwitched = false;
+  String? selectedItem;
 
   @override
   Widget build(BuildContext context) {
@@ -68,16 +70,34 @@ class _DevPageState extends ConsumerState<DevPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 32),
+                CDropdown<String>(
+                  label: 'label',
+                  hint: 'hint',
+                  items: [
+                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+                    'Option 1',
+                    'Option 2',
+                    'Option 3',
+                    'Option 4'
+                  ],
+                  initialValue: selectedItem,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedItem = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 32),
                 CTextField(
-                  label: 'CTextField',
+                  label: 'label',
                   hint: 'hint',
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 32),
                 CSearchBar(
                   hint: 'hint',
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 32),
                 CDateTimePicker(
                   onDateTimeSelected: (dateTime) {
                     setState(
@@ -85,7 +105,7 @@ class _DevPageState extends ConsumerState<DevPage> {
                     );
                   },
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 32),
                 CSwitch(
                   value: isSwitched,
                   onChanged: (value) {
@@ -94,7 +114,7 @@ class _DevPageState extends ConsumerState<DevPage> {
                     });
                   },
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 32),
                 CButton(
                   label: 'Show Dialog',
                   onTap: () {

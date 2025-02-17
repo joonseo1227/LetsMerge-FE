@@ -90,7 +90,7 @@ class _CTextFieldState extends ConsumerState<CTextField> {
             widget.label!,
             style: TextStyle(
               fontSize: 14,
-              color: ThemeModel.text(isDarkMode),
+              color: ThemeModel.sub6(isDarkMode),
             ),
           ),
         if (widget.label != null) const SizedBox(height: 4),

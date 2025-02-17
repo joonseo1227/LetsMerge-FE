@@ -69,7 +69,7 @@ class _CDropdownState<T> extends ConsumerState<CDropdown<T>> {
             widget.label!,
             style: TextStyle(
               fontSize: 14,
-              color: ThemeModel.text(isDarkMode),
+              color: ThemeModel.sub6(isDarkMode),
             ),
           ),
           const SizedBox(height: 4),
