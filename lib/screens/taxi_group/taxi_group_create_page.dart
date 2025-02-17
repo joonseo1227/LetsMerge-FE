@@ -402,7 +402,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                       '모집 인원',
                       style: TextStyle(
                         fontSize: 14,
-                        color: ThemeModel.text(isDarkMode),
+                        color: ThemeModel.sub6(isDarkMode),
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -442,7 +442,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                       '출발 시각',
                       style: TextStyle(
                         fontSize: 14,
-                        color: ThemeModel.text(isDarkMode),
+                        color: ThemeModel.sub6(isDarkMode),
                       ),
                     ),
                     const SizedBox(height: 4),
