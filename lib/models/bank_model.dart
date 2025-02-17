@@ -5,6 +5,11 @@ class BankInfo {
   final TagColor color;
 
   BankInfo({required this.name, required this.color});
+
+  @override
+  String toString() {
+    return name;
+  }
 }
 
 final List<BankInfo> bankList = [
@@ -17,5 +22,4 @@ final List<BankInfo> bankList = [
   BankInfo(name: 'IBK기업은행', color: TagColor.blue),
   BankInfo(name: '하나은행', color: TagColor.teal),
   BankInfo(name: '새마을금고', color: TagColor.cyan),
-
 ];

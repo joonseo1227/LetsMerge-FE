@@ -8,6 +8,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
+import 'package:letsmerge/widgets/c_dropdown.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
@@ -29,7 +30,7 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
       context: context,
       builder: (BuildContext context) {
         return CDialog(
-          title: '계좌 등록',
+          title: '확인 필요',
           content: Text(
             message,
             style: TextStyle(
@@ -87,76 +88,13 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '은행 선택',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: ThemeModel.text(isDarkMode),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    CPopupMenu(
-                      key: popupMenuKey,
-                      button: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 16),
-                        decoration: BoxDecoration(
-                          color: ThemeModel.surface(isDarkMode),
-                          border: Border(
-                            bottom: BorderSide(
-                              color: ThemeModel.sub5(isDarkMode),
-                            ),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              selectedBank?.name ?? '은행을 선택하세요.',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: selectedBank != null
-                                    ? ThemeModel.text(isDarkMode)
-                                    : ThemeModel.hintText(isDarkMode),
-                              ),
-                            ),
-                            Icon(
-                              Icons.keyboard_arrow_down,
-                              color: ThemeModel.hintText(isDarkMode),
-                            ),
-                          ],
-                        ),
-                      ),
-                      dropdownWidth: MediaQuery.of(context).size.width - 32,
-                      dropdown: Container(
-                        constraints: const BoxConstraints(maxHeight: 300),
-                        child: ListView(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          children: bankList.map((bank) {
-                            return CInkWell(
-                              onTap: () {
-                                setState(() => selectedBank = bank);
-                                popupMenuKey.currentState?.hideDropdown();
-                              },
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 16, horizontal: 16),
-                                child: Text(
-                                  bank.name,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: ThemeModel.text(isDarkMode),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      ),
+                    CDropdown<BankInfo>(
+                      label: '은행',
+                      hint: '은행 선택',
+                      items: bankList,
+                      onChanged: (bank) {
+                        setState(() => selectedBank = bank);
+                      },
                     ),
                     const SizedBox(height: 32),
                     CTextField(
@@ -193,16 +131,16 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
               child: CButton(
                 onTap: () {
                   final accountNumber = accountController.text;
-                  if (accountController.text.isEmpty) {
+
+                  if (selectedBank == null) {
+                    _showErrorDialog('은행을 선택해주세요.');
+                    return;
+                  } else if (accountController.text.isEmpty) {
                     _showErrorDialog('계좌번호를 입력해주세요.');
                     return;
                   } else if (accountNumber.length < 10 ||
                       accountNumber.length > 14) {
                     _showErrorDialog('유효한 계좌번호를 입력해주세요.');
-                    return;
-                  }
-                  if (selectedBank == null) {
-                    _showErrorDialog('은행을 선택해주세요.');
                     return;
                   }
 
