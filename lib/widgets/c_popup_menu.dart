@@ -39,6 +39,7 @@ class CPopupMenuState extends ConsumerState<CPopupMenu>
   late AnimationController _animationController;
   late Animation<double> _opacityAnimation;
   late Animation<Offset> _positionAnimation;
+  LocalHistoryEntry? _historyEntry; // 뒤로가기 처리를 위한 LocalHistoryEntry
 
   @override
   void initState() {
@@ -62,6 +63,7 @@ class CPopupMenuState extends ConsumerState<CPopupMenu>
 
   @override
   void dispose() {
+    // 위젯이 dispose될 때 드롭다운이 있다면 숨김
     hideDropdown();
     _animationController.dispose();
     super.dispose();
@@ -76,10 +78,11 @@ class CPopupMenuState extends ConsumerState<CPopupMenu>
     final Size screenSize = MediaQuery.of(context).size;
     final dropdownWidth = widget.dropdownWidth ?? buttonSize.width;
 
+    // 오른쪽 또는 왼쪽으로 오버플로우가 발생하는지 계산
     final rightOverflow = buttonPosition.dx + dropdownWidth > screenSize.width;
     final leftOverflow = buttonPosition.dx < 0;
 
-    double? horizontalOffset;
+    double horizontalOffset;
     if (rightOverflow && !leftOverflow) {
       horizontalOffset = -(dropdownWidth - buttonSize.width);
     } else if (!rightOverflow && leftOverflow) {
@@ -93,6 +96,7 @@ class CPopupMenuState extends ConsumerState<CPopupMenu>
     _overlayEntry = OverlayEntry(
       builder: (context) => Stack(
         children: [
+          // 오버레이 외부를 터치하면 드롭다운 숨김
           Positioned.fill(
             child: GestureDetector(
               onTap: hideDropdown,
@@ -105,7 +109,7 @@ class CPopupMenuState extends ConsumerState<CPopupMenu>
             width: dropdownWidth,
             child: CompositedTransformFollower(
               link: _layerLink,
-              offset: Offset(horizontalOffset ?? 0, buttonSize.height),
+              offset: Offset(horizontalOffset, buttonSize.height),
               child: FadeTransition(
                 opacity: _opacityAnimation,
                 child: SlideTransition(
@@ -129,17 +133,42 @@ class CPopupMenuState extends ConsumerState<CPopupMenu>
       ),
     );
 
+    // Overlay에 드롭다운 추가
     Overlay.of(context).insert(_overlayEntry!);
     _animationController.forward();
     setState(() => _isDropdownVisible = true);
+
+    // 뒤로가기 시 드롭다운이 사라지도록 LocalHistoryEntry 추가
+    _historyEntry = LocalHistoryEntry(onRemove: _handleDropdownDismissed);
+    ModalRoute.of(context)?.addLocalHistoryEntry(_historyEntry!);
+  }
+
+  // LocalHistoryEntry가 제거될 때(뒤로가기 등) 호출되는 콜백
+  void _handleDropdownDismissed() {
+    _historyEntry = null;
+    _animationController.reverse().then((_) {
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+      if (mounted) {
+        setState(() => _isDropdownVisible = false);
+      }
+    });
   }
 
   void hideDropdown() {
-    if (_overlayEntry != null) {
+    if (!_isDropdownVisible) return;
+
+    if (_historyEntry != null) {
+      // LocalHistoryEntry가 있으면 pop하여 onRemove 콜백(_handleDropdownDismissed)을 실행시킴
+      Navigator.of(context).pop();
+    } else {
+      // 이미 history entry가 없는 경우 직접 애니메이션 후 오버레이 제거
       _animationController.reverse().then((_) {
         _overlayEntry?.remove();
         _overlayEntry = null;
-        setState(() => _isDropdownVisible = false);
+        if (mounted) {
+          setState(() => _isDropdownVisible = false);
+        }
       });
     }
   }
