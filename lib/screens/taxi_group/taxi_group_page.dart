@@ -73,7 +73,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                       color: ThemeModel.text(isDarkMode),
                     ),
                     title: Text(
-                      '그룹 나가기',
+                      '택시팟 나가기',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -121,7 +121,9 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
             padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [],
+              children: [
+                // TODO: 다른 참여자 실시간 위치 표시, 채팅 기능
+              ],
             ),
           ),
         ),

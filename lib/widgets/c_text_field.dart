@@ -17,6 +17,7 @@ import 'package:letsmerge/provider/theme_provider.dart';
 /// - [backgroundColor]: 입력 필드 배경 색상 (optional)
 /// - [focusNode]: 입력 필드의 포커스를 제어하기 위한 FocusNode (optional)
 /// - [onChanged]: 입력값이 변경될 때 호출되는 콜백 함수 (optional)
+/// - [maxLines]: 입력 필드의 최대 줄 수 (default: 1)
 ///
 class CTextField extends ConsumerStatefulWidget {
   final String? label;
@@ -29,6 +30,7 @@ class CTextField extends ConsumerStatefulWidget {
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
   final List<TextInputFormatter>? inputFormatters;
+  final int? maxLines;
 
   const CTextField({
     super.key,
@@ -42,6 +44,7 @@ class CTextField extends ConsumerStatefulWidget {
     this.focusNode,
     this.onChanged,
     this.inputFormatters,
+    this.maxLines = 1,
   });
 
   @override
@@ -103,6 +106,7 @@ class _CTextFieldState extends ConsumerState<CTextField> {
           style: TextStyle(
             color: ThemeModel.text(isDarkMode),
           ),
+          maxLines: widget.maxLines,
           decoration: InputDecoration(
             contentPadding: const EdgeInsets.all(16),
             hintText: widget.hint,
