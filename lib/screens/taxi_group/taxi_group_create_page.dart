@@ -462,7 +462,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                   '내 옷차림',
                   style: TextStyle(
                     fontSize: 14,
-                    color: ThemeModel.text(isDarkMode),
+                    color: ThemeModel.sub6(isDarkMode),
                   ),
                 ),
                 const SizedBox(height: 4),
