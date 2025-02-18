@@ -250,13 +250,15 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              Text(
-                                selectedLocations[GeocodingMode.departure]!
-                                    .place,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.text(isDarkMode),
+                              Flexible(
+                                child: Text(
+                                  selectedLocations[GeocodingMode.departure]!
+                                      .place,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.text(isDarkMode),
+                                  ),
                                 ),
                               ),
                             ],
@@ -295,13 +297,15 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                 ),
                               ),
                               const SizedBox(width: 12),
-                              Text(
-                                selectedLocations[GeocodingMode.destination]!
-                                    .place,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.text(isDarkMode),
+                              Flexible(
+                                child: Text(
+                                  selectedLocations[GeocodingMode.destination]!
+                                      .place,
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.text(isDarkMode),
+                                  ),
                                 ),
                               ),
                             ],
