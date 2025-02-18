@@ -6,6 +6,8 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/account_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/account_number/add_account_number_page.dart';
+import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
 
@@ -62,10 +64,44 @@ class MyAccountNumberPage extends ConsumerWidget {
                   }),
                   CInkWell(
                     onTap: () {
-                      Navigator.of(context).push(
-                        CupertinoPageRoute(
-                          builder: (_) => const AddAccountNumberPage(),
-                        ),
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CDialog(
+                            title: '확인 필요',
+                            content: Text(
+                              '사용자는 렛츠머지 앱에서 계좌번호를 직접 입력 및 등록하며, 본 정보의 정확성을 스스로 확인해야 합니다. 본 서비스는 계좌번호의 유효성을 검증하지 않으며, 잘못된 정보 입력으로 인해 발생하는 금전적 손실, 정산 오류 등에 대해 책임을 지지 않습니다. 이에 동의하지 않을 경우, 계좌번호를 등록하지 마시기 바랍니다.',
+                              style: TextStyle(
+                                color: ThemeModel.text(isDarkMode),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            buttons: [
+                              CButton(
+                                style: CButtonStyle.secondary(isDarkMode),
+                                size: CButtonSize.extraLarge,
+                                label: '동의 안 함',
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                              CButton(
+                                size: CButtonSize.extraLarge,
+                                label: '동의',
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (_) =>
+                                          const AddAccountNumberPage(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          );
+                        },
                       );
                     },
                     child: Container(
