@@ -7,7 +7,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/map_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/screens/select_place_page.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_select_place_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 
@@ -105,7 +105,7 @@ class _SearchPlacePageState extends ConsumerState<SearchPlacePage> {
                       Navigator.push(
                         context,
                         CupertinoPageRoute(
-                          builder: (context) => SelectPlacePage(
+                          builder: (context) => TaxiGroupSelectPlacePage(
                             mode: widget.mode,
                             title: place.title,
                             longitude: place.mapX / 1e7,
