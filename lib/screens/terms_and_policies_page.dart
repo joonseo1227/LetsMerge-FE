@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/terms_model.dart';
-import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/terms_detail_page.dart';
-import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_list_tile.dart';
 
 class TermsAndPoliciesPage extends ConsumerStatefulWidget {
   const TermsAndPoliciesPage({super.key});
@@ -69,63 +68,26 @@ class _TermsAndPoliciesPageState extends ConsumerState<TermsAndPoliciesPage> {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    color: ThemeModel.surface(isDarkMode),
-                    child: Column(
-                      children: keys.map((key) {
-                        return _buildCInkWell(
-                          context,
-                          isDarkMode,
-                          terms: termsData[key]!,
-                        );
-                      }).toList(),
-                    ),
-                  ),
-                ],
+                children: keys.map((key) {
+                  return CListTile(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => TermsDetailPage(
+                            title: termsData[key]!.title,
+                            content: termsData[key]!.content,
+                          ),
+                        ),
+                      );
+                    },
+                    label: termsData[key]!.title,
+                  );
+                }).toList(),
               ),
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildCInkWell(BuildContext context, bool isDarkMode,
-      {required TermsModel terms}) {
-    return CInkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          CupertinoPageRoute(
-            builder: (context) => TermsDetailPage(
-              title: terms.title,
-              content: terms.content,
-            ),
-          ),
-        );
-      },
-      child: Container(
-        color: ThemeModel.surface(isDarkMode),
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Text(
-              terms.title,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: ThemeModel.text(isDarkMode),
-              ),
-            ),
-            const Spacer(),
-            Icon(
-              Icons.navigate_next,
-              color: ThemeModel.sub3(isDarkMode),
-            ),
-          ],
-        ),
       ),
     );
   }

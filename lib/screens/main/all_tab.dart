@@ -13,6 +13,7 @@ import 'package:letsmerge/screens/profile_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
 import 'package:letsmerge/screens/terms_and_policies_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AllTab extends ConsumerStatefulWidget {
@@ -118,229 +119,66 @@ class _AllTabState extends ConsumerState<AllTab> {
                   SizedBox(
                     height: 16,
                   ),
-                  Container(
-                    color: ThemeModel.surface(isDarkMode),
-                    child: Column(
-                      children: [
-                        /// DEV
-                        CInkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                builder: (context) => DevPage(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            color: ThemeModel.surface(isDarkMode),
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.code,
-                                  size: 24,
-                                  color: ThemeModel.sub4(isDarkMode),
-                                ),
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                Text(
-                                  'DEV',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: ThemeModel.text(isDarkMode),
-                                  ),
-                                ),
-                                const Spacer(),
-                                Icon(
-                                  Icons.navigate_next,
-                                  color: ThemeModel.sub3(isDarkMode),
-                                ),
-                              ],
-                            ),
-                          ),
+                  CListTile(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => DevPage(),
                         ),
-                      ],
-                    ),
+                      );
+                    },
+                    label: 'DEV',
+                    icon: Icons.code,
                   ),
                   SizedBox(
                     height: 16,
                   ),
-                  Container(
-                    color: ThemeModel.surface(isDarkMode),
-                    child: Column(
-                      children: [
-                        /// 내 계좌번호
-                        CInkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                builder: (context) => MyAccountNumberPage(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            color: ThemeModel.surface(isDarkMode),
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.wallet,
-                                  size: 24,
-                                  color: ThemeModel.sub4(isDarkMode),
-                                ),
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                Text(
-                                  '내 계좌번호',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: ThemeModel.text(isDarkMode),
-                                  ),
-                                ),
-                                const Spacer(),
-                                Icon(
-                                  Icons.navigate_next,
-                                  color: ThemeModel.sub3(isDarkMode),
-                                ),
-                              ],
-                            ),
-                          ),
+                  CListTile(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => MyAccountNumberPage(),
                         ),
-
-                        /// 이용 내역
-                        CInkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                builder: (context) => HistoryPage(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            color: ThemeModel.surface(isDarkMode),
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.receipt,
-                                  size: 24,
-                                  color: ThemeModel.sub4(isDarkMode),
-                                ),
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                Text(
-                                  '이용 내역',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: ThemeModel.text(isDarkMode),
-                                  ),
-                                ),
-                                const Spacer(),
-                                Icon(
-                                  Icons.navigate_next,
-                                  color: ThemeModel.sub3(isDarkMode),
-                                ),
-                              ],
-                            ),
-                          ),
+                      );
+                    },
+                    label: '내 계좌번호',
+                    icon: Icons.wallet,
+                  ),
+                  CListTile(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => HistoryPage(),
                         ),
-                      ],
-                    ),
+                      );
+                    },
+                    label: '이용 내역',
+                    icon: Icons.receipt,
                   ),
                   SizedBox(
                     height: 16,
                   ),
-                  Container(
-                    color: ThemeModel.surface(isDarkMode),
-                    child: Column(
-                      children: [
-                        /// 고객 지원
-                        CInkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                builder: (context) => CustomerSupportPage(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            color: ThemeModel.surface(isDarkMode),
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.help,
-                                  size: 24,
-                                  color: ThemeModel.sub4(isDarkMode),
-                                ),
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                Text(
-                                  '고객 지원',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: ThemeModel.text(isDarkMode),
-                                  ),
-                                ),
-                                const Spacer(),
-                                Icon(
-                                  Icons.navigate_next,
-                                  color: ThemeModel.sub3(isDarkMode),
-                                ),
-                              ],
-                            ),
-                          ),
+                  CListTile(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => CustomerSupportPage(),
                         ),
-
-                        /// 약관 및 정책
-                        CInkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              CupertinoPageRoute(
-                                builder: (context) => TermsAndPoliciesPage(),
-                              ),
-                            );
-                          },
-                          child: Container(
-                            color: ThemeModel.surface(isDarkMode),
-                            padding: const EdgeInsets.all(16),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.info,
-                                  size: 24,
-                                  color: ThemeModel.sub4(isDarkMode),
-                                ),
-                                SizedBox(
-                                  width: 16,
-                                ),
-                                Text(
-                                  '약관 및 정책',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
-                                    color: ThemeModel.text(isDarkMode),
-                                  ),
-                                ),
-                                const Spacer(),
-                                Icon(
-                                  Icons.navigate_next,
-                                  color: ThemeModel.sub3(isDarkMode),
-                                ),
-                              ],
-                            ),
-                          ),
+                      );
+                    },
+                    label: '고객 지원',
+                    icon: Icons.help,
+                  ),
+                  CListTile(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        CupertinoPageRoute(
+                          builder: (context) => TermsAndPoliciesPage(),
                         ),
-                      ],
-                    ),
+                      );
+                    },
+                    label: '약관 및 정책',
+                    icon: Icons.info,
                   ),
                 ],
               ),

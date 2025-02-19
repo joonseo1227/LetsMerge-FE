@@ -9,6 +9,7 @@ import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 
@@ -420,75 +421,22 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                         color: ThemeModel.surface(isDarkMode),
                         child: Column(
                           children: [
-                            // 정산하기 항목
-                            CInkWell(
+                            CListTile(
                               onTap: () {
-                                Navigator.pop(context);
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
                                     builder: (context) =>
-                                        const TaxiGroupSplitMoneyPage(),
+                                        TaxiGroupSplitMoneyPage(),
                                   ),
                                 );
                               },
-                              child: Container(
-                                color: ThemeModel.surface(isDarkMode),
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.attach_money,
-                                      size: 24,
-                                      color: ThemeModel.sub4(isDarkMode),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Text(
-                                      '정산하기',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: ThemeModel.text(isDarkMode),
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Icon(
-                                      Icons.navigate_next,
-                                      color: ThemeModel.sub3(isDarkMode),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              label: '정산하기',
+                              icon: Icons.attach_money,
                             ),
-                            // 실시간 위치 공유 항목
-                            CInkWell(
+                            CListTile(
                               onTap: () {},
-                              child: Container(
-                                color: ThemeModel.surface(isDarkMode),
-                                padding: const EdgeInsets.all(16),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.location_on,
-                                      size: 24,
-                                      color: ThemeModel.sub4(isDarkMode),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Text(
-                                      '실시간 위치 공유',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        color: ThemeModel.text(isDarkMode),
-                                      ),
-                                    ),
-                                    const Spacer(),
-                                    Icon(
-                                      Icons.navigate_next,
-                                      color: ThemeModel.sub3(isDarkMode),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              label: '실시간 위치 공유',
+                              icon: Icons.location_on,
                             ),
                           ],
                         ),

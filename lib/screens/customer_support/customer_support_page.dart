@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/customer_support/inquiry_page.dart';
-import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_list_tile.dart';
 
 class CustomerSupportPage extends ConsumerStatefulWidget {
   const CustomerSupportPage({super.key});
@@ -51,51 +51,15 @@ class _CustomerSupportPageState extends ConsumerState<CustomerSupportPage> {
                   ),
                 ),
                 SizedBox(height: 8),
-                Container(
-                  color: ThemeModel.surface(isDarkMode),
-                  child: Column(
-                    children: [
-                      /// 문의하기
-                      CInkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              builder: (context) => InquiryPage(),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          color: ThemeModel.surface(isDarkMode),
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.mail_outline,
-                                size: 24,
-                                color: ThemeModel.sub4(isDarkMode),
-                              ),
-                              SizedBox(
-                                width: 16,
-                              ),
-                              Text(
-                                '문의하기',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.text(isDarkMode),
-                                ),
-                              ),
-                              const Spacer(),
-                              Icon(
-                                Icons.navigate_next,
-                                color: ThemeModel.sub3(isDarkMode),
-                              ),
-                            ],
-                          ),
-                        ),
+                CListTile(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => InquiryPage(),
                       ),
-                    ],
-                  ),
+                    );
+                  },
+                  label: '문의하기',
                 ),
               ],
             ),
