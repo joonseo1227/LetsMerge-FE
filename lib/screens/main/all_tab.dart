@@ -75,7 +75,17 @@ class _AllTabState extends ConsumerState<AllTab> {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
               child: Column(
                 children: [
-                  CInkWell(
+                  CListTile(
+                    leading: Container(
+                      height: 64,
+                      width: 64,
+                      decoration: ShapeDecoration(
+                        color: blue20,
+                        shape: CircleBorder(),
+                      ),
+                    ),
+                    label: userName() ?? '사용자 이름 없음',
+                    subtitle: 'asdf',
                     onTap: () {
                       Navigator.of(context).push(
                         CupertinoPageRoute(
@@ -83,38 +93,6 @@ class _AllTabState extends ConsumerState<AllTab> {
                         ),
                       );
                     },
-                    child: Container(
-                      padding: EdgeInsets.all(16),
-                      color: ThemeModel.surface(isDarkMode),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 64,
-                            width: 64,
-                            decoration: ShapeDecoration(
-                              color: blue20,
-                              shape: CircleBorder(),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 16,
-                          ),
-                          Text(
-                            userName() ?? '사용자 이름 없음',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: ThemeModel.text(isDarkMode),
-                            ),
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.navigate_next,
-                            color: ThemeModel.sub3(isDarkMode),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                   SizedBox(
                     height: 16,

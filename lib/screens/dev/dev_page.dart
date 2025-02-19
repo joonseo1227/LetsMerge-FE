@@ -10,7 +10,7 @@ import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_datetime_picker.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_dropdown.dart';
-import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
@@ -42,35 +42,16 @@ class _DevPageState extends ConsumerState<DevPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  color: ThemeModel.surface(isDarkMode),
-                  child: CInkWell(
-                    onTap: () {
+                CListTile(
+                  label: '어두운 테마',
+                  onTap: () {
+                    ref.read(themeProvider.notifier).toggleTheme();
+                  },
+                  trailing: CSwitch(
+                    value: isDarkMode,
+                    onChanged: (_) {
                       ref.read(themeProvider.notifier).toggleTheme();
                     },
-                    child: Container(
-                      color: ThemeModel.surface(isDarkMode),
-                      padding: const EdgeInsets.all(16),
-                      child: Row(
-                        children: [
-                          Text(
-                            '어두운 테마',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.text(isDarkMode),
-                            ),
-                          ),
-                          const Spacer(),
-                          CSwitch(
-                            value: isDarkMode,
-                            onChanged: (_) {
-                              ref.read(themeProvider.notifier).toggleTheme();
-                            },
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
                 ),
                 SizedBox(height: 32),
