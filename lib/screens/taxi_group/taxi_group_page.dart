@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
-import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
+import 'package:letsmerge/widgets/c_text_field.dart';
 
 class TaxiGroupPage extends ConsumerStatefulWidget {
   const TaxiGroupPage({super.key});
@@ -19,6 +21,34 @@ class TaxiGroupPage extends ConsumerStatefulWidget {
 
 class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   final GlobalKey<CPopupMenuState> popupMenuKey = GlobalKey<CPopupMenuState>();
+
+  List<Map<String, dynamic>> messages = [
+    {
+      'sender': '홍길동',
+      'text': 'nulla pariatur.',
+      'time': DateTime.now().subtract(Duration(minutes: 1))
+    },
+    {
+      'sender': '홍길동',
+      'text': 'Excepteur sint occaecat cupidatat non proident.',
+      'time': DateTime.now().subtract(Duration(minutes: 1))
+    },
+    {
+      'sender': '홍동',
+      'text':
+          'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
+      'time': DateTime.now().subtract(Duration(minutes: 2))
+    },
+    {
+      'sender': '홍길자',
+      'text':
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id accumsan augue.',
+      'time': DateTime.now().subtract(Duration(minutes: 10))
+    },
+  ];
+
+  final TextEditingController _chatController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -115,38 +145,352 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // TODO: 다른 참여자 실시간 위치 표시, 채팅 기능
-              ],
+      body: Column(
+        children: [
+          // 채팅 메시지 영역
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              reverse: true,
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+                final bool isUser = message['sender'] == 'user';
+                final String formattedTime =
+                    DateFormat('a hh:mm', 'ko_KR').format(message['time']);
+
+                return Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Align(
+                    alignment:
+                        isUser ? Alignment.centerRight : Alignment.centerLeft,
+                    child: isUser
+                        ? Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  // 메시지 전송 시각
+                                  Text(
+                                    formattedTime,
+                                    style: TextStyle(
+                                      color: ThemeModel.sub3(isDarkMode),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      height: 1,
+                                    ),
+                                  ),
+                                  SizedBox(width: 8),
+                                  // 메시지 박스
+                                  IntrinsicWidth(
+                                    child: Container(
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            MediaQuery.of(context).size.width *
+                                                0.7,
+                                      ),
+                                      padding: EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: ThemeModel.highlight(isDarkMode),
+                                      ),
+                                      child: Text(
+                                        message['text']!,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        : Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8),
+                                child: Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: ShapeDecoration(
+                                    color: blue20,
+                                    shape: CircleBorder(),
+                                  ),
+                                ),
+                              ),
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // 유저 이름
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Text(
+                                      message['sender']!,
+                                      style: TextStyle(
+                                        color: ThemeModel.sub6(isDarkMode),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        height: 1,
+                                      ),
+                                    ),
+                                  ),
+
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      // 메시지 박스
+                                      IntrinsicWidth(
+                                        child: Container(
+                                          constraints: BoxConstraints(
+                                            maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.6,
+                                          ),
+                                          padding: EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                ThemeModel.surface(isDarkMode),
+                                          ),
+                                          child: Text(
+                                            message['text']!,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color:
+                                                  ThemeModel.text(isDarkMode),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 8),
+                                      // 메시지 전송 시각
+                                      Text(
+                                        formattedTime,
+                                        style: TextStyle(
+                                          color: ThemeModel.sub3(isDarkMode),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          height: 1,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                  ),
+                );
+              },
             ),
           ),
+
+          // 입력 필드
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Row(
+                children: [
+                  CInkWell(
+                    onTap: _showBottomSheet,
+                    child: SizedBox(
+                      width: 64,
+                      height: 32,
+                      child: Icon(
+                        Icons.add,
+                        size: 28,
+                        color: ThemeModel.text(isDarkMode),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: CTextField(
+                      controller: _chatController,
+                      hint: '메시지 입력',
+                    ),
+                  ),
+                  CInkWell(
+                    onTap: _sendMessage,
+                    child: SizedBox(
+                      width: 64,
+                      height: 32,
+                      child: Icon(
+                        Icons.send,
+                        size: 28,
+                        color: ThemeModel.highlightText(isDarkMode),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 메시지 전송 함수
+  void _sendMessage() {
+    if (_chatController.text.isNotEmpty) {
+      // 스크롤 위치를 맨 아래로 이동 시킴
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeInOut,
+      );
+
+      setState(() {
+        messages.insert(0, {
+          'sender': 'user',
+          'text': _chatController.text,
+          'time': DateTime.now(),
+        });
+      });
+      _chatController.clear();
+    }
+  }
+
+  void _showBottomSheet() async {
+    final isDarkMode = ref.read(themeProvider);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: ThemeModel.background(isDarkMode),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
         ),
       ),
-      bottomNavigationBar: Container(
-        color: ThemeModel.highlight(isDarkMode),
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-        child: SafeArea(
-          child: CButton(
-            onTap: () {
-              Navigator.of(context).push(
-                CupertinoPageRoute(
-                  builder: (context) => TaxiGroupSplitMoneyPage(),
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+              return Padding(
+                padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              margin: const EdgeInsets.only(bottom: 16),
+                              decoration: BoxDecoration(
+                                color: ThemeModel.sub3(isDarkMode),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            color: ThemeModel.surface(isDarkMode),
+                            child: Column(
+                              children: [
+                                /// 정산하기
+                                CInkWell(
+                                  onTap: () {
+                                    Navigator.pop(context);
+                                    Navigator.of(context).push(
+                                      CupertinoPageRoute(
+                                        builder: (context) =>
+                                            TaxiGroupSplitMoneyPage(),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    color: ThemeModel.surface(isDarkMode),
+                                    padding: const EdgeInsets.all(16),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.attach_money,
+                                          size: 24,
+                                          color: ThemeModel.sub4(isDarkMode),
+                                        ),
+                                        SizedBox(
+                                          width: 16,
+                                        ),
+                                        Text(
+                                          '정산하기',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                            color: ThemeModel.text(isDarkMode),
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Icon(
+                                          Icons.navigate_next,
+                                          color: ThemeModel.sub3(isDarkMode),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
+                                /// 실시간 위치 공유
+                                CInkWell(
+                                  onTap: () {},
+                                  child: Container(
+                                    color: ThemeModel.surface(isDarkMode),
+                                    padding: const EdgeInsets.all(16),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_on,
+                                          size: 24,
+                                          color: ThemeModel.sub4(isDarkMode),
+                                        ),
+                                        SizedBox(
+                                          width: 16,
+                                        ),
+                                        Text(
+                                          '실시간 위치 공유',
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                            color: ThemeModel.text(isDarkMode),
+                                          ),
+                                        ),
+                                        const Spacer(),
+                                        Icon(
+                                          Icons.navigate_next,
+                                          color: ThemeModel.sub3(isDarkMode),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               );
             },
-            size: CButtonSize.extraLarge,
-            label: '정산하기',
-            icon: Icons.navigate_next,
-            width: double.maxFinite,
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
