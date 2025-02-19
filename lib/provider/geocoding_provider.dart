@@ -79,7 +79,7 @@ class ReverseGeocodingNotifier
     return null;
   }
 
-// 번호 포맷탕
+// 번호 포맷팅
   String _formatNumber(Map land) {
     String number = land['number1'] ?? '';
     if (land['number2'] != null && land['number2'].isNotEmpty) {

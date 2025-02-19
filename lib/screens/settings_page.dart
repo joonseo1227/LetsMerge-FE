@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/auth_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/auth/log_in_page.dart';
-import 'package:letsmerge/service/auth_service.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_dropdown.dart';
@@ -22,7 +22,7 @@ class SettingsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authService = AuthService();
+    final authService = AuthProvider();
     final isDarkMode = ref.watch(themeProvider);
     final currentNotifier = ref.read(themeProvider.notifier);
     final currentIndex = ref.read(themeProvider.notifier).currentModeIndex;

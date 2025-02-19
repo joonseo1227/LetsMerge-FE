@@ -8,7 +8,6 @@ import 'package:letsmerge/provider/auth_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/auth/create_account_page.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
-import 'package:letsmerge/service/auth_service.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -22,7 +21,7 @@ class LogInPage extends ConsumerStatefulWidget {
 
 class _LogInPageState extends ConsumerState<LogInPage> {
   final supabase = Supabase.instance.client;
-  final authService = AuthService();
+  final authService = AuthProvider();
 
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -71,8 +70,6 @@ class _LogInPageState extends ConsumerState<LogInPage> {
   }
 
   Future<void> _login() async {
-    final authNotifier = ref.read(authProvider.notifier);
-
     if (!_validate()) return;
 
     final email = _emailController.text;

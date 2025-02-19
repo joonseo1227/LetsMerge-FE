@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-
 class Account {
   final String accountNumber;
   final String bankName;
@@ -11,37 +9,40 @@ class Account {
 }
 
 class UserDTO {
-  final String uid;
+  final String id;
   final String email;
-  final String? displayName;
-  final List<Account> accounts;
+  final String? name;
+  final String? nickname;
+  final String? createdAt;
+  final String? avatarUrl;
+  final List<Account>? accounts;
 
   UserDTO({
-    required this.uid,
+    required this.id,
     required this.email,
-    this.displayName,
+    this.name,
+    this.nickname,
+    this.createdAt,
+    this.avatarUrl,
     this.accounts = const [],
   });
 
-  // Firebase User 객체를 UserDTO로 변환
-  factory UserDTO.fromFirebaseUser(firebase_auth.User firebaseUser) {
-    return UserDTO(
-      uid: firebaseUser.uid,
-      email: firebaseUser.email ?? '',
-      displayName: firebaseUser.displayName,
-    );
-  }
-
   UserDTO copyWith({
-    String? uid,
+    String? id,
     String? email,
-    String? displayName,
+    String? name,
+    String? nickname,
+    String? createdAt,
+    String? avatarUrl,
     List<Account>? accounts,
   }) {
     return UserDTO(
-      uid: uid ?? this.uid,
+      id: id ?? this.id,
       email: email ?? this.email,
-      displayName: displayName ?? this.displayName,
+      name: name ?? this.name,
+      nickname: nickname ?? this.nickname,
+      createdAt: createdAt ?? this.createdAt,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
       accounts: accounts ?? this.accounts,
     );
   }

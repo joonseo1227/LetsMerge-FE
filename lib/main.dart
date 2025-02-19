@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -8,7 +7,6 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/auth/log_in_page.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
-import 'package:letsmerge/server/firebase_options.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -17,17 +15,13 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   debugPrint('1. WidgetsFlutterBinding initialized.');
 
-  // Firebase 초기화
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  debugPrint('2. Firebase initialized.');
-
   // 위치 권한 요청
   await _handleLocationPermission();
-  debugPrint('3. Location permission handled.');
+  debugPrint('2. Location permission handled.');
 
   // 환경변수 로드
   await dotenv.load(fileName: 'assets/config/.env');
-  debugPrint('4. Environment variables loaded.');
+  debugPrint('3. Environment variables loaded.');
 
   await Supabase.initialize(
     url: dotenv.env['SUPABASE_PROJECT_URL'] ?? "",
@@ -38,12 +32,12 @@ Future<void> main() async {
   await NaverMapSdk.instance.initialize(
     clientId: dotenv.env['NAVER_MAP_CLIENT_ID']!,
   );
-  debugPrint('5. NaverMap SDK initialized.');
+  debugPrint('4. NaverMap SDK initialized.');
 
   // SharedPreferences 및 다크모드 설정 불러오기
   final prefs = await SharedPreferences.getInstance();
   final isDarkMode = prefs.getBool('isDarkMode') ?? false;
-  debugPrint('6. Dark mode status loaded: $isDarkMode');
+  debugPrint('5. Dark mode status loaded: $isDarkMode');
 
   // 다크모드 설정
   final themeNotifier = ThemeNotifier(isDarkMode);
@@ -57,7 +51,7 @@ Future<void> main() async {
       child: MyApp(),
     ),
   );
-  debugPrint('7. App started.');
+  debugPrint('6. App started.');
 }
 
 // 위치 권한 요청 처리

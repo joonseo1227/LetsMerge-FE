@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
-import 'package:letsmerge/service/auth_service.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -15,7 +14,7 @@ class CreateAccountPage extends ConsumerStatefulWidget {
 
 class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   final supabase = Supabase.instance.client;
-  final authService = AuthService();
+  final authService = AuthProvider();
 
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -88,8 +87,6 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   }
 
   Future<void> _signUp() async {
-    final authNotifier = ref.read(authProvider.notifier);
-
     final name = _nameController.text;
     final email = _emailController.text;
     final password = _confirmPasswordController.text;

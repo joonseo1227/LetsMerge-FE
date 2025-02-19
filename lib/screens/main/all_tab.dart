@@ -85,7 +85,6 @@ class _AllTabState extends ConsumerState<AllTab> {
                       ),
                     ),
                     label: userName() ?? '사용자 이름 없음',
-                    subtitle: 'asdf',
                     onTap: () {
                       Navigator.of(context).push(
                         CupertinoPageRoute(

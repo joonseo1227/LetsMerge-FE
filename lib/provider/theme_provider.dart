@@ -61,7 +61,8 @@ class ThemeNotifier extends StateNotifier<bool> {
         return true;
       case 0: // 기기 테마 연동
       default:
-        return SchedulerBinding.instance.platformDispatcher.platformBrightness ==
+        return SchedulerBinding
+                .instance.platformDispatcher.platformBrightness ==
             Brightness.dark;
     }
   }
@@ -95,7 +96,7 @@ class ThemeNotifier extends StateNotifier<bool> {
   void dispose() {
     // ThemeNotifier가 dispose될 때 시스템 테마 변경 콜백을 해제합니다.
     SchedulerBinding.instance.platformDispatcher.onPlatformBrightnessChanged =
-    null;
+        null;
     super.dispose();
   }
 }
