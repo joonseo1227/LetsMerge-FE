@@ -7,8 +7,8 @@ import 'package:letsmerge/screens/auth/log_in_page.dart';
 import 'package:letsmerge/service/auth_service.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
+import 'package:letsmerge/widgets/c_dropdown.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
-import 'package:letsmerge/widgets/c_switch.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -24,6 +24,8 @@ class SettingsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authService = AuthService();
     final isDarkMode = ref.watch(themeProvider);
+    final currentNotifier = ref.read(themeProvider.notifier);
+    final currentIndex = ref.read(themeProvider.notifier).currentModeIndex;
 
     return Scaffold(
       appBar: AppBar(
@@ -37,43 +39,24 @@ class SettingsPage extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  color: ThemeModel.surface(isDarkMode),
-                  child: Column(
-                    children: [
-                      /// 다크 모드
-                      CInkWell(
-                        onTap: () {
-                          ref.read(themeProvider.notifier).toggleTheme();
-                        },
-                        child: Container(
-                          color: ThemeModel.surface(isDarkMode),
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Text(
-                                '다크 모드',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.text(isDarkMode),
-                                ),
-                              ),
-                              const Spacer(),
-                              CSwitch(
-                                value: isDarkMode,
-                                onChanged: (_) {
-                                  ref
-                                      .read(themeProvider.notifier)
-                                      .toggleTheme();
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                CDropdown<int>(
+                  label: "앱 테마",
+                  items: const [0, 1, 2],
+                  initialValue: currentIndex,
+                  itemAsString: (value) {
+                    switch (value) {
+                      case 0:
+                        return "기기 테마 연동";
+                      case 1:
+                        return "밝은 테마";
+                      case 2:
+                        return "어두운 테마";
+                    }
+                    return "알 수 없음";
+                  },
+                  onChanged: (newIndex) {
+                    currentNotifier.setMode(newIndex);
+                  },
                 ),
                 const SizedBox(height: 16),
                 Container(

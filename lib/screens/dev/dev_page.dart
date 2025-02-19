@@ -54,7 +54,7 @@ class _DevPageState extends ConsumerState<DevPage> {
                       child: Row(
                         children: [
                           Text(
-                            '다크 모드',
+                            '어두운 테마',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w500,
