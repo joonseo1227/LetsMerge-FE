@@ -51,9 +51,15 @@ class _TermsAndPoliciesPageState extends ConsumerState<TermsAndPoliciesPage> {
         future: _termsData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
           } else if (snapshot.hasError) {
-            return Center(child: Text('데이터를 불러오는 중 오류가 발생했습니다.'));
+            return Center(
+              child: Text(
+                '데이터를 불러오는 중 오류가 발생했습니다.',
+              ),
+            );
           }
 
           final termsData = snapshot.data!;

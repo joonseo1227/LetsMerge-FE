@@ -6,7 +6,7 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/account_number/my_account_number_page.dart';
-import 'package:letsmerge/screens/customer_support_page.dart';
+import 'package:letsmerge/screens/customer_support/customer_support_page.dart';
 import 'package:letsmerge/screens/dev/dev_page.dart';
 import 'package:letsmerge/screens/history_page.dart';
 import 'package:letsmerge/screens/profile_page.dart';

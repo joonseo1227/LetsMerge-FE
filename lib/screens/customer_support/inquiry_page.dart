@@ -2,33 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 
-class CustomerSupportPage extends ConsumerStatefulWidget {
-  const CustomerSupportPage({super.key});
+class InquiryPage extends ConsumerStatefulWidget {
+  const InquiryPage({super.key});
 
   @override
-  ConsumerState<CustomerSupportPage> createState() =>
-      _CustomerSupportPageState();
+  ConsumerState<InquiryPage> createState() => _InquiryPageState();
 }
 
-class _CustomerSupportPageState extends ConsumerState<CustomerSupportPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class _InquiryPageState extends ConsumerState<InquiryPage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('고객 지원'),
+        title: const Text('문의하기'),
         titleSpacing: 0,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: EdgeInsets.fromLTRB(16, 32, 16, 32),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [],
