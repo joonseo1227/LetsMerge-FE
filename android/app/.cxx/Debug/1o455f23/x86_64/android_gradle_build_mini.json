@@ -1,0 +1,20 @@
+{
+  "buildFiles": [
+    "/opt/homebrew/Caskroom/flutter/3.29.0/flutter/packages/flutter_tools/gradle/src/main/groovy/CMakeLists.txt"
+  ],
+  "cleanCommandsComponents": [
+    [
+      "/Users/joonseojung/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+      "-C",
+      "/Users/joonseojung/development/joonseo1227/LetsMerge-FE/android/app/.cxx/Debug/1o455f23/x86_64",
+      "clean"
+    ]
+  ],
+  "buildTargetsCommandComponents": [
+    "/Users/joonseojung/Library/Android/sdk/cmake/3.22.1/bin/ninja",
+    "-C",
+    "/Users/joonseojung/development/joonseo1227/LetsMerge-FE/android/app/.cxx/Debug/1o455f23/x86_64",
+    "{LIST_OF_TARGETS_TO_BUILD}"
+  ],
+  "libraries": {}
+}
