@@ -43,9 +43,9 @@ class _TaxiGroupSelectPlacePageState
   Position? _currentPosition;
   Position? _initialPosition;
   StreamSubscription<Position>? _positionStream;
-  bool _showSkeleton = true;
-  String _selectedAddress = '위치를 가져오는 중...';
+  bool _showMapSkeleton = true;
   bool isCameraIdle = true;
+  String? _selectedAddress;
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _placeController = TextEditingController();
 
@@ -66,7 +66,7 @@ class _TaxiGroupSelectPlacePageState
       if (mounted) {
         setState(() {
           _initialPosition = pos;
-          _showSkeleton = false;
+          _showMapSkeleton = false;
         });
       }
     } catch (e) {
@@ -117,7 +117,7 @@ class _TaxiGroupSelectPlacePageState
     Future.delayed(const Duration(milliseconds: 800), () {
       if (mounted) {
         setState(() {
-          _showSkeleton = false;
+          _showMapSkeleton = false;
         });
       }
     });
@@ -244,14 +244,15 @@ class _TaxiGroupSelectPlacePageState
                     padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
                     child: SafeArea(
                       child: CButton(
-                        onTap: _placeController.text.isEmpty
+                        onTap: _placeController.text.isEmpty ||
+                                _selectedAddress == null
                             ? null
                             : () {
                                 ref
                                     .read(reverseGeocodingProvider.notifier)
                                     .setPlaceAndAddress(
                                       mode: widget.mode,
-                                      address: _selectedAddress,
+                                      address: _selectedAddress!,
                                       place: _placeController.text,
                                       lat: cameraPosition.target.latitude,
                                       lng: cameraPosition.target.longitude,
@@ -359,7 +360,7 @@ class _TaxiGroupSelectPlacePageState
                       ),
                     ),
                   ),
-                if (_showSkeleton) const CSkeleton(),
+                if (_showMapSkeleton) const CSkeleton(),
                 Positioned(
                   bottom: 16,
                   right: 16,
@@ -415,15 +416,17 @@ class _TaxiGroupSelectPlacePageState
             decoration: BoxDecoration(
               color: ThemeModel.surface(isDarkMode),
             ),
-            child: Text(
-              _selectedAddress,
-              maxLines: 2,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                color: ThemeModel.text(isDarkMode),
-              ),
-            ),
+            child: _selectedAddress == null
+                ? CSkeleton()
+                : Text(
+                    _selectedAddress!,
+                    maxLines: 2,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: ThemeModel.text(isDarkMode),
+                    ),
+                  ),
           ),
           Container(
             color: ThemeModel.highlight(isDarkMode),
