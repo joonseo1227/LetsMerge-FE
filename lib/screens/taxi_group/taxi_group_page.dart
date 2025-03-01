@@ -7,6 +7,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_open_app_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
@@ -432,6 +433,18 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                         color: ThemeModel.surface(isDarkMode),
                         child: Column(
                           children: [
+                            CListTile(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                    builder: (context) =>
+                                        TaxiGroupOpenAppPage(),
+                                  ),
+                                );
+                              },
+                              title: '택시 앱 열기',
+                              icon: Icons.attach_money,
+                            ),
                             CListTile(
                               onTap: () {
                                 Navigator.of(context).push(
