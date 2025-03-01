@@ -43,7 +43,7 @@ class _DevPageState extends ConsumerState<DevPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 CListTile(
-                  label: '어두운 테마',
+                  title: '어두운 테마',
                   onTap: () {
                     ref.read(themeProvider.notifier).toggleTheme();
                   },

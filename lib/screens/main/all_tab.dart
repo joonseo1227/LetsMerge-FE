@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/screens/account_number/my_account_number_page.dart';
 import 'package:letsmerge/screens/customer_support/customer_support_page.dart';
 import 'package:letsmerge/screens/dev/dev_page.dart';
@@ -26,15 +27,10 @@ class AllTab extends ConsumerStatefulWidget {
 class _AllTabState extends ConsumerState<AllTab> {
   final supabase = Supabase.instance.client;
 
-  String? userName() {
-    final User? user = supabase.auth.currentUser;
-    final Map<String, dynamic>? metadata = user?.userMetadata;
-    return metadata?['name'];
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
+    final user = UserProvider();
 
     return AnnotatedRegion(
       value: isDarkMode
@@ -84,7 +80,7 @@ class _AllTabState extends ConsumerState<AllTab> {
                         shape: CircleBorder(),
                       ),
                     ),
-                    label: userName() ?? '사용자 이름 없음',
+                    title: user.getUserName() ?? '사용자 이름 없음',
                     onTap: () {
                       Navigator.of(context).push(
                         CupertinoPageRoute(
@@ -104,7 +100,7 @@ class _AllTabState extends ConsumerState<AllTab> {
                         ),
                       );
                     },
-                    label: 'DEV',
+                    title: 'DEV',
                     icon: Icons.code,
                   ),
                   SizedBox(
@@ -118,7 +114,7 @@ class _AllTabState extends ConsumerState<AllTab> {
                         ),
                       );
                     },
-                    label: '내 계좌번호',
+                    title: '내 계좌번호',
                     icon: Icons.wallet,
                   ),
                   CListTile(
@@ -129,7 +125,7 @@ class _AllTabState extends ConsumerState<AllTab> {
                         ),
                       );
                     },
-                    label: '이용 내역',
+                    title: '이용 내역',
                     icon: Icons.receipt,
                   ),
                   SizedBox(
@@ -143,7 +139,7 @@ class _AllTabState extends ConsumerState<AllTab> {
                         ),
                       );
                     },
-                    label: '고객 지원',
+                    title: '고객 지원',
                     icon: Icons.help,
                   ),
                   CListTile(
@@ -154,7 +150,7 @@ class _AllTabState extends ConsumerState<AllTab> {
                         ),
                       );
                     },
-                    label: '약관 및 정책',
+                    title: '약관 및 정책',
                     icon: Icons.info,
                   ),
                 ],

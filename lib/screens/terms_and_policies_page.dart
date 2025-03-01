@@ -81,7 +81,7 @@ class _TermsAndPoliciesPageState extends ConsumerState<TermsAndPoliciesPage> {
                         ),
                       );
                     },
-                    label: termsData[key]!.title,
+                    title: termsData[key]!.title,
                   );
                 }).toList(),
               ),

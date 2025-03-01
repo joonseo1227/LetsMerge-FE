@@ -59,7 +59,7 @@ class _CustomerSupportPageState extends ConsumerState<CustomerSupportPage> {
                       ),
                     );
                   },
-                  label: '문의하기',
+                  title: '문의하기',
                 ),
               ],
             ),

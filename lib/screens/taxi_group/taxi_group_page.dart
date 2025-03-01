@@ -55,24 +55,31 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
 
-    return Scaffold(
-      appBar: _buildAppBar(isDarkMode),
-      body: Column(
-        children: [
-          // 채팅 메시지 영역
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              reverse: true,
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-              itemCount: messages.length,
-              itemBuilder: (context, index) =>
-                  _buildMessageItem(context, index, isDarkMode),
-            ),
-          ),
-          // 메시지 입력 영역
-          _buildChatInput(isDarkMode),
-        ],
+    return Hero(
+      tag: 'taxiGroup',
+      child: Scaffold(
+        appBar: _buildAppBar(isDarkMode),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            return Column(
+              children: [
+                // 채팅 메시지 영역
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    reverse: true,
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) =>
+                        _buildMessageItem(context, index, isDarkMode),
+                  ),
+                ),
+                // 메시지 입력 영역
+                _buildChatInput(isDarkMode),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -83,9 +90,13 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       titleSpacing: 0,
       leading: CInkWell(
         onTap: () {
-          Navigator.of(context).pushAndRemoveUntil(
-            CupertinoPageRoute(builder: (context) => const MainPage()),
-            (Route<dynamic> route) => false,
+          Navigator.pushAndRemoveUntil(
+            context,
+            PageRouteBuilder(
+              pageBuilder: (context, animation, secondaryAnimation) =>
+                  MainPage(),
+            ),
+            (route) => false,
           );
         },
         child: SizedBox(
@@ -430,12 +441,12 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                                   ),
                                 );
                               },
-                              label: '정산하기',
+                              title: '정산하기',
                               icon: Icons.attach_money,
                             ),
                             CListTile(
                               onTap: () {},
-                              label: '실시간 위치 공유',
+                              title: '실시간 위치 공유',
                               icon: Icons.location_on,
                             ),
                           ],

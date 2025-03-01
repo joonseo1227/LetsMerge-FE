@@ -49,14 +49,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ),
               const SizedBox(height: 16),
               CListTile(
-                label: '이름',
+                title: '이름',
                 trailing: Text(
                   user.getUserName() ?? '',
                   style: infoTextStyle,
                 ),
               ),
               CListTile(
-                label: '닉네임',
+                title: '닉네임',
                 trailing: FutureBuilder<String?>(
                   future: user.getUserNickname(),
                   builder: (context, snapshot) {
@@ -78,7 +78,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ),
               CListTile(
-                label: '이메일',
+                title: '이메일',
                 trailing: FutureBuilder<String?>(
                   future: user.getUserEmail(),
                   builder: (context, snapshot) {
@@ -100,7 +100,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 ),
               ),
               CListTile(
-                label: '렛츠머지와 함께한지',
+                title: '렛츠머지와 함께한지',
                 trailing: FutureBuilder<String?>(
                   future: user.getUserCreatedAt(),
                   builder: (context, snapshot) {

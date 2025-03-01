@@ -71,7 +71,7 @@ class SettingsPage extends ConsumerWidget {
                       }
                     }
                     return CListTile(
-                      label: '앱 버전',
+                      title: '앱 버전',
                       trailing: Text(
                         versionText,
                         style: TextStyle(
@@ -85,7 +85,7 @@ class SettingsPage extends ConsumerWidget {
                 ),
                 const SizedBox(height: 16),
                 CListTile(
-                  label: '로그아웃',
+                  title: '로그아웃',
                   trailing: SizedBox.shrink(),
                   onTap: () {
                     showDialog(
@@ -142,7 +142,7 @@ class SettingsPage extends ConsumerWidget {
                   },
                 ),
                 CListTile(
-                  label: '계정 삭제',
+                  title: '계정 삭제',
                   trailing: SizedBox.shrink(),
                   onTap: () {
                     showDialog(
