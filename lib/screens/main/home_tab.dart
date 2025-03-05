@@ -259,8 +259,10 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                 child: TaxiGroupDetailCard(
                                   remainingSeats: 3,
                                   departurePlace: group.departurePlace,
-                                  startTime: group.departureTime!,
+                                  departureAdress: group.departureAddress,
                                   arrivalPlace: group.arrivalPlace,
+                                  arrivalAddress: group.arrivalAddress,
+                                  startTime: group.departureTime!,
                                 ),
                               ),
                             );

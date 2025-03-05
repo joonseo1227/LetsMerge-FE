@@ -207,10 +207,12 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
 
                 /// 기본 정보
                 TaxiGroupDetailCard(
-                  remainingSeats: widget.taxiGroup.seater ?? 0,
+                  remainingSeats: 3,
                   departurePlace: widget.taxiGroup.departurePlace,
-                  startTime: widget.taxiGroup.departureTime!,
+                  departureAdress: widget.taxiGroup.departureAddress,
                   arrivalPlace: widget.taxiGroup.arrivalPlace,
+                  arrivalAddress: widget.taxiGroup.arrivalAddress,
+                  startTime: widget.taxiGroup.departureTime!,
                 ),
 
                 SizedBox(

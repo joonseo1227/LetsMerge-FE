@@ -6,15 +6,19 @@ import 'package:letsmerge/provider/theme_provider.dart';
 class TaxiGroupDetailCard extends ConsumerWidget {
   final int remainingSeats;
   final String departurePlace;
-  final DateTime startTime;
+  final String departureAdress;
   final String arrivalPlace;
+  final String arrivalAddress;
+  final DateTime startTime;
 
   const TaxiGroupDetailCard({
     super.key,
     required this.remainingSeats,
     required this.departurePlace,
-    required this.startTime,
+    required this.departureAdress,
     required this.arrivalPlace,
+    required this.arrivalAddress,
+    required this.startTime,
   });
 
   @override
@@ -53,25 +57,16 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 32),
-                  Icon(
-                    Icons.access_time_filled,
-                    size: 14,
-                    color: ThemeModel.sub2(isDarkMode),
+              Padding(
+                padding: const EdgeInsets.only(left: 32),
+                child: Text(
+                  departureAdress,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: ThemeModel.sub4(isDarkMode),
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    _formatDateTime(startTime),
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.sub4(isDarkMode),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -101,12 +96,39 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   ),
                 ],
               ),
+              Padding(
+                padding: const EdgeInsets.only(left: 32),
+                child: Text(
+                  arrivalAddress,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: ThemeModel.sub4(isDarkMode),
+                  ),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              Text(
+                _formatDateTime(startTime),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.sub4(isDarkMode),
+                ),
+              ),
+              SizedBox(
+                height: 12,
+                child: VerticalDivider(
+                  thickness: 1,
+                  color: ThemeModel.sub2(isDarkMode),
+                  width: 20,
+                ),
+              ),
               Text(
                 '$remainingSeats자리 남음',
                 style: TextStyle(
