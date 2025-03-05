@@ -593,7 +593,12 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
           child: CButton(
             onTap: () async {
               submitTaxiGroup(ref);
-              Navigator.pop(context);
+              Navigator.of(context).pushAndRemoveUntil(
+                CupertinoPageRoute(
+                  builder: (context) => MainPage(),
+                ),
+                (Route<dynamic> route) => false,
+              );
             },
             size: CButtonSize.extraLarge,
             label: '택시팟 만들기',
