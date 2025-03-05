@@ -35,7 +35,6 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
   @override
   void dispose() {
-    ref.read(taxiGroupProvider.notifier).dispose();
     super.dispose();
   }
 
