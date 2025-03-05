@@ -6,6 +6,7 @@ import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -15,6 +16,8 @@ class ProfilePage extends ConsumerStatefulWidget {
 }
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
+  final TextEditingController _nicknameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +60,38 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ),
               CListTile(
                 title: '닉네임',
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('닉네임 수정'),
+                        content: TextField(
+                          controller: _nicknameController,
+                          decoration: InputDecoration(
+                            hintText: '새 닉네임 입력',
+                          ),
+                        ),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () {
+                              // 팝업 취소
+                              Navigator.pop(context);
+                            },
+                            child: Text('취소'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              user.updateUserNickname(_nicknameController.text);
+                              Navigator.pop(context);
+                            },
+                            child: Text('저장'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
                 trailing: FutureBuilder<String?>(
                   future: user.getUserNickname(),
                   builder: (context, snapshot) {
