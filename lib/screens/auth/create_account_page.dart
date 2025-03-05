@@ -98,7 +98,8 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     });
 
     try {
-      await authService.signUpWithEmailPassword(email, password, name, "nickname");
+      await authService.signUpWithEmailPassword(
+          email, password, name, "nickname");
 
       if (!mounted) return;
       Navigator.pop(context);

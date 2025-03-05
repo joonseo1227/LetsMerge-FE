@@ -6,7 +6,6 @@ import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});

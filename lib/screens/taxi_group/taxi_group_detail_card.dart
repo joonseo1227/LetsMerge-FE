@@ -5,22 +5,16 @@ import 'package:letsmerge/provider/theme_provider.dart';
 
 class TaxiGroupDetailCard extends ConsumerWidget {
   final int remainingSeats;
-  final int closingTime;
-  final String startLocation;
-  final String startTime;
-  final int startWalkingTime;
-  final String destinationLocation;
-  final String destinationTime;
+  final String departurePlace;
+  final DateTime startTime;
+  final String arrivalPlace;
 
   const TaxiGroupDetailCard({
     super.key,
     required this.remainingSeats,
-    required this.closingTime,
-    required this.startLocation,
+    required this.departurePlace,
     required this.startTime,
-    required this.startWalkingTime,
-    required this.destinationLocation,
-    required this.destinationTime,
+    required this.arrivalPlace,
   });
 
   @override
@@ -50,7 +44,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    startLocation,
+                    departurePlace,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -70,23 +64,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    startTime,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.sub4(isDarkMode),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 12,
-                    child: VerticalDivider(
-                      thickness: 1,
-                      color: ThemeModel.sub2(isDarkMode),
-                      width: 12,
-                    ),
-                  ),
-                  Text(
-                    '현재 위치에서 도보 $startWalkingTime분',
+                    _formatDateTime(startTime),
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -114,31 +92,11 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    destinationLocation,
+                    arrivalPlace,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: ThemeModel.text(isDarkMode),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 32),
-                  Icon(
-                    Icons.access_time_filled,
-                    size: 14,
-                    color: ThemeModel.sub2(isDarkMode),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    destinationTime,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.sub4(isDarkMode),
                     ),
                   ),
                 ],
@@ -157,26 +115,14 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   color: ThemeModel.sub4(isDarkMode),
                 ),
               ),
-              SizedBox(
-                height: 12,
-                child: VerticalDivider(
-                  thickness: 1,
-                  color: ThemeModel.sub2(isDarkMode),
-                  width: 12,
-                ),
-              ),
-              Text(
-                '$closingTime분 후 마감',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: ThemeModel.sub4(isDarkMode),
-                ),
-              ),
             ],
           ),
         ],
       ),
     );
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return '${dateTime.month.toString().padLeft(2, '0')}/${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 }

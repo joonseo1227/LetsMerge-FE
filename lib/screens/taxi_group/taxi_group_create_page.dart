@@ -143,6 +143,10 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
 
       await _mapController!.updateCamera(cameraUpdate);
 
+      setState(() {
+        _showSkeleton = false;
+      });
+
       debugPrint("경로 오버레이 추가 및 카메라 업데이트");
     }
   }
@@ -173,7 +177,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       arrivalLon: destinationData.longitude,
       estimatedFare: taxiFare,
       seater: selectedMemberCount,
-      departureTime: selectedDateTime,
+      departureTime: selectedDateTime!,
       clothes: _clothingTags,
     );
 
@@ -243,17 +247,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                             onMapReady: (controller) async {
                               debugPrint('Naver Map Ready');
                               _mapController = controller;
-
                               _fetchDirections();
-
-                              await Future.delayed(
-                                const Duration(milliseconds: 800),
-                              );
-                              if (mounted) {
-                                setState(() {
-                                  _showSkeleton = false;
-                                });
-                              }
                             },
                           ),
                         ),
