@@ -47,4 +47,31 @@ class UserProvider {
   /// 프로필 이미지 URL을 가져오는 함수
   Future<String?> getUserProfileImageUrl() =>
       _getUserField<String>('avatar_url');
+
+  Future<void> _updateUserField(String field, String data) async {
+    final User? user = _supabase.auth.currentUser;
+
+    if (user == null) {
+      debugPrint('유저가 로그인되지 않았습니다.');
+      return;
+    }
+
+    try {
+      await _supabase
+          .from('userinfo')
+          .update({field: data})
+          .eq('id', user.id)
+          .maybeSingle();
+
+      debugPrint('데이터 업데이트 성공: {$field: $data}');
+    } catch (error) {
+      debugPrint('데이터 업데이트 실패: $error');
+      return;
+    }
+  }
+
+  Future<void> updateUserNickname(String nickname) => _updateUserField('nickname', nickname);
+
+  Future<void> updateUserProfileImg(String profileUrl) => _updateUserField('avatar_url', profileUrl);
+
 }

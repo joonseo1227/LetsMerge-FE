@@ -15,12 +15,13 @@ class AuthProvider {
 
   /// 계정 생성
   Future<AuthResponse> signUpWithEmailPassword(
-      String email, String password, String name) async {
+      String email, String password, String name, String nickname) async {
     return await _supabase.auth.signUp(
       email: email,
       password: password,
       data: {
         'name': name,
+        'nickname': nickname,
       },
     );
   }
