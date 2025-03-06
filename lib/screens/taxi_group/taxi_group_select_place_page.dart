@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
+import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/search/search_place_page.dart';
@@ -171,6 +172,7 @@ class _TaxiGroupSelectPlacePageState
 
   void _showPlaceBottomSheet() async {
     final isDarkMode = ref.read(themeProvider);
+    final taxiGroup = ref.read(taxiGroupProvider);
 
     NCameraPosition cameraPosition = await _mapController!.getCameraPosition();
 

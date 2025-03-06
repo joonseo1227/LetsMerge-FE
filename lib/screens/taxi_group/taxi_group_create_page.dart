@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/directions_provider.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
+import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
@@ -15,6 +17,7 @@ import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:letsmerge/widgets/c_toggle_button.dart';
 
 class TaxiGroupCreatePage extends ConsumerStatefulWidget {
@@ -28,6 +31,7 @@ class TaxiGroupCreatePage extends ConsumerStatefulWidget {
 class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   NaverMapController? _mapController;
   bool _showSkeleton = true;
+  final SupabaseClient _supabase = Supabase.instance.client;
   final _mapKey = UniqueKey();
   final TextEditingController _clothingController = TextEditingController();
   final GlobalKey<CPopupMenuState> popupMenuKey = GlobalKey<CPopupMenuState>();
@@ -140,8 +144,45 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
 
       await _mapController!.updateCamera(cameraUpdate);
 
+      setState(() {
+        _showSkeleton = false;
+      });
+
       debugPrint("경로 오버레이 추가 및 카메라 업데이트");
     }
+  }
+
+  Future<void> submitTaxiGroup(WidgetRef ref) async {
+    final directionsState = ref.watch(directionsProvider);
+    final User? user = _supabase.auth.currentUser;
+    final taxiFare = directionsState.taxiFare;
+
+    final geocodingData = ref.read(reverseGeocodingProvider);
+    final departureData = geocodingData[GeocodingMode.departure];
+    final destinationData = geocodingData[GeocodingMode.destination];
+
+    if (departureData == null || destinationData == null) {
+      debugPrint('출발지 또는 도착지 정보가 누락되었습니다.');
+      return;
+    }
+
+    final taxiGroup = TaxiGroup(
+      creatorUserId: user!.id,
+      departurePlace: departureData.place,
+      departureAddress: departureData.address,
+      departureLat: departureData.latitude,
+      departureLon: departureData.longitude,
+      arrivalPlace: destinationData.place,
+      arrivalAddress: destinationData.address,
+      arrivalLat: destinationData.latitude,
+      arrivalLon: destinationData.longitude,
+      estimatedFare: taxiFare,
+      seater: selectedMemberCount,
+      departureTime: selectedDateTime!,
+      clothes: _clothingTags,
+    );
+
+    await ref.read(taxiGroupProvider.notifier).createTaxiGroup(taxiGroup);
   }
 
   @override
@@ -207,17 +248,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                             onMapReady: (controller) async {
                               debugPrint('Naver Map Ready');
                               _mapController = controller;
-
                               _fetchDirections();
-
-                              await Future.delayed(
-                                const Duration(milliseconds: 800),
-                              );
-                              if (mounted) {
-                                setState(() {
-                                  _showSkeleton = false;
-                                });
-                              }
                             },
                           ),
                         ),
@@ -542,8 +573,14 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
         padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: SafeArea(
           child: CButton(
-            onTap: () {
-              Navigator.pop(context);
+            onTap: () async {
+              submitTaxiGroup(ref);
+              Navigator.of(context).pushAndRemoveUntil(
+                CupertinoPageRoute(
+                  builder: (context) => MainPage(),
+                ),
+                (Route<dynamic> route) => false,
+              );
             },
             size: CButtonSize.extraLarge,
             label: '택시팟 만들기',

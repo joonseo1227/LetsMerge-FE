@@ -5,22 +5,20 @@ import 'package:letsmerge/provider/theme_provider.dart';
 
 class TaxiGroupDetailCard extends ConsumerWidget {
   final int remainingSeats;
-  final int closingTime;
-  final String startLocation;
-  final String startTime;
-  final int startWalkingTime;
-  final String destinationLocation;
-  final String destinationTime;
+  final String departurePlace;
+  final String departureAdress;
+  final String arrivalPlace;
+  final String arrivalAddress;
+  final DateTime startTime;
 
   const TaxiGroupDetailCard({
     super.key,
     required this.remainingSeats,
-    required this.closingTime,
-    required this.startLocation,
+    required this.departurePlace,
+    required this.departureAdress,
+    required this.arrivalPlace,
+    required this.arrivalAddress,
     required this.startTime,
-    required this.startWalkingTime,
-    required this.destinationLocation,
-    required this.destinationTime,
   });
 
   @override
@@ -50,7 +48,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    startLocation,
+                    departurePlace,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -59,41 +57,16 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 32),
-                  Icon(
-                    Icons.access_time_filled,
-                    size: 14,
-                    color: ThemeModel.sub2(isDarkMode),
+              Padding(
+                padding: const EdgeInsets.only(left: 32),
+                child: Text(
+                  departureAdress,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: ThemeModel.sub4(isDarkMode),
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    startTime,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.sub4(isDarkMode),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 12,
-                    child: VerticalDivider(
-                      thickness: 1,
-                      color: ThemeModel.sub2(isDarkMode),
-                      width: 12,
-                    ),
-                  ),
-                  Text(
-                    '현재 위치에서 도보 $startWalkingTime분',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.sub4(isDarkMode),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -114,7 +87,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   ),
                   const SizedBox(width: 12),
                   Text(
-                    destinationLocation,
+                    arrivalPlace,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -123,25 +96,16 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 32),
-                  Icon(
-                    Icons.access_time_filled,
-                    size: 14,
-                    color: ThemeModel.sub2(isDarkMode),
+              Padding(
+                padding: const EdgeInsets.only(left: 32),
+                child: Text(
+                  arrivalAddress,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: ThemeModel.sub4(isDarkMode),
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    destinationTime,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.sub4(isDarkMode),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
@@ -150,7 +114,7 @@ class TaxiGroupDetailCard extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                '$remainingSeats자리 남음',
+                _formatDateTime(startTime),
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -162,11 +126,11 @@ class TaxiGroupDetailCard extends ConsumerWidget {
                 child: VerticalDivider(
                   thickness: 1,
                   color: ThemeModel.sub2(isDarkMode),
-                  width: 12,
+                  width: 20,
                 ),
               ),
               Text(
-                '$closingTime분 후 마감',
+                '$remainingSeats자리 남음',
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -178,5 +142,9 @@ class TaxiGroupDetailCard extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  String _formatDateTime(DateTime dateTime) {
+    return '${dateTime.month.toString().padLeft(2, '0')}/${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 }

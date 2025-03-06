@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/map_model.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
-import 'package:letsmerge/provider/map_provider.dart';
+import 'package:letsmerge/provider/search_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_select_place_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';

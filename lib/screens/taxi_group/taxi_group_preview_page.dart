@@ -3,17 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 import 'package:letsmerge/config/color.dart';
+import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/directions_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
 
 class TaxiGroupPreviewPage extends ConsumerStatefulWidget {
-  const TaxiGroupPreviewPage({super.key});
+  final TaxiGroup taxiGroup;
+
+  const TaxiGroupPreviewPage({
+    super.key,
+    required this.taxiGroup,
+  });
 
   @override
   ConsumerState<TaxiGroupPreviewPage> createState() =>
@@ -63,6 +73,93 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
     }
   }
 
+  // directionsProvider를 통해 경로 요청하는 함수
+  void _fetchDirections() async {
+    final directionsNotifier = ref.read(directionsProvider.notifier);
+
+    // 동일한 위치인지 확인 후 경로 요청
+    final checkFetchDirections = await directionsNotifier.checkFetchDirections(
+      widget.taxiGroup.departureLat,
+      widget.taxiGroup.departureLon,
+      widget.taxiGroup.arrivalLat,
+      widget.taxiGroup.arrivalLon,
+    );
+
+    if (!checkFetchDirections) {
+      if (!mounted) return;
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return CDialog(
+            title: '출발지와 목적지가 같아요',
+            content: Text(
+              '확인 후 다시 지정해주세요.',
+              style: TextStyle(
+                color: ThemeModel.text(ref.read(themeProvider)),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            buttons: [
+              CButton(
+                size: CButtonSize.extraLarge,
+                label: '확인',
+                onTap: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                    CupertinoPageRoute(builder: (context) => MainPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
+    // 정상적인 경우 경로 오버레이 추가
+    _addPolylineOverlay();
+  }
+
+  // 지도에 경로 오버레이 추가 및 카메라 업데이트 함수
+  void _addPolylineOverlay() async {
+    final routePoints = ref.read(directionsProvider).routePoints;
+
+    if (_mapController != null && routePoints.isNotEmpty) {
+      // 기존 오버레이 모두 제거
+      await _mapController!.clearOverlays();
+
+      // 경로 오버레이 추가
+      await _mapController!.addOverlay(
+        NPolylineOverlay(
+          id: "directions",
+          coords: routePoints,
+          color: ThemeModel.text(ref.watch(themeProvider)),
+          width: 4,
+        ),
+      );
+
+      // 모든 좌표를 포함하는 bounds 계산
+      final bounds = NLatLngBounds.from(routePoints);
+
+      // padding을 적용하여 bounds 내 영역을 온전히 보여주는 카메라 업데이트 생성
+      final cameraUpdate = NCameraUpdate.fitBounds(
+        bounds,
+        padding: EdgeInsets.all(40),
+      );
+
+      await _mapController!.updateCamera(cameraUpdate);
+
+      setState(() {
+        _showSkeleton = false;
+      });
+
+      debugPrint("경로 오버레이 추가 및 카메라 업데이트");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
@@ -78,50 +175,27 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                /// 지도
+                /// 지도 영역
                 SizedBox(
                   height: 400,
                   child: Stack(
                     children: [
-                      if (_currentPosition != null)
-                        AnimatedOpacity(
-                          opacity: _showSkeleton ? 0.0 : 1.0,
-                          duration: const Duration(milliseconds: 200),
-                          child: NaverMap(
-                            key: _mapKey,
-                            options: NaverMapViewOptions(
-                              mapType: NMapType.navi,
-                              nightModeEnable: isDarkMode,
-                              initialCameraPosition: NCameraPosition(
-                                target: _currentPosition != null
-                                    ? NLatLng(
-                                        _currentPosition!.latitude,
-                                        _currentPosition!.longitude,
-                                      )
-                                    : NLatLng(37.5665, 126.9780),
-                                zoom: 15.0,
-                              ),
-                            ),
-                            onMapReady: (controller) {
-                              debugPrint('Naver Map Ready');
-                              _mapController = controller;
-                              controller.setLocationTrackingMode(
-                                  NLocationTrackingMode.follow);
-                              Future.delayed(
-                                const Duration(milliseconds: 800),
-                                () {
-                                  if (mounted) {
-                                    setState(
-                                      () {
-                                        _showSkeleton = false;
-                                      },
-                                    );
-                                  }
-                                },
-                              );
-                            },
+                      AnimatedOpacity(
+                        opacity: _showSkeleton ? 0.0 : 1.0,
+                        duration: const Duration(milliseconds: 200),
+                        child: NaverMap(
+                          key: _mapKey,
+                          options: NaverMapViewOptions(
+                            mapType: NMapType.navi,
+                            nightModeEnable: isDarkMode,
                           ),
+                          onMapReady: (controller) async {
+                            debugPrint('Naver Map Ready');
+                            _mapController = controller;
+                            _fetchDirections();
+                          },
                         ),
+                      ),
                       if (_showSkeleton) const CSkeleton(),
                     ],
                   ),
@@ -133,13 +207,12 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
 
                 /// 기본 정보
                 TaxiGroupDetailCard(
-                  remainingSeats: 1,
-                  closingTime: 5,
-                  startLocation: '가천대역 수인분당선',
-                  startTime: '10:30',
-                  startWalkingTime: 3,
-                  destinationLocation: '가천대학교 AI관',
-                  destinationTime: '10:35',
+                  remainingSeats: 3,
+                  departurePlace: widget.taxiGroup.departurePlace,
+                  departureAdress: widget.taxiGroup.departureAddress,
+                  arrivalPlace: widget.taxiGroup.arrivalPlace,
+                  arrivalAddress: widget.taxiGroup.arrivalAddress,
+                  startTime: widget.taxiGroup.departureTime!,
                 ),
 
                 SizedBox(
@@ -313,7 +386,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '4,800원 - 3,200원',
+                        '${NumberFormat('#,###', 'ko_KR').format(widget.taxiGroup.estimatedFare)}원 - ?원',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -324,7 +397,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                         height: 4,
                       ),
                       Text(
-                        '1,600원 예상',
+                        '?원 예상',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w500,

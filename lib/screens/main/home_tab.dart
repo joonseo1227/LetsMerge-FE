@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
+import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/search/search_taxi_group_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
@@ -22,9 +24,25 @@ class HomeTab extends ConsumerStatefulWidget {
 
 class _HomeTabState extends ConsumerState<HomeTab> {
   @override
+  void initState() {
+    super.initState();
+    Future.microtask(() {
+      final notifier = ref.read(taxiGroupProvider.notifier);
+      notifier.fetchTaxiGroups();
+      notifier.initializeRealtimeSubscription();
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
     final selectedLocation = ref.watch(reverseGeocodingProvider);
+    final taxiGroups = ref.watch(taxiGroupProvider);
 
     return AnnotatedRegion(
       value: isDarkMode
@@ -205,87 +223,51 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                       SizedBox(
                         height: 8,
                       ),
-                      CInkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              builder: (context) => TaxiGroupPreviewPage(),
+                      // 택시 그룹 리스트
+                      if (taxiGroups.isEmpty)
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(32.0),
+                            child: Text(
+                              '아직 모집 중인 택시팟이 없습니다',
+                              style: TextStyle(
+                                color: ThemeModel.text(isDarkMode),
+                              ),
                             ),
-                          );
-                        },
-                        child: TaxiGroupDetailCard(
-                          remainingSeats: 1,
-                          closingTime: 5,
-                          startLocation: '가천대역 수인분당선',
-                          startTime: '10:30',
-                          startWalkingTime: 3,
-                          destinationLocation: '가천대학교 AI관',
-                          destinationTime: '10:35',
+                          ),
+                        )
+                      else
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: taxiGroups.length,
+                          itemBuilder: (context, index) {
+                            final group = taxiGroups[index];
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: 16),
+                              child: CInkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (context) =>
+                                          TaxiGroupPreviewPage(
+                                        taxiGroup: group,
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: TaxiGroupDetailCard(
+                                  remainingSeats: 3,
+                                  departurePlace: group.departurePlace,
+                                  departureAdress: group.departureAddress,
+                                  arrivalPlace: group.arrivalPlace,
+                                  arrivalAddress: group.arrivalAddress,
+                                  startTime: group.departureTime!,
+                                ),
+                              ),
+                            );
+                          },
                         ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      CInkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              builder: (context) => TaxiGroupPreviewPage(),
-                            ),
-                          );
-                        },
-                        child: TaxiGroupDetailCard(
-                          remainingSeats: 3,
-                          closingTime: 5,
-                          startLocation: '가천대역 수인분당선',
-                          startTime: '10:30',
-                          startWalkingTime: 3,
-                          destinationLocation: '가천대학교 AI관',
-                          destinationTime: '10:35',
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      CInkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              builder: (context) => TaxiGroupPreviewPage(),
-                            ),
-                          );
-                        },
-                        child: TaxiGroupDetailCard(
-                          remainingSeats: 3,
-                          closingTime: 5,
-                          startLocation: '가천대역 수인분당선',
-                          startTime: '10:30',
-                          startWalkingTime: 3,
-                          destinationLocation: '가천대학교 AI관',
-                          destinationTime: '10:35',
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      CInkWell(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            CupertinoPageRoute(
-                              builder: (context) => TaxiGroupPreviewPage(),
-                            ),
-                          );
-                        },
-                        child: TaxiGroupDetailCard(
-                          remainingSeats: 3,
-                          closingTime: 5,
-                          startLocation: '가천대역 수인분당선',
-                          startTime: '10:30',
-                          startWalkingTime: 3,
-                          destinationLocation: '가천대학교 AI관',
-                          destinationTime: '10:35',
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -318,14 +300,14 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                           Text(
                             '참여 중',
                             style: TextStyle(
-                              color: ThemeModel.text(isDarkMode),
+                              color: white,
                               fontSize: 14,
                             ),
                           ),
                           Text(
                             '가천대역 수인분당선 -> 가천대학교 AI관',
                             style: TextStyle(
-                              color: ThemeModel.text(isDarkMode),
+                              color: white,
                               fontSize: 16,
                             ),
                           ),

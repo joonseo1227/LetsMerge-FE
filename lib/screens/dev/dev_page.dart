@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/dev/button_gallery_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_request_money_page.dart';
@@ -170,10 +171,71 @@ class _DevPageState extends ConsumerState<DevPage> {
                     );
                   },
                 ),
+                SizedBox(height: 16),
+                CButton(
+                  label: 'TaxiGroupListScreen',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => TaxiGroupListScreen(),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class TaxiGroupListScreen extends ConsumerWidget {
+  const TaxiGroupListScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('택시 그룹 목록')),
+      body: Column(
+        children: [
+          CButton(
+            onTap: () {
+              // 데이터 새로고침
+              ref.read(taxiGroupProvider.notifier).fetchTaxiGroups();
+            },
+            label: '새로고침',
+          ),
+          Expanded(
+            child: Consumer(
+              builder: (context, ref, child) {
+                final taxiGroups = ref.watch(taxiGroupProvider);
+
+                if (taxiGroups.isEmpty) {
+                  return const Center(
+                    child: Text('택시 그룹이 없습니다.'),
+                  );
+                }
+
+                return ListView.builder(
+                  itemCount: taxiGroups.length,
+                  itemBuilder: (context, index) {
+                    final group = taxiGroups[index];
+                    return ListTile(
+                      title: Text(
+                          '${group.departurePlace} → ${group.arrivalPlace}'),
+                      subtitle: Text(
+                        '예상 요금: ${group.estimatedFare}원\n'
+                        '출발 시간: ${group.departureTime ?? "미정"}',
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

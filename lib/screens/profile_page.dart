@@ -4,8 +4,11 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_provider.dart';
+import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
+import 'package:letsmerge/widgets/c_text_field.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -15,6 +18,8 @@ class ProfilePage extends ConsumerStatefulWidget {
 }
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
+  final TextEditingController _nicknameController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +62,40 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               ),
               CListTile(
                 title: '닉네임',
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CDialog(
+                        title: '닉네임 수정',
+                        content: CTextField(
+                          controller: _nicknameController,
+                          label: '닉네임',
+                          backgroundColor: ThemeModel.background(isDarkMode),
+                          hint: '새 닉네임 입력',
+                        ),
+                        buttons: [
+                          CButton(
+                            style: CButtonStyle.secondary(isDarkMode),
+                            size: CButtonSize.extraLarge,
+                            label: '취소',
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          CButton(
+                            size: CButtonSize.extraLarge,
+                            label: '저장',
+                            onTap: () {
+                              user.updateUserNickname(_nicknameController.text);
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
                 trailing: FutureBuilder<String?>(
                   future: user.getUserNickname(),
                   builder: (context, snapshot) {
