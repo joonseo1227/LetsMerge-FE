@@ -26,6 +26,10 @@ _$TaxiGroupImpl _$$TaxiGroupImplFromJson(Map<String, dynamic> json) =>
       clothes: (json['host_clothes'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
+      participants: (json['participants'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      remainingSeats: (json['remaining_seats'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$TaxiGroupImplToJson(_$TaxiGroupImpl instance) =>
@@ -44,4 +48,6 @@ Map<String, dynamic> _$$TaxiGroupImplToJson(_$TaxiGroupImpl instance) =>
       'seater': instance.seater,
       'departure_time': instance.departureTime?.toIso8601String(),
       'host_clothes': instance.clothes,
+      'participants': instance.participants,
+      'remaining_seats': instance.remainingSeats,
     };

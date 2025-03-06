@@ -47,6 +47,9 @@ mixin _$TaxiGroup {
   DateTime? get departureTime => throw _privateConstructorUsedError;
   @JsonKey(name: 'host_clothes')
   List<String> get clothes => throw _privateConstructorUsedError;
+  List<String>? get participants => throw _privateConstructorUsedError;
+  @JsonKey(name: 'remaining_seats')
+  int get remainingSeats => throw _privateConstructorUsedError;
 
   /// Serializes this TaxiGroup to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -77,7 +80,9 @@ abstract class $TaxiGroupCopyWith<$Res> {
       @JsonKey(name: 'estimated_fare') int? estimatedFare,
       int? seater,
       @JsonKey(name: 'departure_time') DateTime? departureTime,
-      @JsonKey(name: 'host_clothes') List<String> clothes});
+      @JsonKey(name: 'host_clothes') List<String> clothes,
+      List<String>? participants,
+      @JsonKey(name: 'remaining_seats') int remainingSeats});
 }
 
 /// @nodoc
@@ -109,6 +114,8 @@ class _$TaxiGroupCopyWithImpl<$Res, $Val extends TaxiGroup>
     Object? seater = freezed,
     Object? departureTime = freezed,
     Object? clothes = null,
+    Object? participants = freezed,
+    Object? remainingSeats = null,
   }) {
     return _then(_value.copyWith(
       groupId: freezed == groupId
@@ -167,6 +174,14 @@ class _$TaxiGroupCopyWithImpl<$Res, $Val extends TaxiGroup>
           ? _value.clothes
           : clothes // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      participants: freezed == participants
+          ? _value.participants
+          : participants // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      remainingSeats: null == remainingSeats
+          ? _value.remainingSeats
+          : remainingSeats // ignore: cast_nullable_to_non_nullable
+              as int,
     ) as $Val);
   }
 }
@@ -193,7 +208,9 @@ abstract class _$$TaxiGroupImplCopyWith<$Res>
       @JsonKey(name: 'estimated_fare') int? estimatedFare,
       int? seater,
       @JsonKey(name: 'departure_time') DateTime? departureTime,
-      @JsonKey(name: 'host_clothes') List<String> clothes});
+      @JsonKey(name: 'host_clothes') List<String> clothes,
+      List<String>? participants,
+      @JsonKey(name: 'remaining_seats') int remainingSeats});
 }
 
 /// @nodoc
@@ -223,6 +240,8 @@ class __$$TaxiGroupImplCopyWithImpl<$Res>
     Object? seater = freezed,
     Object? departureTime = freezed,
     Object? clothes = null,
+    Object? participants = freezed,
+    Object? remainingSeats = null,
   }) {
     return _then(_$TaxiGroupImpl(
       groupId: freezed == groupId
@@ -281,6 +300,14 @@ class __$$TaxiGroupImplCopyWithImpl<$Res>
           ? _value._clothes
           : clothes // ignore: cast_nullable_to_non_nullable
               as List<String>,
+      participants: freezed == participants
+          ? _value._participants
+          : participants // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      remainingSeats: null == remainingSeats
+          ? _value.remainingSeats
+          : remainingSeats // ignore: cast_nullable_to_non_nullable
+              as int,
     ));
   }
 }
@@ -302,8 +329,11 @@ class _$TaxiGroupImpl implements _TaxiGroup {
       @JsonKey(name: 'estimated_fare') required this.estimatedFare,
       required this.seater,
       @JsonKey(name: 'departure_time') required this.departureTime,
-      @JsonKey(name: 'host_clothes') required final List<String> clothes})
-      : _clothes = clothes;
+      @JsonKey(name: 'host_clothes') required final List<String> clothes,
+      final List<String>? participants,
+      @JsonKey(name: 'remaining_seats') required this.remainingSeats})
+      : _clothes = clothes,
+        _participants = participants;
 
   factory _$TaxiGroupImpl.fromJson(Map<String, dynamic> json) =>
       _$$TaxiGroupImplFromJson(json);
@@ -355,9 +385,23 @@ class _$TaxiGroupImpl implements _TaxiGroup {
     return EqualUnmodifiableListView(_clothes);
   }
 
+  final List<String>? _participants;
+  @override
+  List<String>? get participants {
+    final value = _participants;
+    if (value == null) return null;
+    if (_participants is EqualUnmodifiableListView) return _participants;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  @JsonKey(name: 'remaining_seats')
+  final int remainingSeats;
+
   @override
   String toString() {
-    return 'TaxiGroup(groupId: $groupId, creatorUserId: $creatorUserId, departurePlace: $departurePlace, departureAddress: $departureAddress, departureLat: $departureLat, departureLon: $departureLon, arrivalPlace: $arrivalPlace, arrivalAddress: $arrivalAddress, arrivalLat: $arrivalLat, arrivalLon: $arrivalLon, estimatedFare: $estimatedFare, seater: $seater, departureTime: $departureTime, clothes: $clothes)';
+    return 'TaxiGroup(groupId: $groupId, creatorUserId: $creatorUserId, departurePlace: $departurePlace, departureAddress: $departureAddress, departureLat: $departureLat, departureLon: $departureLon, arrivalPlace: $arrivalPlace, arrivalAddress: $arrivalAddress, arrivalLat: $arrivalLat, arrivalLon: $arrivalLon, estimatedFare: $estimatedFare, seater: $seater, departureTime: $departureTime, clothes: $clothes, participants: $participants, remainingSeats: $remainingSeats)';
   }
 
   @override
@@ -389,7 +433,11 @@ class _$TaxiGroupImpl implements _TaxiGroup {
             (identical(other.seater, seater) || other.seater == seater) &&
             (identical(other.departureTime, departureTime) ||
                 other.departureTime == departureTime) &&
-            const DeepCollectionEquality().equals(other._clothes, _clothes));
+            const DeepCollectionEquality().equals(other._clothes, _clothes) &&
+            const DeepCollectionEquality()
+                .equals(other._participants, _participants) &&
+            (identical(other.remainingSeats, remainingSeats) ||
+                other.remainingSeats == remainingSeats));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -409,7 +457,9 @@ class _$TaxiGroupImpl implements _TaxiGroup {
       estimatedFare,
       seater,
       departureTime,
-      const DeepCollectionEquality().hash(_clothes));
+      const DeepCollectionEquality().hash(_clothes),
+      const DeepCollectionEquality().hash(_participants),
+      remainingSeats);
 
   /// Create a copy of TaxiGroup
   /// with the given fields replaced by the non-null parameter values.
@@ -443,8 +493,10 @@ abstract class _TaxiGroup implements TaxiGroup {
       @JsonKey(name: 'estimated_fare') required final int? estimatedFare,
       required final int? seater,
       @JsonKey(name: 'departure_time') required final DateTime? departureTime,
-      @JsonKey(name: 'host_clothes')
-      required final List<String> clothes}) = _$TaxiGroupImpl;
+      @JsonKey(name: 'host_clothes') required final List<String> clothes,
+      final List<String>? participants,
+      @JsonKey(name: 'remaining_seats')
+      required final int remainingSeats}) = _$TaxiGroupImpl;
 
   factory _TaxiGroup.fromJson(Map<String, dynamic> json) =
       _$TaxiGroupImpl.fromJson;
@@ -490,6 +542,11 @@ abstract class _TaxiGroup implements TaxiGroup {
   @override
   @JsonKey(name: 'host_clothes')
   List<String> get clothes;
+  @override
+  List<String>? get participants;
+  @override
+  @JsonKey(name: 'remaining_seats')
+  int get remainingSeats;
 
   /// Create a copy of TaxiGroup
   /// with the given fields replaced by the non-null parameter values.

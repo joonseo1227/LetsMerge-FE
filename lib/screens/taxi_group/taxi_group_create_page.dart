@@ -175,6 +175,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       seater: selectedMemberCount,
       departureTime: selectedDateTime,
       clothes: _clothingTags,
+      remainingSeats: selectedMemberCount!,
     );
 
     await ref.read(taxiGroupProvider.notifier).createTaxiGroup(taxiGroup);

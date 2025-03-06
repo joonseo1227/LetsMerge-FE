@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:letsmerge/models/user/user.dart';
 
 part 'taxi_group.freezed.dart';
 part 'taxi_group.g.dart';
@@ -20,6 +21,8 @@ class TaxiGroup with _$TaxiGroup {
     required int? seater,
     @JsonKey(name: 'departure_time') required DateTime? departureTime,
     @JsonKey(name: 'host_clothes') required List<String> clothes,
+    List<String>? participants,
+    @JsonKey(name: 'remaining_seats') required int remainingSeats
   }) = _TaxiGroup;
 
   factory TaxiGroup.fromJson(Map<String, dynamic> json) => _$TaxiGroupFromJson(json);
