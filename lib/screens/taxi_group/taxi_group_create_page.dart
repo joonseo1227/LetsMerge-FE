@@ -15,6 +15,7 @@ import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
+import 'package:letsmerge/widgets/c_toggle_button.dart';
 
 class TaxiGroupCreatePage extends ConsumerStatefulWidget {
   const TaxiGroupCreatePage({super.key});
@@ -410,30 +411,17 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Container(
-                      color: ThemeModel.surface(isDarkMode),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: List.generate(3, (index) {
-                          final count = index + 1;
-                          final isSelected = selectedMemberCount == count;
-
-                          return Expanded(
-                            child: CButton(
-                              style: isSelected
-                                  ? CButtonStyle.primary(isDarkMode)
-                                  : CButtonStyle.ghost(isDarkMode),
-                              onTap: () {
-                                setState(() {
-                                  selectedMemberCount = count;
-                                });
-                              },
-                              label: '$count명',
-                            ),
-                          );
-                        }),
-                      ),
-                    ),
+                    const SizedBox(height: 4),
+                    CToggleButton(
+                      buttonCount: 3,
+                      initialSelectedIndex: (selectedMemberCount ?? 0) ,
+                      labels: ['1명', '2명', '3명'],
+                      onToggle: (index) {
+                        setState(() {
+                          selectedMemberCount = index;
+                        });
+                      },
+                    )
                   ],
                 ),
                 const SizedBox(height: 16),
