@@ -70,8 +70,9 @@ class UserProvider {
     }
   }
 
-  Future<void> updateUserNickname(String nickname) => _updateUserField('nickname', nickname);
+  Future<void> updateUserNickname(String nickname) =>
+      _updateUserField('nickname', nickname);
 
-  Future<void> updateUserProfileImg(String profileUrl) => _updateUserField('avatar_url', profileUrl);
-
+  Future<void> updateUserProfileImg(String profileUrl) =>
+      _updateUserField('avatar_url', profileUrl);
 }

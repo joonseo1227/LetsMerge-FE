@@ -5,7 +5,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:letsmerge/models/location_model.dart';
-import 'package:letsmerge/provider/group_provider.dart';
 
 enum GeocodingMode { departure, destination }
 

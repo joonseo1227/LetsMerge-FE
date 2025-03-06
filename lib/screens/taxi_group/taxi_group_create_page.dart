@@ -18,6 +18,7 @@ import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:letsmerge/widgets/c_toggle_button.dart';
 
 class TaxiGroupCreatePage extends ConsumerStatefulWidget {
   const TaxiGroupCreatePage({super.key});
@@ -143,6 +144,10 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
 
       await _mapController!.updateCamera(cameraUpdate);
 
+      setState(() {
+        _showSkeleton = false;
+      });
+
       debugPrint("경로 오버레이 추가 및 카메라 업데이트");
     }
   }
@@ -173,7 +178,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       arrivalLon: destinationData.longitude,
       estimatedFare: taxiFare,
       seater: selectedMemberCount,
-      departureTime: selectedDateTime,
+      departureTime: selectedDateTime!,
       clothes: _clothingTags,
       remainingSeats: selectedMemberCount!,
     );
@@ -244,17 +249,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                             onMapReady: (controller) async {
                               debugPrint('Naver Map Ready');
                               _mapController = controller;
-
                               _fetchDirections();
-
-                              await Future.delayed(
-                                const Duration(milliseconds: 800),
-                              );
-                              if (mounted) {
-                                setState(() {
-                                  _showSkeleton = false;
-                                });
-                              }
                             },
                           ),
                         ),
@@ -448,30 +443,16 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Container(
-                      color: ThemeModel.surface(isDarkMode),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: List.generate(3, (index) {
-                          final count = index + 1;
-                          final isSelected = selectedMemberCount == count;
-
-                          return Expanded(
-                            child: CButton(
-                              style: isSelected
-                                  ? CButtonStyle.primary(isDarkMode)
-                                  : CButtonStyle.ghost(isDarkMode),
-                              onTap: () {
-                                setState(() {
-                                  selectedMemberCount = count;
-                                });
-                              },
-                              label: '$count명',
-                            ),
-                          );
-                        }),
-                      ),
-                    ),
+                    CToggleButton(
+                      buttonCount: 3,
+                      initialSelectedIndex: (selectedMemberCount ?? 0) ,
+                      labels: ['1명', '2명', '3명'],
+                      onToggle: (index) {
+                        setState(() {
+                          selectedMemberCount = index + 1;
+                        });
+                      },
+                    )
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -594,7 +575,12 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
           child: CButton(
             onTap: () async {
               submitTaxiGroup(ref);
-              Navigator.pop(context);
+              Navigator.of(context).pushAndRemoveUntil(
+                CupertinoPageRoute(
+                  builder: (context) => MainPage(),
+                ),
+                (Route<dynamic> route) => false,
+              );
             },
             size: CButtonSize.extraLarge,
             label: '택시팟 만들기',

@@ -45,7 +45,7 @@ class CListTileSizes {
 }
 
 class CListTile extends ConsumerWidget {
-  final String? label;
+  final String? title;
   final String? subtitle;
   final IconData? icon;
   final IconData? trailingIcon;
@@ -56,7 +56,7 @@ class CListTile extends ConsumerWidget {
 
   const CListTile({
     super.key,
-    this.label,
+    this.title,
     this.subtitle,
     this.icon,
     this.trailingIcon = Icons.navigate_next,
@@ -96,7 +96,7 @@ class CListTile extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      label ?? '',
+                      title ?? '',
                       style: TextStyle(
                         fontSize: CListTileSizes.textSizes[size],
                         fontWeight: FontWeight.w500,
