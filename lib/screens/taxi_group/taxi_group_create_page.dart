@@ -442,14 +442,13 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const SizedBox(height: 4),
                     CToggleButton(
                       buttonCount: 3,
                       initialSelectedIndex: (selectedMemberCount ?? 0) ,
                       labels: ['1명', '2명', '3명'],
                       onToggle: (index) {
                         setState(() {
-                          selectedMemberCount = index;
+                          selectedMemberCount = index + 1;
                         });
                       },
                     )
