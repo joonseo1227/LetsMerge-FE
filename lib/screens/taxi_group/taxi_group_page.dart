@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:letsmerge/config/color.dart';
+import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
@@ -13,48 +15,29 @@ import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TaxiGroupPage extends ConsumerStatefulWidget {
-  const TaxiGroupPage({super.key});
+  final TaxiGroup taxiGroup;
+
+  const TaxiGroupPage({super.key, required this.taxiGroup});
 
   @override
   ConsumerState<TaxiGroupPage> createState() => _TaxiGroupPageState();
 }
 
+final SupabaseClient _supabase = Supabase.instance.client;
+final User? user = _supabase.auth.currentUser;
+
 class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   final GlobalKey<CPopupMenuState> popupMenuKey = GlobalKey<CPopupMenuState>();
-
-  List<Map<String, dynamic>> messages = [
-    {
-      'sender': '홍길동',
-      'text': 'nulla pariatur.',
-      'time': DateTime.now().subtract(Duration(minutes: 1)),
-    },
-    {
-      'sender': '홍길동',
-      'text': 'Excepteur sint occaecat cupidatat non proident.',
-      'time': DateTime.now().subtract(Duration(minutes: 1)),
-    },
-    {
-      'sender': '홍동',
-      'text':
-          'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-      'time': DateTime.now().subtract(Duration(minutes: 2)),
-    },
-    {
-      'sender': '홍길자',
-      'text':
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean id accumsan augue.',
-      'time': DateTime.now().subtract(Duration(minutes: 10)),
-    },
-  ];
-
   final TextEditingController _chatController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
+    final taxiGroupNotifier = ref.read(taxiGroupProvider.notifier);
 
     return Hero(
       tag: 'taxiGroup',
@@ -64,15 +47,61 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
           builder: (context, constraints) {
             return Column(
               children: [
-                // 채팅 메시지 영역
                 Expanded(
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    reverse: true,
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) =>
-                        _buildMessageItem(context, index, isDarkMode),
+                  child: StreamBuilder<List<Map<String, dynamic>>>(
+                    stream:
+                        taxiGroupNotifier.chatMessagesStream(widget.taxiGroup),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      }
+                      if (!snapshot.hasData) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      final messages = snapshot.data!;
+                      print(snapshot.data);
+                      return messages.isNotEmpty
+                          ? ListView.builder(
+                              controller: _scrollController,
+                              reverse: true,
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                              itemCount: messages.length,
+                              itemBuilder: (context, index) =>
+                                  _buildMessageItem(
+                                context,
+                                index,
+                                isDarkMode,
+                                message: messages[index],
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    '택시팟 멤버들과 대화해보세요!',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color:
+                                          ThemeModel.highlightText(isDarkMode),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10,),
+                                  Text(
+                                    '아동 · 청소년 및 성인을 대상으로 한 성범죄, 전기통신금융사기, 불법적인 음란 · 도박 정보 유통 등 '
+                                    '명백한 불법행위 및 카카오톡 서비스의 안정성 및 신뢰성을 위협하는 악의적인 서비스 이용행위에 대해서는 '
+                                    '즉시 카카오톡 전체 서비스에 대한 이용을 영구적으로 제한할 수 있습니다.',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: ThemeModel.sub5(isDarkMode),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                    },
                   ),
                 ),
                 // 메시지 입력 영역
@@ -85,7 +114,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
   }
 
-  /// 앱바 위젯 생성 메서드
   PreferredSizeWidget _buildAppBar(bool isDarkMode) {
     return AppBar(
       titleSpacing: 0,
@@ -178,13 +206,13 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
   }
 
-  /// 메시지 아이템 생성 메서드
-  Widget _buildMessageItem(BuildContext context, int index, bool isDarkMode) {
-    final message = messages[index];
-    final bool isUser = message['sender'] == 'user';
+  Widget _buildMessageItem(BuildContext context, int index, bool isDarkMode,
+      {required Map<String, dynamic> message}) {
+    final bool isUser =
+        message['sender_id'] == user!.id;
+    final DateTime createdAt = DateTime.parse(message['created_at']);
     final String formattedTime =
-        DateFormat('a hh:mm', 'ko_KR').format(message['time']);
-
+        DateFormat('a hh:mm', 'ko_KR').format(createdAt);
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: Align(
@@ -196,7 +224,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
   }
 
-  /// 본인(사용자) 메시지 UI 생성 메서드
   Widget _buildUserMessage(
       Map<String, dynamic> message, String formattedTime, bool isDarkMode) {
     return Row(
@@ -207,7 +234,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
-            // 메시지 전송 시각
             Text(
               formattedTime,
               style: TextStyle(
@@ -218,7 +244,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
               ),
             ),
             const SizedBox(width: 8),
-            // 메시지 박스
             IntrinsicWidth(
               child: Container(
                 constraints: BoxConstraints(
@@ -229,7 +254,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                   color: ThemeModel.highlight(isDarkMode),
                 ),
                 child: Text(
-                  message['text']!,
+                  message['content']!,
                   style: const TextStyle(
                     fontSize: 16,
                     color: white,
@@ -243,34 +268,28 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
   }
 
-  /// 상대방 메시지 UI 생성 메서드
   Widget _buildOtherMessage(
       Map<String, dynamic> message, String formattedTime, bool isDarkMode) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // 프로필 영역
         Padding(
           padding: const EdgeInsets.only(right: 8),
           child: Container(
             width: 40,
             height: 40,
-            decoration: const ShapeDecoration(
-              color: blue20,
-              shape: CircleBorder(),
-            ),
+            decoration:
+                const ShapeDecoration(color: blue20, shape: CircleBorder()),
           ),
         ),
-        // 메시지 및 이름 영역
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 보낸 사람 이름
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                message['sender']!,
+                message['sender_id']!,
                 style: TextStyle(
                   color: ThemeModel.sub6(isDarkMode),
                   fontSize: 14,
@@ -282,7 +301,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // 메시지 박스
                 IntrinsicWidth(
                   child: Container(
                     constraints: BoxConstraints(
@@ -293,7 +311,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                       color: ThemeModel.surface(isDarkMode),
                     ),
                     child: Text(
-                      message['text']!,
+                      message['content']!,
                       style: TextStyle(
                         fontSize: 16,
                         color: ThemeModel.text(isDarkMode),
@@ -302,7 +320,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // 메시지 전송 시각
                 Text(
                   formattedTime,
                   style: TextStyle(
@@ -320,7 +337,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
   }
 
-  /// 메시지 입력 UI 생성 메서드
   Widget _buildChatInput(bool isDarkMode) {
     return SafeArea(
       child: Padding(
@@ -363,51 +379,43 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
   }
 
-  /// 메시지 전송 함수
-  void _sendMessage() {
+  void _sendMessage() async {
     if (_chatController.text.isNotEmpty) {
-      // 스크롤을 맨 아래로 이동
+      final text = _chatController.text;
+      final messageType = "text";
       _scrollController.animateTo(
         0,
         duration: const Duration(milliseconds: 150),
         curve: Curves.easeInOut,
       );
-
-      setState(() {
-        messages.insert(0, {
-          'sender': 'user',
-          'text': _chatController.text,
-          'time': DateTime.now(),
-        });
-      });
+      await ref.read(taxiGroupProvider.notifier).sendChatMessage(
+          widget.taxiGroup,
+          text,
+          messageType,
+          DateTime.now().toIso8601String());
       _chatController.clear();
     }
   }
 
-  /// 하단 모달 시트 호출 함수
   void _showBottomSheet() {
     final isDarkMode = ref.read(themeProvider);
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: ThemeModel.background(isDarkMode),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(0)),
-      ),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(0))),
       builder: (BuildContext context) => _buildBottomSheetContent(isDarkMode),
     );
   }
 
-  /// 모달 시트 내부 콘텐츠 생성 메서드
   Widget _buildBottomSheetContent(bool isDarkMode) {
     return SafeArea(
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return Padding(
             padding: EdgeInsets.only(
-              bottom: MediaQuery.of(context).viewInsets.bottom,
-            ),
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -417,7 +425,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 시트 상단 바
                       Center(
                         child: Container(
                           width: 40,
