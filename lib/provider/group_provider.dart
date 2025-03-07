@@ -16,10 +16,6 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
 
   RealtimeChannel? _groupSubscription;
 
-  List<Map<String, dynamic>> _chatMessages = [];
-
-  List<Map<String, dynamic>> get chatMessages => _chatMessages;
-  RealtimeChannel? _chatSubscription;
 
   // 그룹 관련 realtime 구독 설정
   void initializeRealtimeSubscription() {
@@ -39,7 +35,6 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
   @override
   void dispose() {
     _groupSubscription?.unsubscribe();
-    _chatSubscription?.unsubscribe();
     super.dispose();
   }
 
@@ -201,27 +196,6 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
         .stream(primaryKey: ['message_id'])
         .eq('group_id', taxiGroup.groupId!)
         .order('created_at', ascending: false);
-  }
-
-  Future<void> fetchChatMessages(TaxiGroup taxiGroup) async {
-    try {
-      final response = await _supabase
-          .from('chats')
-          .select()
-          .eq('group_id', taxiGroup.groupId!)
-          .order('created_at', ascending: false);
-
-      final List<Map<String, dynamic>> chats = (response as List)
-          .map((item) => Map<String, dynamic>.from(item))
-          .toList();
-
-      _chatMessages = chats;
-
-      debugPrint('fetch: ${taxiGroup.groupId}');
-    } catch (e, stackTrace) {
-      debugPrint('Error fetching messages: $e');
-      debugPrint('StackTrace: $stackTrace');
-    }
   }
 
   Future<void> sendChatMessage(
