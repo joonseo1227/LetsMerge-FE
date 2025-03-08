@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:letsmerge/config/color.dart';
+import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/group_provider.dart';
@@ -16,6 +17,7 @@ import 'package:letsmerge/screens/taxi_group/taxi_group_select_place_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 
 class HomeTab extends ConsumerStatefulWidget {
+
   const HomeTab({super.key});
 
   @override
@@ -277,13 +279,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
               alignment: AlignmentDirectional.bottomEnd,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: ((context, animation, secondaryAnimation) =>
-                          TaxiGroupPage()),
-                    ),
-                  );
+
                 },
                 child: Hero(
                   tag: 'taxiGroup',
