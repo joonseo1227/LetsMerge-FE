@@ -17,8 +17,8 @@ import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:letsmerge/widgets/c_toggle_button.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TaxiGroupCreatePage extends ConsumerStatefulWidget {
   const TaxiGroupCreatePage({super.key});
@@ -445,7 +445,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     const SizedBox(height: 4),
                     CToggleButton(
                       buttonCount: 3,
-                      initialSelectedIndex: (selectedMemberCount ?? 0) ,
+                      initialSelectedIndex: (selectedMemberCount ?? 0),
                       labels: ['1명', '2명', '3명'],
                       onToggle: (index) {
                         setState(() {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 
@@ -29,12 +28,12 @@ class CCalendarPicker extends ConsumerWidget {
     return (isDarkMode ? ThemeModel.darkTheme : ThemeModel.lightTheme).copyWith(
       datePickerTheme: DatePickerThemeData(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-        dayBackgroundColor: MaterialStateProperty.resolveWith((states) {
-          return states.contains(MaterialState.selected)
+        dayBackgroundColor: WidgetStateProperty.resolveWith((states) {
+          return states.contains(WidgetState.selected)
               ? ThemeModel.highlight(isDarkMode)
               : ThemeModel.surface(isDarkMode);
         }),
-        dayShape: MaterialStateProperty.all(
+        dayShape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
         ),
         weekdayStyle: TextStyle(

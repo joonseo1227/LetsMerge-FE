@@ -11,15 +11,14 @@ class TaxiGroupHistoryCard extends ConsumerWidget {
   final String destinationTime;
   final int savedAmount;
 
-  const TaxiGroupHistoryCard({
-    super.key,
-    required this.dateTime,
-    required this.startLocation,
-    required this.startTime,
-    required this.destinationLocation,
-    required this.destinationTime,
-    required this.savedAmount
-  });
+  const TaxiGroupHistoryCard(
+      {super.key,
+      required this.dateTime,
+      required this.startLocation,
+      required this.startTime,
+      required this.destinationLocation,
+      required this.destinationTime,
+      required this.savedAmount});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
