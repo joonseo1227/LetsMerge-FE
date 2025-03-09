@@ -3,9 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_calendar_picker.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_toggle_button.dart';
-import 'package:letsmerge/widgets/c_calendar_picker.dart';
 
 ///
 /// [CPeriodPicker] 위젯
@@ -22,7 +22,6 @@ class CPeriodPicker extends ConsumerStatefulWidget {
 }
 
 class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
-
   int selectedPeriod = 0;
   int selectedOrder = 0;
 
@@ -38,7 +37,8 @@ class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
     } else if (selectedPeriod == 1) {
       return DateTime(_today.year, _today.month - 3, _today.day);
     } else if (selectedPeriod == 2) {
-      return _customStartDate ?? DateTime(_today.year, _today.month, _today.day);
+      return _customStartDate ??
+          DateTime(_today.year, _today.month, _today.day);
     }
     return DateTime(_today.year, _today.month - 1, _today.day);
   }
@@ -63,7 +63,8 @@ class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
     }
   }
 
-  Widget _buildCustomCalendarPicker(bool isDarkMode, void Function(void Function()) setStateDialog) {
+  Widget _buildCustomCalendarPicker(
+      bool isDarkMode, void Function(void Function()) setStateDialog) {
     return CCalendarPicker(
       initialDate: _customStartDate ?? _computedStartDate,
       firstDate: DateTime(_today.year - 1),
@@ -168,7 +169,8 @@ class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
                               color: ThemeModel.highlightText(isDarkMode),
                             ),
                           ),
-                          _buildCustomCalendarPicker(isDarkMode, setStateDialog),
+                          _buildCustomCalendarPicker(
+                              isDarkMode, setStateDialog),
                         ],
                       ],
                     ),

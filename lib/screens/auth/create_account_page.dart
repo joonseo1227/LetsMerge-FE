@@ -1,7 +1,15 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:letsmerge/models/terms_model.dart';
 import 'package:letsmerge/provider/auth_provider.dart';
+import 'package:letsmerge/screens/terms_detail_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_checkbox.dart';
+import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -27,6 +35,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   String? _passwordError;
   String? _confirmPasswordError;
   bool _isLoading = false;
+  bool _isAllAgreed = false;
 
   @override
   void initState() {
@@ -48,7 +57,8 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     _isButtonEnabled.value = isNameNotEmpty &&
         isEmailNotEmpty &&
         isPasswordNotEmpty &&
-        isConfirmPasswordNotEmpty;
+        isConfirmPasswordNotEmpty &&
+        _isAllAgreed;
   }
 
   // 에러 상태 초기화
@@ -170,7 +180,18 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
                   obscureText: true,
                 ),
                 const SizedBox(
-                  height: 24,
+                  height: 32,
+                ),
+                TermsAgreementWidget(
+                  onAgreementChanged: (bool isAgreed) {
+                    setState(() {
+                      _isAllAgreed = isAgreed;
+                    });
+                    _updateButtonState();
+                  },
+                ),
+                const SizedBox(
+                  height: 32,
                 ),
                 ValueListenableBuilder<bool>(
                   valueListenable: _isButtonEnabled,
@@ -200,5 +221,116 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
     _confirmPasswordController.dispose();
     _isButtonEnabled.dispose();
     super.dispose();
+  }
+}
+
+class TermsAgreementWidget extends StatefulWidget {
+  final Function(bool) onAgreementChanged;
+
+  const TermsAgreementWidget({
+    super.key,
+    required this.onAgreementChanged,
+  });
+
+  @override
+  State<TermsAgreementWidget> createState() => _TermsAgreementWidgetState();
+}
+
+class _TermsAgreementWidgetState extends State<TermsAgreementWidget> {
+  Map<String, bool> _isAgreed = {};
+  late Future<Map<String, TermsModel>> _termsData;
+  bool _isAllChecked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _termsData = _loadTermsData();
+  }
+
+  Future<Map<String, TermsModel>> _loadTermsData() async {
+    final data =
+        await rootBundle.loadString('assets/data/terms_and_policies.json');
+    final jsonData = json.decode(data) as Map<String, dynamic>;
+    final termsMap = jsonData.map(
+      (key, value) => MapEntry(
+        key,
+        TermsModel.fromJson(value),
+      ),
+    );
+    _isAgreed = {for (var key in termsMap.keys) key: false};
+    return termsMap;
+  }
+
+  void _toggleAllAgreements(bool value) {
+    setState(() {
+      _isAllChecked = value;
+      _isAgreed.updateAll((key, _) => value);
+      widget.onAgreementChanged(value);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, TermsModel>>(
+      future: _termsData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (snapshot.hasError) {
+          return Center(
+            child: Text(
+              '데이터를 불러오는 중 오류가 발생했습니다.',
+            ),
+          );
+        }
+
+        final termsData = snapshot.data!;
+        final keys = termsData.keys.toList();
+
+        return Column(
+          children: [
+            CListTile(
+              leading: CCheckbox(
+                value: _isAllChecked,
+                label: '전체 동의',
+                onChanged: (value) => _toggleAllAgreements(value),
+              ),
+              trailingIcon: null,
+              onTap: () => _toggleAllAgreements(!_isAllChecked),
+            ),
+            const Divider(),
+            ...keys.map((key) {
+              return CListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => TermsDetailPage(
+                        title: termsData[key]!.title,
+                        content: termsData[key]!.content,
+                      ),
+                    ),
+                  );
+                },
+                leading: CCheckbox(
+                  value: _isAgreed[key] ?? false,
+                  label: termsData[key]!.title,
+                  onChanged: (value) {
+                    setState(() {
+                      _isAgreed[key] = value;
+                      _isAllChecked =
+                          _isAgreed.values.every((element) => element);
+                      widget.onAgreementChanged(_isAllChecked);
+                    });
+                  },
+                ),
+              );
+            }),
+          ],
+        );
+      },
+    );
   }
 }

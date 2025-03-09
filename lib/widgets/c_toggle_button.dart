@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
@@ -50,9 +49,8 @@ class _CToggleButtonState extends ConsumerState<CToggleButton> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: List.generate(widget.buttonCount, (index) {
           final bool isSelected = index == selectedIndex;
-          final String labelText = widget.labels.length > index
-              ? widget.labels[index]
-              : '';
+          final String labelText =
+              widget.labels.length > index ? widget.labels[index] : '';
           return Expanded(
             child: CButton(
               label: labelText,
