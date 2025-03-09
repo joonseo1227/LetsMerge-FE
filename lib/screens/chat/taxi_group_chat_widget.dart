@@ -254,14 +254,14 @@ class LocationMessageWidget extends StatelessWidget {
 }
 
 class OtherAccountMessageWidget extends StatelessWidget {
-  final String senderId;
+  final String senderNickname;
   final String formattedTime;
   final String content;
   final bool isDarkMode;
 
   const OtherAccountMessageWidget({
     super.key,
-    required this.senderId,
+    required this.senderNickname,
     required this.formattedTime,
     required this.content,
     required this.isDarkMode,
@@ -298,7 +298,7 @@ class OtherAccountMessageWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
-                senderId,
+                senderNickname,
                 style: TextStyle(
                   color: ThemeModel.sub3(isDarkMode),
                   fontSize: 12,
@@ -383,14 +383,14 @@ class OtherAccountMessageWidget extends StatelessWidget {
 }
 
 class OtherLocationMessageWidget extends StatelessWidget {
-  final String senderId;
+  final String senderNickname;
   final String formattedTime;
   final LocationModel locationModel;
   final bool isDarkMode;
 
   const OtherLocationMessageWidget({
     super.key,
-    required this.senderId,
+    required this.senderNickname,
     required this.formattedTime,
     required this.locationModel,
     required this.isDarkMode,
@@ -418,7 +418,7 @@ class OtherLocationMessageWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
-                senderId,
+                senderNickname,
                 style: TextStyle(
                   color: ThemeModel.sub3(isDarkMode),
                   fontSize: 12,
@@ -475,14 +475,14 @@ class OtherLocationMessageWidget extends StatelessWidget {
 }
 
 class OtherTextMessageWidget extends StatelessWidget {
-  final String senderId;
+  final String senderNickname;
   final String formattedTime;
   final String content;
   final bool isDarkMode;
 
   const OtherTextMessageWidget({
     super.key,
-    required this.senderId,
+    required this.senderNickname,
     required this.formattedTime,
     required this.content,
     required this.isDarkMode,
@@ -510,7 +510,7 @@ class OtherTextMessageWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(bottom: 4),
               child: Text(
-                senderId,
+                senderNickname,
                 style: TextStyle(
                   color: ThemeModel.sub3(isDarkMode),
                   fontSize: 12,

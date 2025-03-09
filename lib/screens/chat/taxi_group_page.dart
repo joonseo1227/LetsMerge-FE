@@ -11,6 +11,7 @@ import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/screens/chat/taxi_group_chat_widget.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
@@ -266,30 +267,38 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   Widget _buildOtherMessage(
       Map<String, dynamic> message, String formattedTime, bool isDarkMode) {
     final String messageType = message['message_type'] ?? 'text';
-    switch (messageType) {
-      case 'account':
-        return OtherAccountMessageWidget(
-          senderId: message['sender_id']!,
-          formattedTime: formattedTime,
-          content: message['content']!,
-          isDarkMode: isDarkMode,
-        );
-      case 'location':
-        return OtherLocationMessageWidget(
-          senderId: message['sender_id']!,
-          formattedTime: formattedTime,
-          locationModel:
+
+    return FutureBuilder<String?>(
+      future: UserProvider().getNicknameById(message['sender_id']),
+      builder: (context, snapshot) {
+        final senderNickname = snapshot.data ?? '알 수 없는 사용자';
+
+        switch (messageType) {
+          case 'account':
+            return OtherAccountMessageWidget(
+              senderNickname: senderNickname,
+              formattedTime: formattedTime,
+              content: message['content']!,
+              isDarkMode: isDarkMode,
+            );
+          case 'location':
+            return OtherLocationMessageWidget(
+              senderNickname: senderNickname,
+              formattedTime: formattedTime,
+              locationModel:
               LocationModel.fromJson(json.decode(message['content']!)),
-          isDarkMode: isDarkMode,
-        );
-      default:
-        return OtherTextMessageWidget(
-          senderId: message['sender_id']!,
-          formattedTime: formattedTime,
-          content: message['content']!,
-          isDarkMode: isDarkMode,
-        );
-    }
+              isDarkMode: isDarkMode,
+            );
+          default:
+            return OtherTextMessageWidget(
+              senderNickname: senderNickname,
+              formattedTime: formattedTime,
+              content: message['content']!,
+              isDarkMode: isDarkMode,
+            );
+        }
+      },
+    );
   }
 
   Widget _buildChatInput(bool isDarkMode) {

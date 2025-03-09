@@ -75,4 +75,25 @@ class UserProvider {
 
   Future<void> updateUserProfileImg(String profileUrl) =>
       _updateUserField('avatar_url', profileUrl);
+
+  /// user id로 특정 사용자 정보를 가져오는 함수
+  Future<T?> getUserFieldById<T>(String userId, String field) async {
+    try {
+      final response = await _supabase
+          .from('userinfo')
+          .select(field)
+          .eq('id', userId)
+          .maybeSingle();
+
+      debugPrint('데이터 가져오기 성공: $response');
+      return response?[field] as T?;
+    } catch (error) {
+      debugPrint('데이터 가져오기 실패: $error');
+      return null;
+    }
+  }
+
+  /// 특정 id의 닉네임을 가져오는 편의 메소드
+  Future<String?> getNicknameById(String userId) =>
+      getUserFieldById<String>(userId, 'nickname');
 }
