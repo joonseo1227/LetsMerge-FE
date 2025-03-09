@@ -16,7 +16,6 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
 
   RealtimeChannel? _groupSubscription;
 
-
   // 그룹 관련 realtime 구독 설정
   void initializeRealtimeSubscription() {
     _groupSubscription = _supabase
@@ -41,11 +40,6 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
   Future<void> fetchTaxiGroups() async {
     try {
       final response = await _supabase.from('taxigroups').select();
-
-      if (response == null) {
-        state = [];
-        return;
-      }
 
       debugPrint('전체 응답: $response');
 

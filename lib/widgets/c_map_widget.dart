@@ -1,9 +1,10 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
-class CMapWidget extends StatefulWidget {
 
+class CMapWidget extends StatefulWidget {
   final bool isDarkMode;
   final double? width;
   final double? height;
@@ -11,13 +12,13 @@ class CMapWidget extends StatefulWidget {
   final double? initialLongitude;
 
   const CMapWidget({
-    Key? key,
+    super.key,
     required this.isDarkMode,
     this.width,
     this.height,
     this.initialLatitude,
     this.initialLongitude,
-  }) : super(key: key);
+  });
 
   @override
   CMapWidgetState createState() => CMapWidgetState();
@@ -61,19 +62,19 @@ class CMapWidgetState extends State<CMapWidget> {
       child: _showSkeleton
           ? const CSkeleton()
           : NaverMap(
-        onMapReady: _onMapReady,
-        options: NaverMapViewOptions(
-          mapType: NMapType.navi,
-          nightModeEnable: widget.isDarkMode,
-          initialCameraPosition: NCameraPosition(
-            target: NLatLng(
-              widget.initialLatitude ?? 37.5665,
-              widget.initialLongitude ?? 126.9780,
+              onMapReady: _onMapReady,
+              options: NaverMapViewOptions(
+                mapType: NMapType.navi,
+                nightModeEnable: widget.isDarkMode,
+                initialCameraPosition: NCameraPosition(
+                  target: NLatLng(
+                    widget.initialLatitude ?? 37.5665,
+                    widget.initialLongitude ?? 126.9780,
+                  ),
+                  zoom: 15.0,
+                ),
+              ),
             ),
-            zoom: 15.0,
-          ),
-        ),
-      ),
     );
   }
 }

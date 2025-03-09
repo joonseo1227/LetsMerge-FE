@@ -10,9 +10,9 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/directions_provider.dart';
 import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/chat/taxi_group_page.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
-import 'package:letsmerge/screens/chat/taxi_group_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
@@ -165,7 +165,6 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
     final taxiGroup = ref.watch(taxiGroupProvider);
-
 
     return Scaffold(
       appBar: AppBar(
@@ -422,7 +421,9 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
           child: CButton(
             onTap: () {
               Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(builder: (context) => TaxiGroupPage(taxiGroup: widget.taxiGroup)),
+                CupertinoPageRoute(
+                    builder: (context) =>
+                        TaxiGroupPage(taxiGroup: widget.taxiGroup)),
                 (Route<dynamic> route) => false,
               );
             },

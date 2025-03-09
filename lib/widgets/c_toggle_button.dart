@@ -19,13 +19,13 @@ class CToggleButton extends ConsumerStatefulWidget {
   final CButtonSize buttonSize;
 
   const CToggleButton({
-    Key? key,
+    super.key,
     required this.buttonCount,
     required this.labels,
     this.onToggle,
     this.initialSelectedIndex = 0,
     this.buttonSize = CButtonSize.large,
-  }) : super(key: key);
+  });
 
   @override
   ConsumerState<CToggleButton> createState() => _CToggleButtonState();

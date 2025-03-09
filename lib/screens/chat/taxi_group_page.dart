@@ -15,14 +15,13 @@ import 'package:letsmerge/screens/chat/taxi_group_chat_widget.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_open_app_page.dart';
-import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
+import 'package:letsmerge/widgets/c_map_widget.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
-import 'package:letsmerge/widgets/c_map_widget.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TaxiGroupPage extends ConsumerStatefulWidget {
@@ -58,7 +57,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                 Expanded(
                   child: StreamBuilder<List<Map<String, dynamic>>>(
                     stream:
-                    taxiGroupNotifier.chatMessagesStream(widget.taxiGroup),
+                        taxiGroupNotifier.chatMessagesStream(widget.taxiGroup),
                     builder: (context, snapshot) {
                       if (snapshot.hasError) {
                         return Center(child: Text('Error: ${snapshot.error}'));
@@ -67,53 +66,54 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                         return const Center(child: CircularProgressIndicator());
                       }
                       final messages = snapshot.data!;
-                      print(snapshot.data);
+                      debugPrint('${snapshot.data}');
                       return messages.isNotEmpty
                           ? ListView.builder(
-                        controller: _scrollController,
-                        reverse: true,
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) =>
-                            _buildMessageItem(
-                              context,
-                              index,
-                              isDarkMode,
-                              message: messages[index],
-                            ),
-                      )
+                              controller: _scrollController,
+                              reverse: true,
+                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                              itemCount: messages.length,
+                              itemBuilder: (context, index) =>
+                                  _buildMessageItem(
+                                context,
+                                index,
+                                isDarkMode,
+                                message: messages[index],
+                              ),
+                            )
                           : Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              '택시팟 멤버들과 대화해보세요!',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                color: ThemeModel.highlightText(isDarkMode),
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    '택시팟 멤버들과 대화해보세요!',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      color:
+                                          ThemeModel.highlightText(isDarkMode),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0),
+                                    child: Text(
+                                      '아동, 청소년, 그리고 성인을 대상으로 한 성범죄, 전기통신 금융 사기, 불법 음란·도박 정보 유통 등 명백한 불법행위와 '
+                                      '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
+                                      '영구적으로 제한될 수 있습니다.',
+                                      textAlign: TextAlign.center,
+                                      softWrap: true,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: ThemeModel.sub5(isDarkMode),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0),
-                              child: Text(
-                                '아동, 청소년, 그리고 성인을 대상으로 한 성범죄, 전기통신 금융 사기, 불법 음란·도박 정보 유통 등 명백한 불법행위와 '
-                                    '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
-                                    '영구적으로 제한될 수 있습니다.',
-                                textAlign: TextAlign.center,
-                                softWrap: true,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.sub5(isDarkMode),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
+                            );
                     },
                   ),
                 ),
@@ -138,7 +138,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
               pageBuilder: (context, animation, secondaryAnimation) =>
                   MainPage(),
             ),
-                (route) => false,
+            (route) => false,
           );
         },
         child: SizedBox(
@@ -221,12 +221,11 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
 
   Widget _buildMessageItem(BuildContext context, int index, bool isDarkMode,
       {required Map<String, dynamic> message}) {
-    final bool isUser =
-        message['sender_id'] == user!.id;
-    print(isUser);
+    final bool isUser = message['sender_id'] == user!.id;
+    debugPrint('$isUser');
     final DateTime createdAt = DateTime.parse(message['created_at']);
     final String formattedTime =
-    DateFormat('a hh:mm', 'ko_KR').format(createdAt);
+        DateFormat('a hh:mm', 'ko_KR').format(createdAt);
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: Align(
@@ -238,9 +237,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
   }
 
-
-  Widget _buildUserMessage(Map<String, dynamic> message, String formattedTime,
-      bool isDarkMode) {
+  Widget _buildUserMessage(
+      Map<String, dynamic> message, String formattedTime, bool isDarkMode) {
     final String messageType = message['message_type'] ?? 'text';
     switch (messageType) {
       case 'account':
@@ -252,7 +250,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       case 'location':
         return LocationMessageWidget(
           formattedTime: formattedTime,
-          locationModel: LocationModel.fromJson(json.decode(message['content']!)),
+          locationModel:
+              LocationModel.fromJson(json.decode(message['content']!)),
           isDarkMode: isDarkMode,
         );
       default:
@@ -264,8 +263,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     }
   }
 
-  Widget _buildOtherMessage(Map<String, dynamic> message, String formattedTime,
-      bool isDarkMode) {
+  Widget _buildOtherMessage(
+      Map<String, dynamic> message, String formattedTime, bool isDarkMode) {
     final String messageType = message['message_type'] ?? 'text';
     switch (messageType) {
       case 'account':
@@ -279,7 +278,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
         return OtherLocationMessageWidget(
           senderId: message['sender_id']!,
           formattedTime: formattedTime,
-          locationModel: LocationModel.fromJson(json.decode(message['content']!)),
+          locationModel:
+              LocationModel.fromJson(json.decode(message['content']!)),
           isDarkMode: isDarkMode,
         );
       default:
@@ -371,10 +371,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       child: StatefulBuilder(
         builder: (BuildContext context, StateSetter setState) {
           return Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery
-                .of(context)
-                .viewInsets
-                .bottom),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -559,11 +557,11 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       curve: Curves.easeInOut,
     );
     await ref.read(taxiGroupProvider.notifier).sendChatMessage(
-      widget.taxiGroup,
-      text,
-      messageType,
-      DateTime.now().toIso8601String(),
-    );
+          widget.taxiGroup,
+          text,
+          messageType,
+          DateTime.now().toIso8601String(),
+        );
   }
 
   void _sendMessage() async {

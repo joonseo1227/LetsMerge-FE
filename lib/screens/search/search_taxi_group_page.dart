@@ -15,7 +15,7 @@ class SearchTaxiGroupPage extends ConsumerStatefulWidget {
 class _SearchTaxiGroupPageState extends ConsumerState<SearchTaxiGroupPage> {
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  bool _isLoading = false;
+  final bool _isLoading = false;
 
   @override
   void initState() {

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:letsmerge/config/color.dart';
+import 'package:letsmerge/models/bank_model.dart';
 import 'package:letsmerge/models/location_model.dart';
 import 'package:letsmerge/models/theme_model.dart';
-import 'package:letsmerge/widgets/c_button.dart';
-import 'package:letsmerge/widgets/c_tag.dart';
-import 'package:letsmerge/models/bank_model.dart';
 import 'package:letsmerge/widgets/c_map_widget.dart';
+import 'package:letsmerge/widgets/c_tag.dart';
 
 class TextMessageWidget extends StatelessWidget {
   final String formattedTime;
@@ -14,11 +13,11 @@ class TextMessageWidget extends StatelessWidget {
   final bool isDarkMode;
 
   const TextMessageWidget({
-    Key? key,
+    super.key,
     required this.formattedTime,
     required this.content,
     required this.isDarkMode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -72,11 +71,11 @@ class AccountMessageWidget extends StatelessWidget {
   final bool isDarkMode;
 
   const AccountMessageWidget({
-    Key? key,
+    super.key,
     required this.formattedTime,
     required this.content,
     required this.isDarkMode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -180,11 +179,11 @@ class LocationMessageWidget extends StatelessWidget {
   final bool isDarkMode;
 
   const LocationMessageWidget({
-    Key? key,
+    super.key,
     required this.formattedTime,
     required this.locationModel,
     required this.isDarkMode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +242,6 @@ class LocationMessageWidget extends StatelessWidget {
                       initialLatitude: locationModel.latitude,
                       initialLongitude: locationModel.longitude,
                     ),
-
                   ],
                 ),
               ),
@@ -255,8 +253,6 @@ class LocationMessageWidget extends StatelessWidget {
   }
 }
 
-
-
 class OtherAccountMessageWidget extends StatelessWidget {
   final String senderId;
   final String formattedTime;
@@ -264,12 +260,12 @@ class OtherAccountMessageWidget extends StatelessWidget {
   final bool isDarkMode;
 
   const OtherAccountMessageWidget({
-    Key? key,
+    super.key,
     required this.senderId,
     required this.formattedTime,
     required this.content,
     required this.isDarkMode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -278,7 +274,7 @@ class OtherAccountMessageWidget extends StatelessWidget {
     final String accountNumber = parts.length > 1 ? parts[1] : content;
 
     final bankInfo = bankList.firstWhere(
-          (bank) => bank.name == bankName,
+      (bank) => bank.name == bankName,
       orElse: () => BankInfo(name: bankName, color: TagColor.grey),
     );
 
@@ -393,12 +389,12 @@ class OtherLocationMessageWidget extends StatelessWidget {
   final bool isDarkMode;
 
   const OtherLocationMessageWidget({
-    Key? key,
+    super.key,
     required this.senderId,
     required this.formattedTime,
     required this.locationModel,
     required this.isDarkMode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -485,12 +481,12 @@ class OtherTextMessageWidget extends StatelessWidget {
   final bool isDarkMode;
 
   const OtherTextMessageWidget({
-    Key? key,
+    super.key,
     required this.senderId,
     required this.formattedTime,
     required this.content,
     required this.isDarkMode,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -538,6 +534,15 @@ class OtherTextMessageWidget extends StatelessWidget {
                     color: white,
                   ),
                 ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              formattedTime,
+              style: TextStyle(
+                color: ThemeModel.sub3(isDarkMode),
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
