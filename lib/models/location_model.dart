@@ -21,10 +21,10 @@ class LocationModel {
 
   factory LocationModel.fromJson(Map<String, dynamic> json) {
     return LocationModel(
-      latitude: json['latitude'],
-      longitude: json['longitude'],
-      address: json['address'],
-      place: json['place'],
+      latitude: (json['latitude'] as num).toDouble(),
+      longitude: (json['longitude'] as num).toDouble(),
+      address: json['address'] as String? ?? '',
+      place: json['place'] as String? ?? '',
     );
   }
 
