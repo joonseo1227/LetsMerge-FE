@@ -35,50 +35,18 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
 
   Future<void> fetchTaxiGroups() async {
     try {
-      final response = await _supabase.from('taxigroups').select();
+      final List<dynamic> response = await _supabase.from('taxigroups').select();
 
-      if (response == null) {
-        state = [];
-        return;
-      }
+      print(response);
 
-      debugPrint('전체 응답: $response');
-
-      // 각 항목의 모든 필드 출력
-      for (var item in response) {
-        debugPrint('=== 항목 상세 정보 ===');
-        item.forEach((key, value) {
-          debugPrint('$key: $value (${value.runtimeType})');
-        });
-        debugPrint('=====================');
-      }
-
-      final List<TaxiGroup> groups = [];
-      for (var item in response) {
-        try {
-          // 데이터 변환 전에 host_clothes 처리
-          if (item['host_clothes'] != null && item['host_clothes'] is String) {
-            try {
-              item['host_clothes'] = jsonDecode(item['host_clothes'] as String);
-            } catch (e) {
-              debugPrint('host_clothes JSON 파싱 실패: $e');
-              item['host_clothes'] = [];
-            }
-          }
-
-          final group = TaxiGroup.fromJson(Map<String, dynamic>.from(item));
-          groups.add(group);
-        } catch (e, stack) {
-          debugPrint('항목 파싱 실패: $e');
-          debugPrint('스택 트레이스:\n$stack');
-        }
-      }
-
-      state = groups;
-      debugPrint('성공적으로 로드된 그룹 수: ${groups.length}');
-    } catch (e, stackTrace) {
+    } on FormatException catch (e) {
+      debugPrint('데이터 형식 오류: $e');
+    } on SocketException catch (_) {
+      debugPrint('네트워크 연결을 확인해주세요.');
+    } on TimeoutException catch (_) {
+      debugPrint('요청 시간이 초과되었습니다. 다시 시도해주세요.');
+    } catch (e) {
       debugPrint('택시 그룹 조회 실패: $e');
-      debugPrint('스택 트레이스: $stackTrace');
       rethrow;
     }
   }
@@ -108,17 +76,11 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
       return;
     }
 
-    final Map<String, dynamic> taxiGroupData = await _supabase
-        .from('taxigroups')
-        .select('participants, seater')
-        .eq('group_id', taxiGroup.groupId!)
-        .single();
-
     // 기존의 participants 리스트를 불러오고, 없으면 빈 리스트로 초기화
-    List<dynamic> currentParticipants = taxiGroupData['participants'] ?? [];
+    List<dynamic> currentParticipants = taxiGroup.participants ?? [];
     List<String> participants = currentParticipants.cast<String>();
 
-    int seats = taxiGroupData['remainingSeats'] ?? 0;
+    int seats = taxiGroup.remainingSeats;
 
     // 그룹 생성자인지 확인
     if (taxiGroup.creatorUserId == user.id) {
@@ -178,7 +140,7 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
       final int remainingSeats = seats + 1;
 
       // taxiGroup 업데이트
-      final updateResponse = await _supabase.from('taxigroups').update({
+      final updateResponse = await _supabase.from('taxigroups').upsert({
         'participants': participants,
         'remaining_seats': remainingSeats,
       }).eq('group_id', taxiGroup.groupId!);

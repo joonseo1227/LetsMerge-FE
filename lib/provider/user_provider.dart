@@ -59,7 +59,7 @@ class UserProvider {
     try {
       await _supabase
           .from('userinfo')
-          .update({field: data})
+          .upsert({field: data})
           .eq('id', user.id)
           .maybeSingle();
 
@@ -75,4 +75,7 @@ class UserProvider {
 
   Future<void> updateUserProfileImg(String profileUrl) =>
       _updateUserField('avatar_url', profileUrl);
+
+  Future<void> updateUserAccount(String account) =>
+      _updateUserField('account', account);
 }

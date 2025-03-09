@@ -180,6 +180,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       seater: selectedMemberCount,
       departureTime: selectedDateTime!,
       clothes: _clothingTags,
+      participants: [],
       remainingSeats: selectedMemberCount!,
     );
 

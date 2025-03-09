@@ -8,6 +8,7 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/directions_provider.dart';
+import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
@@ -418,6 +419,8 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
         child: SafeArea(
           child: CButton(
             onTap: () {
+              ref.read(taxiGroupProvider.notifier).joinGroup(widget.taxiGroup);
+
               Navigator.of(context).pushAndRemoveUntil(
                 CupertinoPageRoute(builder: (context) => TaxiGroupPage()),
                 (Route<dynamic> route) => false,

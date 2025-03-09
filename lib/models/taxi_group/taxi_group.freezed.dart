@@ -47,7 +47,7 @@ mixin _$TaxiGroup {
   DateTime? get departureTime => throw _privateConstructorUsedError;
   @JsonKey(name: 'host_clothes')
   List<String> get clothes => throw _privateConstructorUsedError;
-  List<String>? get participants => throw _privateConstructorUsedError;
+  List<String> get participants => throw _privateConstructorUsedError;
   @JsonKey(name: 'remaining_seats')
   int get remainingSeats => throw _privateConstructorUsedError;
 
@@ -81,7 +81,7 @@ abstract class $TaxiGroupCopyWith<$Res> {
       int? seater,
       @JsonKey(name: 'departure_time') DateTime? departureTime,
       @JsonKey(name: 'host_clothes') List<String> clothes,
-      List<String>? participants,
+      List<String> participants,
       @JsonKey(name: 'remaining_seats') int remainingSeats});
 }
 
@@ -114,7 +114,7 @@ class _$TaxiGroupCopyWithImpl<$Res, $Val extends TaxiGroup>
     Object? seater = freezed,
     Object? departureTime = freezed,
     Object? clothes = null,
-    Object? participants = freezed,
+    Object? participants = null,
     Object? remainingSeats = null,
   }) {
     return _then(_value.copyWith(
@@ -174,10 +174,10 @@ class _$TaxiGroupCopyWithImpl<$Res, $Val extends TaxiGroup>
           ? _value.clothes
           : clothes // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      participants: freezed == participants
+      participants: null == participants
           ? _value.participants
           : participants // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
+              as List<String>,
       remainingSeats: null == remainingSeats
           ? _value.remainingSeats
           : remainingSeats // ignore: cast_nullable_to_non_nullable
@@ -209,7 +209,7 @@ abstract class _$$TaxiGroupImplCopyWith<$Res>
       int? seater,
       @JsonKey(name: 'departure_time') DateTime? departureTime,
       @JsonKey(name: 'host_clothes') List<String> clothes,
-      List<String>? participants,
+      List<String> participants,
       @JsonKey(name: 'remaining_seats') int remainingSeats});
 }
 
@@ -240,7 +240,7 @@ class __$$TaxiGroupImplCopyWithImpl<$Res>
     Object? seater = freezed,
     Object? departureTime = freezed,
     Object? clothes = null,
-    Object? participants = freezed,
+    Object? participants = null,
     Object? remainingSeats = null,
   }) {
     return _then(_$TaxiGroupImpl(
@@ -300,10 +300,10 @@ class __$$TaxiGroupImplCopyWithImpl<$Res>
           ? _value._clothes
           : clothes // ignore: cast_nullable_to_non_nullable
               as List<String>,
-      participants: freezed == participants
+      participants: null == participants
           ? _value._participants
           : participants // ignore: cast_nullable_to_non_nullable
-              as List<String>?,
+              as List<String>,
       remainingSeats: null == remainingSeats
           ? _value.remainingSeats
           : remainingSeats // ignore: cast_nullable_to_non_nullable
@@ -330,7 +330,7 @@ class _$TaxiGroupImpl implements _TaxiGroup {
       required this.seater,
       @JsonKey(name: 'departure_time') required this.departureTime,
       @JsonKey(name: 'host_clothes') required final List<String> clothes,
-      final List<String>? participants,
+      required final List<String> participants,
       @JsonKey(name: 'remaining_seats') required this.remainingSeats})
       : _clothes = clothes,
         _participants = participants;
@@ -385,14 +385,12 @@ class _$TaxiGroupImpl implements _TaxiGroup {
     return EqualUnmodifiableListView(_clothes);
   }
 
-  final List<String>? _participants;
+  final List<String> _participants;
   @override
-  List<String>? get participants {
-    final value = _participants;
-    if (value == null) return null;
+  List<String> get participants {
     if (_participants is EqualUnmodifiableListView) return _participants;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableListView(_participants);
   }
 
   @override
@@ -494,7 +492,7 @@ abstract class _TaxiGroup implements TaxiGroup {
       required final int? seater,
       @JsonKey(name: 'departure_time') required final DateTime? departureTime,
       @JsonKey(name: 'host_clothes') required final List<String> clothes,
-      final List<String>? participants,
+      required final List<String> participants,
       @JsonKey(name: 'remaining_seats')
       required final int remainingSeats}) = _$TaxiGroupImpl;
 
@@ -543,7 +541,7 @@ abstract class _TaxiGroup implements TaxiGroup {
   @JsonKey(name: 'host_clothes')
   List<String> get clothes;
   @override
-  List<String>? get participants;
+  List<String> get participants;
   @override
   @JsonKey(name: 'remaining_seats')
   int get remainingSeats;

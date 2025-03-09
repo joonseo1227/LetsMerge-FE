@@ -26,8 +26,8 @@ _$TaxiGroupImpl _$$TaxiGroupImplFromJson(Map<String, dynamic> json) =>
       clothes: (json['host_clothes'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
-      participants: (json['participants'] as List<dynamic>?)
-          ?.map((e) => e as String)
+      participants: (json['participants'] as List<dynamic>)
+          .map((e) => e as String)
           .toList(),
       remainingSeats: (json['remaining_seats'] as num).toInt(),
     );
