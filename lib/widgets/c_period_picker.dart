@@ -134,7 +134,7 @@ class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
                             color: ThemeModel.surface(isDarkMode),
                             border: Border(
                               bottom: BorderSide(
-                                color: ThemeModel.sub5(isDarkMode),
+                                color: ThemeModel.sub3(isDarkMode),
                               ),
                             ),
                           ),
@@ -223,7 +223,7 @@ class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
           color: ThemeModel.surface(isDarkMode),
           border: Border(
             bottom: BorderSide(
-              color: ThemeModel.sub5(isDarkMode),
+              color: ThemeModel.sub3(isDarkMode),
             ),
           ),
         ),

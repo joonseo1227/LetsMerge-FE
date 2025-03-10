@@ -13,6 +13,7 @@ import 'package:letsmerge/widgets/c_datetime_picker.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_dropdown.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
+import 'package:letsmerge/widgets/c_period_picker.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
@@ -124,6 +125,8 @@ class _DevPageState extends ConsumerState<DevPage> {
                     );
                   },
                 ),
+                SizedBox(height: 32),
+                CPeriodPicker(),
                 SizedBox(height: 32),
                 CSwitch(
                   value: isSwitched,
