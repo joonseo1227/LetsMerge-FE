@@ -16,6 +16,7 @@ import 'package:letsmerge/screens/chat/taxi_group_chat_widget.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_open_app_page.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_request_money_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
@@ -193,7 +194,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                   popupMenuKey.currentState?.hideDropdown();
                   Navigator.of(context).push(
                     CupertinoPageRoute(
-                        builder: (context) => const ReportPage()),
+                      builder: (context) => const ReportPage(),
+                    ),
                   );
                 },
                 child: ListTile(
@@ -232,34 +234,38 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       child: Align(
         alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
         child: isUser
-            ? _buildUserMessage(message, formattedTime, isDarkMode)
+            ? _buildMyMessage(message, formattedTime, isDarkMode)
             : _buildOtherMessage(message, formattedTime, isDarkMode),
       ),
     );
   }
 
-  Widget _buildUserMessage(
+  Widget _buildMyMessage(
       Map<String, dynamic> message, String formattedTime, bool isDarkMode) {
     final String messageType = message['message_type'] ?? 'text';
     switch (messageType) {
       case 'account':
-        return AccountMessageWidget(
+        return MyMessage(
           formattedTime: formattedTime,
-          content: message['content']!,
-          isDarkMode: isDarkMode,
+          content: RequestMoneyMessage(),
         );
       case 'location':
-        return LocationMessageWidget(
+        return MyMessage(
           formattedTime: formattedTime,
-          locationModel:
-              LocationModel.fromJson(json.decode(message['content']!)),
-          isDarkMode: isDarkMode,
+          content: LocationMessage(
+            locationModel: LocationModel.fromJson(
+              json.decode(
+                message['content']!,
+              ),
+            ),
+          ),
         );
       default:
-        return TextMessageWidget(
+        return MyMessage(
           formattedTime: formattedTime,
-          content: message['content']!,
-          isDarkMode: isDarkMode,
+          content: TextMessage(
+            content: message['content']!,
+          ),
         );
     }
   }
@@ -275,26 +281,30 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
 
         switch (messageType) {
           case 'account':
-            return OtherAccountMessageWidget(
+            return OtherMessage(
               senderNickname: senderNickname,
               formattedTime: formattedTime,
-              content: message['content']!,
-              isDarkMode: isDarkMode,
+              content: RequestMoneyMessage(),
             );
           case 'location':
-            return OtherLocationMessageWidget(
+            return OtherMessage(
               senderNickname: senderNickname,
               formattedTime: formattedTime,
-              locationModel:
-              LocationModel.fromJson(json.decode(message['content']!)),
-              isDarkMode: isDarkMode,
+              content: LocationMessage(
+                locationModel: LocationModel.fromJson(
+                  json.decode(
+                    message['content']!,
+                  ),
+                ),
+              ),
             );
           default:
-            return OtherTextMessageWidget(
+            return OtherMessage(
               senderNickname: senderNickname,
               formattedTime: formattedTime,
-              content: message['content']!,
-              isDarkMode: isDarkMode,
+              content: TextMessage(
+                content: message['content']!,
+              ),
             );
         }
       },
@@ -343,24 +353,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
   }
 
-  // void _sendMessage() async {
-  //   if (_chatController.text.isNotEmpty) {
-  //     final text = _chatController.text;
-  //     final messageType = "text";
-  //     _scrollController.animateTo(
-  //       0,
-  //       duration: const Duration(milliseconds: 150),
-  //       curve: Curves.easeInOut,
-  //     );
-  //     await ref.read(taxiGroupProvider.notifier).sendChatMessage(
-  //         widget.taxiGroup,
-  //         text,
-  //         messageType,
-  //         DateTime.now().toIso8601String());
-  //     _chatController.clear();
-  //   }
-  // }
-
   void _showBottomSheet() {
     final isDarkMode = ref.read(themeProvider);
     showModalBottomSheet(
@@ -368,12 +360,13 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       isScrollControlled: true,
       backgroundColor: ThemeModel.background(isDarkMode),
       shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(0))),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(0),
+        ),
+      ),
       builder: (BuildContext context) => _buildBottomSheetContent(isDarkMode),
     );
   }
-
-// taxi_group_page.dart (일부 수정)
 
   Widget _buildBottomSheetContent(bool isDarkMode) {
     return SafeArea(
@@ -408,7 +401,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                           children: [
                             CListTile(
                               onTap: () {
-                                // 기존 택시 앱 열기 기능 유지
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
                                     builder: (context) =>
@@ -417,19 +409,22 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                                 );
                               },
                               title: '택시 앱 열기',
-                              icon: Icons.attach_money,
+                              icon: Icons.local_taxi,
                             ),
                             CListTile(
                               onTap: () {
-                                // 정산하기(계좌번호 공유): 입력 다이얼로그 표시 후 메시지 전송
-                                _showAccountInputDialog(isDarkMode);
+                                Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                    builder: (context) =>
+                                        TaxiGroupRequestMoneyPage(),
+                                  ),
+                                );
                               },
                               title: '정산하기',
                               icon: Icons.attach_money,
                             ),
                             CListTile(
                               onTap: () {
-                                // 실시간 위치 공유: 입력 다이얼로그 표시 후 메시지 전송
                                 _showLocationInputDialog(isDarkMode);
                               },
                               title: '실시간 위치 공유',
@@ -446,46 +441,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
           );
         },
       ),
-    );
-  }
-
-  // 정산하기(계좌번호 공유) 입력 다이얼로그 표시
-  void _showAccountInputDialog(bool isDarkMode) {
-    final TextEditingController accountController = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return CDialog(
-          title: '정산하기',
-          content: TextField(
-            controller: accountController,
-            decoration: const InputDecoration(
-              hintText: '은행명 계좌번호',
-            ),
-          ),
-          buttons: [
-            CButton(
-              style: CButtonStyle.secondary(isDarkMode),
-              size: CButtonSize.extraLarge,
-              label: '취소',
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            CButton(
-              size: CButtonSize.extraLarge,
-              label: '확인',
-              onTap: () {
-                final content = accountController.text.trim();
-                if (content.isNotEmpty) {
-                  _sendCustomMessage(content, "account");
-                }
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
     );
   }
 

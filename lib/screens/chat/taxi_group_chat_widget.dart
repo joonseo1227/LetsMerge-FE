@@ -1,203 +1,169 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
-import 'package:letsmerge/models/bank_model.dart';
 import 'package:letsmerge/models/location_model.dart';
 import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
+import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_map_widget.dart';
-import 'package:letsmerge/widgets/c_tag.dart';
 
-class TextMessageWidget extends StatelessWidget {
-  final String formattedTime;
-  final String content;
-  final bool isDarkMode;
+Color getMessageTextColor(BuildContext context, bool isDarkMode) {
+  // 상위 위젯 중에 MyMessage가 있는지 확인
+  final isMyMessage =
+      context.findAncestorWidgetOfExactType<MyMessage>() != null;
 
-  const TextMessageWidget({
-    super.key,
-    required this.formattedTime,
-    required this.content,
-    required this.isDarkMode,
-  });
+  return isMyMessage
+      ? white // MyMessage일 때의 색상
+      : ThemeModel.text(isDarkMode); // 기본 색상
+}
+
+/// 정산 메시지
+class RequestMoneyMessage extends ConsumerStatefulWidget {
+  const RequestMoneyMessage({super.key});
 
   @override
+  ConsumerState<RequestMoneyMessage> createState() =>
+      _RequestMoneyMessageState();
+}
+
+class _RequestMoneyMessageState extends ConsumerState<RequestMoneyMessage> {
+  @override
   Widget build(BuildContext context) {
-    return Row(
+    final isDarkMode = ref.watch(themeProvider);
+
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
       children: [
-        // 시간 표시 및 메시지 내용
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              formattedTime,
-              style: TextStyle(
-                color: ThemeModel.sub3(isDarkMode),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                height: 1,
+        Text(
+          '우리 정산해요💸',
+          style: TextStyle(
+            fontSize: 16,
+            color: getMessageTextColor(context, isDarkMode),
+          ),
+        ),
+        SizedBox(
+          height: 8,
+        ),
+        CButton(
+          label: '정산하기',
+          width: double.maxFinite,
+          size: CButtonSize.medium,
+          onTap: () {
+            Navigator.of(context).push(
+              CupertinoPageRoute(
+                builder: (context) => TaxiGroupSplitMoneyPage(),
               ),
-            ),
-            const SizedBox(width: 8),
-            IntrinsicWidth(
-              child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.7,
-                ),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: ThemeModel.highlight(isDarkMode),
-                ),
-                child: Text(
-                  content,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: white,
-                  ),
-                ),
-              ),
-            ),
-          ],
+            );
+          },
         ),
       ],
     );
   }
 }
 
-class AccountMessageWidget extends StatelessWidget {
-  final String formattedTime;
-  final String content;
-  final bool isDarkMode;
-
-  const AccountMessageWidget({
-    super.key,
-    required this.formattedTime,
-    required this.content,
-    required this.isDarkMode,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final parts = content.split(' ');
-    final String bankName = parts.isNotEmpty ? parts[0].trim() : '';
-    final String accountNumber = parts.length > 1 ? parts[1].trim() : content;
-
-    final bankInfo = bankList.firstWhere(
-      (bank) => bank.name == bankName,
-      orElse: () => BankInfo(name: bankName, color: TagColor.grey),
-    );
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              formattedTime,
-              style: TextStyle(
-                color: ThemeModel.sub3(isDarkMode),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                height: 1,
-              ),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: () {
-                Clipboard.setData(
-                  ClipboardData(
-                    text: bankName + accountNumber,
-                  ),
-                );
-              },
-              child: IntrinsicWidth(
-                child: Container(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.7,
-                  ),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: ThemeModel.highlight(isDarkMode),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '계좌 정보',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: white,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          CTag(
-                            text: bankInfo.name,
-                            color: bankInfo.color,
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                            accountNumber,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        "메시지를 누르면 복사됩니다.",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class LocationMessageWidget extends StatelessWidget {
-  final String formattedTime;
+/// 위치 메시지
+class LocationMessage extends ConsumerStatefulWidget {
   final LocationModel locationModel;
-  final bool isDarkMode;
 
-  const LocationMessageWidget({
+  const LocationMessage({
     super.key,
-    required this.formattedTime,
     required this.locationModel,
-    required this.isDarkMode,
   });
 
   @override
+  ConsumerState<LocationMessage> createState() => _LocationMessageState();
+}
+
+class _LocationMessageState extends ConsumerState<LocationMessage> {
+  @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '제 위치예요📍',
+          style: TextStyle(
+            fontSize: 16,
+            color: getMessageTextColor(context, isDarkMode),
+          ),
+        ),
+        const SizedBox(
+          height: 8,
+        ),
+        CMapWidget(
+          height: 200,
+          width: 300,
+          initialLatitude: widget.locationModel.latitude,
+          initialLongitude: widget.locationModel.longitude,
+          isDarkMode: isDarkMode,
+        ),
+      ],
+    );
+  }
+}
+
+/// 텍스트 메시지
+class TextMessage extends ConsumerStatefulWidget {
+  final String content;
+
+  const TextMessage({
+    super.key,
+    required this.content,
+  });
+
+  @override
+  ConsumerState<TextMessage> createState() => _TextMessageState();
+}
+
+class _TextMessageState extends ConsumerState<TextMessage> {
+  @override
+  Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+
+    return Text(
+      widget.content,
+      style: TextStyle(
+        fontSize: 16,
+        color: getMessageTextColor(context, isDarkMode),
+      ),
+    );
+  }
+}
+
+/// 내 메시지
+class MyMessage extends ConsumerStatefulWidget {
+  final String formattedTime;
+  final Widget content;
+
+  const MyMessage({
+    super.key,
+    required this.formattedTime,
+    required this.content,
+  });
+
+  @override
+  ConsumerState<MyMessage> createState() => _MyMessageState();
+}
+
+class _MyMessageState extends ConsumerState<MyMessage> {
+  @override
+  Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // 시간 표시 및 위치 공유 메시지 내용
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
           children: [
+            // 메시지 전송 시각
             Text(
-              formattedTime,
+              widget.formattedTime,
               style: TextStyle(
                 color: ThemeModel.sub3(isDarkMode),
                 fontSize: 12,
@@ -206,44 +172,20 @@ class LocationMessageWidget extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 8),
+            // 메시지 박스
             IntrinsicWidth(
               child: Container(
                 constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.7,
+                  maxWidth: MediaQuery.of(context).size.width * 0.6,
                 ),
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
-                  color: ThemeModel.highlight(isDarkMode),
+                  color: ThemeModel.highlightText(isDarkMode),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '위치 공유',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: white,
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                    Text(
-                      '정확한 위치와 오차가 발생할 수 있으니 주의하세요.',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    CMapWidget(
-                      width: 300,
-                      height: 200,
-                      isDarkMode: isDarkMode,
-                      initialLatitude: locationModel.latitude,
-                      initialLongitude: locationModel.longitude,
-                    ),
-                  ],
-                ),
+                child: widget.content,
               ),
             ),
           ],
@@ -253,154 +195,32 @@ class LocationMessageWidget extends StatelessWidget {
   }
 }
 
-class OtherAccountMessageWidget extends StatelessWidget {
+/// 타인 메시지
+class OtherMessage extends ConsumerStatefulWidget {
   final String senderNickname;
   final String formattedTime;
-  final String content;
-  final bool isDarkMode;
+  final Widget content;
 
-  const OtherAccountMessageWidget({
+  const OtherMessage({
     super.key,
     required this.senderNickname,
     required this.formattedTime,
     required this.content,
-    required this.isDarkMode,
   });
 
   @override
-  Widget build(BuildContext context) {
-    final parts = content.split(' ');
-    final String bankName = parts.isNotEmpty ? parts[0] : '';
-    final String accountNumber = parts.length > 1 ? parts[1] : content;
-
-    final bankInfo = bankList.firstWhere(
-      (bank) => bank.name == bankName,
-      orElse: () => BankInfo(name: bankName, color: TagColor.grey),
-    );
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: const ShapeDecoration(
-              color: blue20,
-              shape: CircleBorder(),
-            ),
-          ),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Text(
-                senderNickname,
-                style: TextStyle(
-                  color: ThemeModel.sub3(isDarkMode),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            GestureDetector(
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: content));
-              },
-              child: IntrinsicWidth(
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.7,
-                  ),
-                  decoration: BoxDecoration(
-                    color: ThemeModel.highlight(isDarkMode),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '계좌 정보',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: white,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          Text(
-                            bankInfo.name,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            accountNumber,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: white,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        "메시지를 누르면 복사됩니다.",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: ThemeModel.sub3(isDarkMode),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              formattedTime,
-              style: TextStyle(
-                color: ThemeModel.sub3(isDarkMode),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                height: 1,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
+  ConsumerState<OtherMessage> createState() => _OtherMessageState();
 }
 
-class OtherLocationMessageWidget extends StatelessWidget {
-  final String senderNickname;
-  final String formattedTime;
-  final LocationModel locationModel;
-  final bool isDarkMode;
-
-  const OtherLocationMessageWidget({
-    super.key,
-    required this.senderNickname,
-    required this.formattedTime,
-    required this.locationModel,
-    required this.isDarkMode,
-  });
-
+class _OtherMessageState extends ConsumerState<OtherMessage> {
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        // 프로필 이미지
         Padding(
           padding: const EdgeInsets.only(right: 8),
           child: Container(
@@ -413,137 +233,53 @@ class OtherLocationMessageWidget extends StatelessWidget {
           ),
         ),
         Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 유저 이름
             Padding(
-              padding: const EdgeInsets.only(bottom: 4),
+              padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                senderNickname,
+                widget.senderNickname,
                 style: TextStyle(
-                  color: ThemeModel.sub3(isDarkMode),
-                  fontSize: 12,
+                  color: ThemeModel.sub6(isDarkMode),
+                  fontSize: 14,
                   fontWeight: FontWeight.w500,
+                  height: 1,
                 ),
               ),
             ),
-            IntrinsicWidth(
-              child: Container(
-                padding: const EdgeInsets.all(12),
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.7,
-                ),
-                decoration: BoxDecoration(
-                  color: ThemeModel.highlight(isDarkMode),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '위치 공유',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: white,
-                        fontWeight: FontWeight.w800,
-                      ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // 메시지 박스
+                IntrinsicWidth(
+                  child: Container(
+                    constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.6,
                     ),
-                    const SizedBox(height: 8),
-                    CMapWidget(
-                      width: 300,
-                      height: 200,
-                      initialLatitude: locationModel.latitude,
-                      initialLongitude: locationModel.longitude,
-                      isDarkMode: isDarkMode,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
                     ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              formattedTime,
-              style: TextStyle(
-                color: ThemeModel.sub3(isDarkMode),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class OtherTextMessageWidget extends StatelessWidget {
-  final String senderNickname;
-  final String formattedTime;
-  final String content;
-  final bool isDarkMode;
-
-  const OtherTextMessageWidget({
-    super.key,
-    required this.senderNickname,
-    required this.formattedTime,
-    required this.content,
-    required this.isDarkMode,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8),
-          child: Container(
-            width: 40,
-            height: 40,
-            decoration: const ShapeDecoration(
-              color: blue20,
-              shape: CircleBorder(),
-            ),
-          ),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4),
-              child: Text(
-                senderNickname,
-                style: TextStyle(
-                  color: ThemeModel.sub3(isDarkMode),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-            IntrinsicWidth(
-              child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.7,
-                ),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: ThemeModel.highlight(isDarkMode),
-                ),
-                child: Text(
-                  content,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: white,
+                    decoration: BoxDecoration(
+                      color: ThemeModel.surface(isDarkMode),
+                    ),
+                    child: widget.content,
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              formattedTime,
-              style: TextStyle(
-                color: ThemeModel.sub3(isDarkMode),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
+                const SizedBox(width: 8),
+                // 메시지 전송 시각
+                Text(
+                  widget.formattedTime,
+                  style: TextStyle(
+                    color: ThemeModel.sub3(isDarkMode),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                    height: 1,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
