@@ -410,7 +410,7 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
           children: [
             Icon(
               Icons.calendar_month_outlined,
-              color: ThemeModel.sub5(isDarkMode),
+              color: ThemeModel.sub3(isDarkMode),
             ),
             const SizedBox(width: 8),
             Text(
