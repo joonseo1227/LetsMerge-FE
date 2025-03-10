@@ -8,10 +8,12 @@ import 'package:letsmerge/screens/dev/button_gallery_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_request_money_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_checkbox.dart';
 import 'package:letsmerge/widgets/c_datetime_picker.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_dropdown.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
+import 'package:letsmerge/widgets/c_period_picker.dart';
 import 'package:letsmerge/widgets/c_search_bar.dart';
 import 'package:letsmerge/widgets/c_switch.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
@@ -26,6 +28,8 @@ class DevPage extends ConsumerStatefulWidget {
 class _DevPageState extends ConsumerState<DevPage> {
   bool isSwitched = false;
   String? selectedItem;
+  bool _isAgreed1 = true;
+  bool _isAgreed2 = false;
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +58,37 @@ class _DevPageState extends ConsumerState<DevPage> {
                       ref.read(themeProvider.notifier).toggleTheme();
                     },
                   ),
+                ),
+                SizedBox(height: 32),
+                CCheckbox(
+                  value: _isAgreed1,
+                  onChanged: (value) {
+                    setState(() {
+                      _isAgreed1 = value;
+                    });
+                  },
+                  label: "체크박스 레이블",
+                ),
+                SizedBox(height: 32),
+                CCheckbox(
+                  value: _isAgreed2,
+                  onChanged: (value) {
+                    setState(() {
+                      _isAgreed2 = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 32),
+                CCheckbox(
+                  value: true,
+                  onChanged: null,
+                  label: "비활성화된 체크박스",
+                ),
+                SizedBox(height: 32),
+                CCheckbox(
+                  value: false,
+                  onChanged: null,
+                  label: "비활성화된 체크박스",
                 ),
                 SizedBox(height: 32),
                 CDropdown<String>(
@@ -90,6 +125,8 @@ class _DevPageState extends ConsumerState<DevPage> {
                     );
                   },
                 ),
+                SizedBox(height: 32),
+                CPeriodPicker(),
                 SizedBox(height: 32),
                 CSwitch(
                   value: isSwitched,

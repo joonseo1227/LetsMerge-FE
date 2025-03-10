@@ -10,7 +10,6 @@ import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/search/search_taxi_group_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
-import 'package:letsmerge/screens/taxi_group/taxi_group_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_preview_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_select_place_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
@@ -276,15 +275,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
             Align(
               alignment: AlignmentDirectional.bottomEnd,
               child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    PageRouteBuilder(
-                      pageBuilder: ((context, animation, secondaryAnimation) =>
-                          TaxiGroupPage()),
-                    ),
-                  );
-                },
+                onTap: () {},
                 child: Hero(
                   tag: 'taxiGroup',
                   child: Material(

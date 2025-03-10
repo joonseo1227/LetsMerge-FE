@@ -21,7 +21,7 @@ class ThemeNotifier extends StateNotifier<bool> {
   /// 생성자
   /// [initialDarkMode]: 초기 테마 상태(어두운 모드 여부)
   /// 초기 상태는 prefs를 불러오기 전까지 임시로 사용됩니다.
-  ThemeNotifier(bool initialDarkMode) : super(initialDarkMode) {
+  ThemeNotifier(super.initialDarkMode) {
     _loadThemeModeFromPrefs();
     // 시스템의 테마(밝기) 변경 이벤트에 대한 콜백 등록
     SchedulerBinding.instance.platformDispatcher.onPlatformBrightnessChanged =

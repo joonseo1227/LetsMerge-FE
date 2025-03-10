@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_calendar_picker.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_toggle_button.dart';
-import 'package:letsmerge/widgets/c_calendar_picker.dart';
+
+import 'c_dialog.dart';
 
 ///
 /// [CPeriodPicker] 위젯
@@ -22,7 +24,6 @@ class CPeriodPicker extends ConsumerStatefulWidget {
 }
 
 class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
-
   int selectedPeriod = 0;
   int selectedOrder = 0;
 
@@ -38,7 +39,8 @@ class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
     } else if (selectedPeriod == 1) {
       return DateTime(_today.year, _today.month - 3, _today.day);
     } else if (selectedPeriod == 2) {
-      return _customStartDate ?? DateTime(_today.year, _today.month, _today.day);
+      return _customStartDate ??
+          DateTime(_today.year, _today.month, _today.day);
     }
     return DateTime(_today.year, _today.month - 1, _today.day);
   }
@@ -63,7 +65,8 @@ class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
     }
   }
 
-  Widget _buildCustomCalendarPicker(bool isDarkMode, void Function(void Function()) setStateDialog) {
+  Widget _buildCustomCalendarPicker(
+      bool isDarkMode, void Function(void Function()) setStateDialog) {
     return CCalendarPicker(
       initialDate: _customStartDate ?? _computedStartDate,
       firstDate: DateTime(_today.year - 1),
@@ -77,132 +80,105 @@ class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
   }
 
   Widget _buildDialog(BuildContext context, bool isDarkMode) {
-    return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-      child: StatefulBuilder(
+    return CDialog(
+      title: '기간 설정',
+      content: StatefulBuilder(
         builder: (context, setStateDialog) {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
-                          "기간 설정",
-                          style: TextStyle(
-                            color: ThemeModel.text(isDarkMode),
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        CToggleButton(
-                          buttonCount: 3,
-                          labels: ['1개월', '3개월', '기간 설정'],
-                          initialSelectedIndex: selectedPeriod,
-                          onToggle: (index) {
-                            setStateDialog(() {
-                              selectedPeriod = index;
-                              if (selectedPeriod != 2) {
-                                _customStartDate = null;
-                              }
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        CToggleButton(
-                          buttonCount: 2,
-                          labels: ['최신순', '오래된순'],
-                          initialSelectedIndex: selectedOrder,
-                          onToggle: (index) {
-                            setStateDialog(() {
-                              selectedOrder = index;
-                            });
-                          },
-                        ),
-                        const SizedBox(height: 16),
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          decoration: BoxDecoration(
-                            color: ThemeModel.surface(isDarkMode),
-                            border: Border(
-                              bottom: BorderSide(
-                                color: ThemeModel.sub5(isDarkMode),
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            children: [
-                              Text(
-                                "선택한 기간",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.highlightText(isDarkMode),
-                                ),
-                              ),
-                              const Spacer(),
-                              Text(
-                                "${_formatDate(_computedStartDate)} - ${_formatDate(_today)}",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.text(isDarkMode),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        if (selectedPeriod == 2) ...[
-                          const SizedBox(height: 16),
-                          Text(
-                            "선택한 날짜부터 오늘 날짜까지 조회합니다.",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: ThemeModel.highlightText(isDarkMode),
-                            ),
-                          ),
-                          _buildCustomCalendarPicker(isDarkMode, setStateDialog),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-              ),
               Row(
                 children: [
                   Expanded(
-                    child: CButton(
-                      size: CButtonSize.extraLarge,
-                      label: '취소',
-                      style: CButtonStyle.secondary(isDarkMode),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
+                    child: Container(
+                      color: ThemeModel.background(isDarkMode),
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        _formatDate(_computedStartDate),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: ThemeModel.text(isDarkMode),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Text(
+                      '-',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: ThemeModel.text(isDarkMode),
+                      ),
                     ),
                   ),
                   Expanded(
-                    child: CButton(
-                      size: CButtonSize.extraLarge,
-                      label: '확인',
-                      style: CButtonStyle.primary(isDarkMode),
-                      onTap: () {
-                        Navigator.of(context).pop(_computedStartDate);
-                      },
+                    child: Container(
+                      color: ThemeModel.background(isDarkMode),
+                      padding: EdgeInsets.all(16),
+                      child: Text(
+                        _formatDate(_today),
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: ThemeModel.text(isDarkMode),
+                        ),
+                      ),
                     ),
                   ),
                 ],
               ),
+              const SizedBox(height: 16),
+              CToggleButton(
+                buttonCount: 3,
+                labels: ['1개월', '3개월', '기간 설정'],
+                initialSelectedIndex: selectedPeriod,
+                onToggle: (index) {
+                  setStateDialog(() {
+                    selectedPeriod = index;
+                    if (selectedPeriod != 2) {
+                      _customStartDate = null;
+                    }
+                  });
+                },
+              ),
+              const SizedBox(height: 16),
+              if (selectedPeriod == 2) ...[
+                const SizedBox(height: 16),
+                Text(
+                  "선택한 날짜부터 오늘까지 조회합니다.",
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: ThemeModel.highlightText(isDarkMode),
+                  ),
+                ),
+                _buildCustomCalendarPicker(isDarkMode, setStateDialog),
+              ],
             ],
           );
         },
       ),
+      buttons: [
+        CButton(
+          size: CButtonSize.extraLarge,
+          label: '취소',
+          style: CButtonStyle.secondary(isDarkMode),
+          onTap: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        CButton(
+          size: CButtonSize.extraLarge,
+          label: '확인',
+          style: CButtonStyle.primary(isDarkMode),
+          onTap: () {
+            Navigator.of(context).pop(_computedStartDate);
+          },
+        ),
+      ],
     );
   }
 
@@ -221,21 +197,17 @@ class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
           color: ThemeModel.surface(isDarkMode),
           border: Border(
             bottom: BorderSide(
-              color: ThemeModel.sub5(isDarkMode),
+              color: ThemeModel.sub3(isDarkMode),
             ),
           ),
         ),
         child: Row(
           children: [
-            Text(
-              "기간 설정",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: ThemeModel.highlightText(isDarkMode),
-              ),
+            Icon(
+              Icons.calendar_month_outlined,
+              color: ThemeModel.sub3(isDarkMode),
             ),
-            const Spacer(),
+            const SizedBox(width: 8),
             Text(
               "${_formatDate(_confirmedStartDate)} - ${_formatDate(_today)}",
               style: TextStyle(

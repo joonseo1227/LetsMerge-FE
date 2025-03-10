@@ -166,13 +166,13 @@ class _CTextFieldState extends ConsumerState<CTextField> {
     final isDarkMode = ref.watch(themeProvider);
     return widget.errorText != null && widget.errorText!.isNotEmpty
         ? ThemeModel.danger(isDarkMode)
-        : ThemeModel.sub5(isDarkMode);
+        : ThemeModel.sub3(isDarkMode);
   }
 
   Color _getFocusBorderColor() {
     final isDarkMode = ref.watch(themeProvider);
     return _hasFocus
         ? ThemeModel.highlight(isDarkMode)
-        : ThemeModel.sub5(isDarkMode);
+        : ThemeModel.sub3(isDarkMode);
   }
 }

@@ -8,13 +8,18 @@ import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
-  TaxiGroupNotifier() : super([]);
+  TaxiGroupNotifier() : super([]) {
+    initializeRealtimeSubscription();
+  }
 
   final SupabaseClient _supabase = Supabase.instance.client;
   RealtimeChannel? _subscription;
 
+  RealtimeChannel? _groupSubscription;
+
+  // 그룹 관련 realtime 구독 설정
   void initializeRealtimeSubscription() {
-    _subscription = _supabase
+    _groupSubscription = _supabase
         .channel('public:taxigroups')
         .onPostgresChanges(
           event: PostgresChangeEvent.all,
@@ -29,7 +34,7 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
 
   @override
   void dispose() {
-    _subscription?.unsubscribe();
+    _groupSubscription?.unsubscribe();
     super.dispose();
   }
 
@@ -37,7 +42,7 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
     try {
       final List<dynamic> response = await _supabase.from('taxigroups').select();
 
-      print(response);
+      debugPrint(response);
 
     } on FormatException catch (e) {
       debugPrint('데이터 형식 오류: $e');
@@ -56,7 +61,6 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
 
     try {
       await _supabase.from('taxigroups').insert(data);
-
       debugPrint('택시 그룹 생성 성공');
     } on FormatException catch (e) {
       debugPrint('데이터 형식 오류: $e');
@@ -76,11 +80,17 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
       return;
     }
 
+    final Map<String, dynamic> taxiGroupData = await _supabase
+        .from('taxigroups')
+        .select('participants, seater, remaining_seats')
+        .eq('group_id', taxiGroup.groupId!)
+        .single();
+
     // 기존의 participants 리스트를 불러오고, 없으면 빈 리스트로 초기화
     List<dynamic> currentParticipants = taxiGroup.participants ?? [];
     List<String> participants = currentParticipants.cast<String>();
 
-    int seats = taxiGroup.remainingSeats;
+    int seats = taxiGroupData['remaining_seats'] ?? 0;
 
     // 그룹 생성자인지 확인
     if (taxiGroup.creatorUserId == user.id) {
@@ -121,7 +131,7 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
 
     final Map<String, dynamic> taxiGroupData = await _supabase
         .from('taxigroups')
-        .select('participants, seater')
+        .select('participants, seater, remaining_seats')
         .eq('group_id', taxiGroup.groupId!)
         .single();
 
@@ -129,10 +139,10 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
     List<dynamic> currentParticipants = taxiGroupData['participants'] ?? [];
     List<String> participants = currentParticipants.cast<String>();
 
-    int seats = taxiGroupData['remainingSeats'] ?? 0;
+    int seats = taxiGroupData['remaining_seats'] ?? 0;
 
     if (seats == 0) {
-      print("떠날 유저 정보가 없습니다.");
+      debugPrint("떠날 유저 정보가 없습니다.");
     } else {
       // user id를 participants 리스트에서 제거
       participants.remove(user.id);
@@ -146,6 +156,47 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
       }).eq('group_id', taxiGroup.groupId!);
 
       debugPrint('그룹 나가기 및 좌석 업데이트 성공: $updateResponse');
+    }
+  }
+
+  Stream<List<Map<String, dynamic>>> chatMessagesStream(TaxiGroup taxiGroup) {
+    return _supabase
+        .from('chats')
+        .stream(primaryKey: ['message_id'])
+        .eq('group_id', taxiGroup.groupId!)
+        .order('created_at', ascending: false);
+  }
+
+  Future<void> sendChatMessage(
+    TaxiGroup taxiGroup,
+    String content,
+    String messageType,
+    String time,
+  ) async {
+    final User? user = _supabase.auth.currentUser;
+    final String senderId = user!.id;
+    try {
+      await _supabase.from('chats').insert({
+        'group_id': taxiGroup.groupId,
+        'sender_id': senderId,
+        'content': content,
+        'message_type': messageType,
+        'created_at': time,
+      });
+      debugPrint("Insert 성공");
+    } catch (e) {
+      debugPrint('Error sending message: $e');
+    }
+  }
+
+  //특정 채팅 메시지를 읽음 처리하는 함수
+  Future<void> readChatMessage(String messageId) async {
+    try {
+      await _supabase.from('chats').update({
+        'is_read': true,
+      }).eq('message_id', messageId);
+    } catch (e) {
+      debugPrint('Error reading message $e');
     }
   }
 }
