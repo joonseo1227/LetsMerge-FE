@@ -70,17 +70,22 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                       final messages = snapshot.data!;
                       debugPrint('${snapshot.data}');
                       return messages.isNotEmpty
-                          ? ListView.builder(
-                              controller: _scrollController,
-                              reverse: true,
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                              itemCount: messages.length,
-                              itemBuilder: (context, index) =>
-                                  _buildMessageItem(
-                                context,
-                                index,
-                                isDarkMode,
-                                message: messages[index],
+                          ? Align(
+                              alignment: Alignment.topCenter,
+                              child: ListView.builder(
+                                controller: _scrollController,
+                                reverse: true,
+                                shrinkWrap: true,
+                                padding:
+                                    const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                                itemCount: messages.length,
+                                itemBuilder: (context, index) =>
+                                    _buildMessageItem(
+                                  context,
+                                  index,
+                                  isDarkMode,
+                                  message: messages[index],
+                                ),
                               ),
                             )
                           : Padding(
