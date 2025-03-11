@@ -55,7 +55,7 @@ post_install do |installer|
                  'PERMISSION_LOCATION=1',
 
                 ## dart: PermissionGroup.bluetooth
-                 'PERMISSION_BLUETOOTH=1',
+                # 'PERMISSION_BLUETOOTH=1',
             ]
         end
     end
