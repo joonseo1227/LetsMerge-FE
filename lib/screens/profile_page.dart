@@ -1,11 +1,15 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
+import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
@@ -19,10 +23,22 @@ class ProfilePage extends ConsumerStatefulWidget {
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final TextEditingController _nicknameController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
+  String? _selectedImagePath;
 
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _selectedImagePath = image.path;
+      });
+      // TODO: 선택된 이미지를 서버에 업로드하는 로직 추가
+    }
   }
 
   @override
@@ -42,14 +58,30 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                height: 64,
-                width: 64,
-                decoration: const ShapeDecoration(
-                  color: blue20,
-                  shape: CircleBorder(),
+              CInkWell(
+                onTap: _pickImage,
+                child: Container(
+                  height: 128,
+                  width: 128,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: blue20,
+                    image: _selectedImagePath != null
+                        ? DecorationImage(
+                            image: FileImage(File(_selectedImagePath!)),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: _selectedImagePath == null
+                      ? const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 64,
+                        )
+                      : null,
                 ),
               ),
               const SizedBox(height: 16),
