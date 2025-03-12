@@ -16,7 +16,6 @@ import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
-import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:letsmerge/widgets/c_toggle_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -38,23 +37,6 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   final List<String> _clothingTags = [];
   int? selectedMemberCount;
   DateTime? selectedDateTime;
-
-  // 옷차림 태그 추가 함수
-  void _addClothingTag(String tag) {
-    if (tag.isNotEmpty && !_clothingTags.contains(tag)) {
-      setState(() {
-        _clothingTags.add(tag);
-      });
-      _clothingController.clear();
-    }
-  }
-
-  // 옷차림 태그 제거 함수
-  void _removeClothingTag(String tag) {
-    setState(() {
-      _clothingTags.remove(tag);
-    });
-  }
 
   // directionsProvider를 통해 경로 요청하는 함수
   void _fetchDirections() async {
@@ -477,91 +459,6 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                       },
                     ),
                   ],
-                ),
-                const SizedBox(height: 16),
-
-                // 내 옷차림 입력 영역
-                Text(
-                  '내 옷차림',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: ThemeModel.sub6(isDarkMode),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: CTextField(
-                        hint: "예: 검정 코트, 청바지",
-                        controller: _clothingController,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    // 태그 추가 버튼
-                    CButton(
-                      onTap: () {
-                        _addClothingTag(_clothingController.text.trim());
-                      },
-                      style: CButtonStyle.secondary(isDarkMode),
-                      icon: Icons.add,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "옷차림은 다른 사람이 알아보기 쉽게 작성해 주세요.",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: ThemeModel.highlightText(isDarkMode),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // 옷차림 태그 리스트
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 8,
-                    children: _clothingTags.map(
-                      (tag) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          decoration: ShapeDecoration(
-                            color: ThemeModel.surface(isDarkMode),
-                            shape: const StadiumBorder(),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                tag,
-                                style: TextStyle(
-                                  color: ThemeModel.text(isDarkMode),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              CInkWell(
-                                onTap: () => _removeClothingTag(tag),
-                                child: Icon(
-                                  Icons.close,
-                                  size: 18,
-                                  color: ThemeModel.text(isDarkMode),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ).toList(),
-                  ),
                 ),
               ],
             ),
