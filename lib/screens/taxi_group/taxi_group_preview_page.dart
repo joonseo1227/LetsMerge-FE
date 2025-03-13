@@ -8,7 +8,6 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/directions_provider.dart';
-import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
@@ -40,6 +39,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
   Position? _currentPosition;
   bool _showSkeleton = true;
   bool _isParticipation = false;
+
   // final _mapKey = UniqueKey();
   final _mapKey = const ValueKey('naverMap');
 
@@ -87,7 +87,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
     try {
       // 동일한 위치인지 확인 후 경로 요청
       final checkFetchDirections =
-      await directionsNotifier.checkFetchDirections(
+          await directionsNotifier.checkFetchDirections(
         widget.taxiGroup.departureLat,
         widget.taxiGroup.departureLon,
         widget.taxiGroup.arrivalLat,
@@ -118,7 +118,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                   onTap: () {
                     Navigator.of(context).pushAndRemoveUntil(
                       CupertinoPageRoute(builder: (context) => MainPage()),
-                          (Route<dynamic> route) => false,
+                      (Route<dynamic> route) => false,
                     );
                   },
                 ),
@@ -134,86 +134,84 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
     } catch (e) {
       debugPrint('경로 요청 에러: $e');
     } finally {
-    if (mounted) {
-      setState(() {
-        _showSkeleton = false;
-      });
+      if (mounted) {
+        setState(() {
+          _showSkeleton = false;
+        });
+      }
     }
   }
-}
 
-/// 지도에 경로 오버레이 추가 및 카메라 업데이트 함수
-void _addPolylineOverlay() async {
-  final routePoints = ref
-      .read(directionsProvider)
-      .routePoints;
+  /// 지도에 경로 오버레이 추가 및 카메라 업데이트 함수
+  void _addPolylineOverlay() async {
+    final routePoints = ref.read(directionsProvider).routePoints;
 
-  if (_mapController != null && routePoints.isNotEmpty) {
-    // 기존 오버레이 모두 제거
-    await _mapController!.clearOverlays();
+    if (_mapController != null && routePoints.isNotEmpty) {
+      // 기존 오버레이 모두 제거
+      await _mapController!.clearOverlays();
 
-    // 경로 오버레이 추가
-    await _mapController!.addOverlay(
-      NPolylineOverlay(
-        id: "directions",
-        coords: routePoints,
-        color: ThemeModel.text(ref.read(themeProvider)),
-        width: 4,
-      ),
-    );
+      // 경로 오버레이 추가
+      await _mapController!.addOverlay(
+        NPolylineOverlay(
+          id: "directions",
+          coords: routePoints,
+          color: ThemeModel.text(ref.read(themeProvider)),
+          width: 4,
+        ),
+      );
 
-    // 모든 좌표를 포함하는 bounds 계산 후 카메라 업데이트
-    final bounds = NLatLngBounds.from(routePoints);
-    final cameraUpdate =
-    NCameraUpdate.fitBounds(bounds, padding: EdgeInsets.all(40));
-    await _mapController!.updateCamera(cameraUpdate);
+      // 모든 좌표를 포함하는 bounds 계산 후 카메라 업데이트
+      final bounds = NLatLngBounds.from(routePoints);
+      final cameraUpdate =
+          NCameraUpdate.fitBounds(bounds, padding: EdgeInsets.all(40));
+      await _mapController!.updateCamera(cameraUpdate);
 
-    debugPrint("경로 오버레이 추가 및 카메라 업데이트");
+      debugPrint("경로 오버레이 추가 및 카메라 업데이트");
+    }
   }
-}
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
     final participants = ref.watch(participantsProvider(widget.taxiGroup));
-    final createdUser = ref.watch(userInfoProvider(widget.taxiGroup.creatorUserId ?? ""));
+    final createdUser =
+        ref.watch(userInfoProvider(widget.taxiGroup.creatorUserId ?? ""));
 
-  return Scaffold(
-    appBar: AppBar(
-      titleSpacing: 0,
-    ),
-    body: SafeArea(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-
-              /// 지도 영역
-              SizedBox(
-                height: 400,
-                child: Stack(
-                  children: [
-                    NaverMap(
-                      key: _mapKey,
-                      options: NaverMapViewOptions(
-                        mapType: NMapType.navi,
-                        nightModeEnable: isDarkMode,
+    return Scaffold(
+      appBar: AppBar(
+        titleSpacing: 0,
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// 지도 영역
+                SizedBox(
+                  height: 400,
+                  child: Stack(
+                    children: [
+                      NaverMap(
+                        key: _mapKey,
+                        options: NaverMapViewOptions(
+                          mapType: NMapType.navi,
+                          nightModeEnable: isDarkMode,
+                        ),
+                        onMapReady: (controller) async {
+                          debugPrint('Naver Map Ready');
+                          _mapController = controller;
+                          _fetchDirections();
+                        },
                       ),
-                      onMapReady: (controller) async {
-                        debugPrint('Naver Map Ready');
-                        _mapController = controller;
-                        _fetchDirections();
-                      },
-                    ),
-                    if (_showSkeleton)
-                      const Positioned.fill(child: CSkeleton()),
-                  ],
+                      if (_showSkeleton)
+                        const Positioned.fill(child: CSkeleton()),
+                    ],
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 /// 기본 정보
                 TaxiGroupDetailCard(
@@ -225,7 +223,7 @@ void _addPolylineOverlay() async {
                   startTime: widget.taxiGroup.departureTime!,
                 ),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
                 Container(
                   color: ThemeModel.surface(isDarkMode),
@@ -235,16 +233,16 @@ void _addPolylineOverlay() async {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: ShapeDecoration(
-                            color: blue20,
-                            shape: CircleBorder(),
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: ShapeDecoration(
+                              color: blue20,
+                              shape: CircleBorder(),
+                            ),
                           ),
-                        ),
                           SizedBox(
                             width: 12,
                           ),
@@ -286,10 +284,13 @@ void _addPolylineOverlay() async {
                         SizedBox(
                           height: 16,
                         ),
+
                       /// 참여자 정보
                       ...participants.map((participant) {
-                        final userinfo = ref.watch(userInfoProvider(participant.userId));
-                        if (widget.taxiGroup.creatorUserId == user!.id || participant.userId == user!.id) {
+                        final userinfo =
+                            ref.watch(userInfoProvider(participant.userId));
+                        if (widget.taxiGroup.creatorUserId == user!.id ||
+                            participant.userId == user!.id) {
                           _isParticipation = true;
                         }
                         return Row(
@@ -341,68 +342,68 @@ void _addPolylineOverlay() async {
                   ),
                 ),
 
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-              /// 비용 정보
-              Container(
-                color: ThemeModel.surface(isDarkMode),
-                width: double.maxFinite,
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '${NumberFormat('#,###', 'ko_KR').format(
-                          widget.taxiGroup.estimatedFare)}원 - ?원',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: ThemeModel.sub4(isDarkMode),
+                /// 비용 정보
+                Container(
+                  color: ThemeModel.surface(isDarkMode),
+                  width: double.maxFinite,
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${NumberFormat('#,###', 'ko_KR').format(widget.taxiGroup.estimatedFare)}원 - ?원',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: ThemeModel.sub4(isDarkMode),
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '?원 예상',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w500,
-                        color: ThemeModel.text(isDarkMode),
+                      const SizedBox(height: 4),
+                      Text(
+                        '?원 예상',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w500,
+                          color: ThemeModel.text(isDarkMode),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-    ),
-    bottomNavigationBar: Container(
-      color: ThemeModel.highlight(isDarkMode),
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-      child: SafeArea(
-        child: CButton(
-          onTap: () {
-            Navigator.of(context).pushAndRemoveUntil(
-              CupertinoPageRoute(
-                builder: (context) =>
-                    TaxiGroupPage(taxiGroup: widget.taxiGroup),
-              ),
-                  (Route<dynamic> route) => false,
-            );
-          },
-          size: CButtonSize.extraLarge,
-          label: '참여 신청',
-          icon: Icons.navigate_next,
-          width: double.maxFinite,
+      bottomNavigationBar: Container(
+        color: ThemeModel.highlight(isDarkMode),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        child: SafeArea(
+          child: CButton(
+            onTap: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                CupertinoPageRoute(
+                  builder: (context) =>
+                      TaxiGroupPage(taxiGroup: widget.taxiGroup),
+                ),
+                (Route<dynamic> route) => false,
+              );
+            },
+            size: CButtonSize.extraLarge,
+            label: '참여 신청',
+            icon: Icons.navigate_next,
+            width: double.maxFinite,
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 
-@override
-void dispose() {
-  _mapController?.dispose();
-  super.dispose();
-}}
+  @override
+  void dispose() {
+    _mapController?.dispose();
+    super.dispose();
+  }
+}

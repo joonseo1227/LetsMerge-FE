@@ -14,6 +14,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyAccountNumberPage extends ConsumerWidget {
   MyAccountNumberPage({super.key});
+
   final User? user = Supabase.instance.client.auth.currentUser;
 
   @override
@@ -37,7 +38,7 @@ class MyAccountNumberPage extends ConsumerWidget {
                 children: [
                   ...accounts.map((account) {
                     final bankInfo = bankList.firstWhere(
-                          (bank) => bank.name == account.bankName,
+                      (bank) => bank.name == account.bankName,
                     );
 
                     return CInkWell(
@@ -64,7 +65,6 @@ class MyAccountNumberPage extends ConsumerWidget {
                       ),
                     );
                   }),
-
                   CInkWell(
                     onTap: () {
                       showDialog(
@@ -97,7 +97,7 @@ class MyAccountNumberPage extends ConsumerWidget {
                                   Navigator.of(context).push(
                                     CupertinoPageRoute(
                                       builder: (_) =>
-                                      const AddAccountNumberPage(),
+                                          const AddAccountNumberPage(),
                                     ),
                                   );
                                 },

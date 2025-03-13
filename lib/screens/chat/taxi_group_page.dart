@@ -14,7 +14,6 @@ import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
-import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/screens/chat/taxi_group_chat_widget.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
@@ -62,51 +61,49 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                 Expanded(
                   child: messages.isNotEmpty
                       ? ListView.builder(
-                        controller: _scrollController,
-                        reverse: true,
-                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                        itemCount: messages.length,
-                        itemBuilder: (context, index) =>
-                            _buildMessageItem(
-                              context,
-                              index,
-                              isDarkMode,
-                              message: messages[index],
-                            ),
-                      )
+                          controller: _scrollController,
+                          reverse: true,
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) => _buildMessageItem(
+                            context,
+                            index,
+                            isDarkMode,
+                            message: messages[index],
+                          ),
+                        )
                       : Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          '택시팟 멤버들과 대화해보세요!',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color:
-                            ThemeModel.highlightText(isDarkMode),
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Text(
+                                '택시팟 멤버들과 대화해보세요!',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: ThemeModel.highlightText(isDarkMode),
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: Text(
+                                  '아동, 청소년, 그리고 성인을 대상으로 한 성범죄, 전기통신 금융 사기, 불법 음란·도박 정보 유통 등 명백한 불법행위와 '
+                                  '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
+                                  '영구적으로 제한될 수 있습니다.',
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeModel.sub5(isDarkMode),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16.0),
-                          child: Text(
-                            '아동, 청소년, 그리고 성인을 대상으로 한 성범죄, 전기통신 금융 사기, 불법 음란·도박 정보 유통 등 명백한 불법행위와 '
-                                '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
-                                '영구적으로 제한될 수 있습니다.',
-                            textAlign: TextAlign.center,
-                            softWrap: true,
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub5(isDarkMode),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                 ),
                 // 메시지 입력 영역
                 _buildChatInput(isDarkMode),
@@ -229,8 +226,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
   }
 
-  Widget _buildMyMessage(
-      Chat message, String formattedTime, bool isDarkMode) {
+  Widget _buildMyMessage(Chat message, String formattedTime, bool isDarkMode) {
     final String messageType = message.messageType;
     switch (messageType) {
       case 'account':

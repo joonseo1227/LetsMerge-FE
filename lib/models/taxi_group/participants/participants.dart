@@ -12,5 +12,6 @@ class Participants with _$Participants {
     @JsonKey(name: 'created_at') required String createdAt,
   }) = _Participants;
 
-  factory Participants.fromJson(Map<String, dynamic> json) => _$ParticipantsFromJson(json);
+  factory Participants.fromJson(Map<String, dynamic> json) =>
+      _$ParticipantsFromJson(json);
 }

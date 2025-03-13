@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
-import 'package:letsmerge/models/userinfo/userinfo.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/provider/user_provider.dart';
@@ -13,7 +12,6 @@ import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
-import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -97,7 +95,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   } else {
                     return Text(userInfo.name, style: infoTextStyle);
                   }
-                } (),
+                }(),
               ),
               CListTile(
                 title: '닉네임',
@@ -126,7 +124,10 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             size: CButtonSize.extraLarge,
                             label: '저장',
                             onTap: () {
-                              ref.read(userProvider.notifier).updateUserNickname(context, ref, _nicknameController.text);
+                              ref
+                                  .read(userProvider.notifier)
+                                  .updateUserNickname(
+                                      context, ref, _nicknameController.text);
                               Navigator.pop(context);
                             },
                           ),
@@ -141,7 +142,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   } else {
                     return Text(userInfo.nickname, style: infoTextStyle);
                   }
-                } (),
+                }(),
               ),
               CListTile(
                 title: '이메일',
@@ -151,7 +152,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   } else {
                     return Text(userInfo.email, style: infoTextStyle);
                   }
-                } (),
+                }(),
               ),
               CListTile(
                 title: '렛츠머지와 함께한지',
@@ -166,7 +167,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   } catch (e) {
                     return Text('날짜 오류', style: infoTextStyle);
                   }
-                } (),
+                }(),
               ),
             ],
           ),

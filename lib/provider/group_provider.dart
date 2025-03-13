@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/models/taxi_group/participants/participants.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
@@ -174,10 +172,10 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
   }
 
   Future<T?> runWithErrorHandling<T>(
-      BuildContext context,
-      WidgetRef ref,
-      Future<T> Function() operation,
-      ) async {
+    BuildContext context,
+    WidgetRef ref,
+    Future<T> Function() operation,
+  ) async {
     try {
       return await operation();
     } on FormatException {

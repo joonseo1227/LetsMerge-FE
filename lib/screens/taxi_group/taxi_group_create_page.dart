@@ -34,7 +34,6 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   final _mapKey = UniqueKey();
   final TextEditingController _clothingController = TextEditingController();
   final GlobalKey<CPopupMenuState> popupMenuKey = GlobalKey<CPopupMenuState>();
-  final List<String> _clothingTags = [];
   int? selectedMemberCount;
   DateTime? selectedDateTime;
 

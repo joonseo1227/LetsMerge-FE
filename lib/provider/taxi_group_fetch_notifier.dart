@@ -1,5 +1,3 @@
-
-
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,8 +18,7 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
   void _watchTaxiGroup() {
     _subscription = _supabase
         .from('taxigroups')
-        .stream(primaryKey: ['group_id'])
-        .listen((data) {
+        .stream(primaryKey: ['group_id']).listen((data) {
       state = data.map((e) => TaxiGroup.fromJson(e)).toList();
     });
   }
@@ -49,8 +46,8 @@ class ParticipantsNotifier extends StateNotifier<List<Participants>> {
         .eq('group_id', taxiGroup.groupId!)
         .order('created_at', ascending: false)
         .listen((data) {
-      state = data.map((e) => Participants.fromJson(e)).toList();
-    });
+          state = data.map((e) => Participants.fromJson(e)).toList();
+        });
   }
 
   @override
@@ -76,8 +73,8 @@ class ChatMessagesNotifier extends StateNotifier<List<Chat>> {
         .eq('group_id', taxiGroup.groupId!)
         .order('created_at', ascending: false)
         .listen((data) {
-      state = data.map((e) => Chat.fromJson(e)).toList();
-    });
+          state = data.map((e) => Chat.fromJson(e)).toList();
+        });
   }
 
   @override
@@ -87,28 +84,27 @@ class ChatMessagesNotifier extends StateNotifier<List<Chat>> {
   }
 }
 
-
 final supabaseProvider = Provider((ref) => Supabase.instance.client);
 
 final taxiGroupsProvider =
-StateNotifierProvider.family<TaxiGroupNotifier, List<TaxiGroup>, String>(
-      (ref, userId) {
+    StateNotifierProvider.family<TaxiGroupNotifier, List<TaxiGroup>, String>(
+  (ref, userId) {
     final supabase = ref.watch(supabaseProvider);
     return TaxiGroupNotifier(supabase, userId);
   },
 );
 
-final participantsProvider =
-StateNotifierProvider.family<ParticipantsNotifier, List<Participants>, TaxiGroup>(
-      (ref, taxiGroup) {
+final participantsProvider = StateNotifierProvider.family<ParticipantsNotifier,
+    List<Participants>, TaxiGroup>(
+  (ref, taxiGroup) {
     final supabase = ref.watch(supabaseProvider);
     return ParticipantsNotifier(supabase, taxiGroup);
   },
 );
 
 final chatMessagesProvider =
-StateNotifierProvider.family<ChatMessagesNotifier, List<Chat>, TaxiGroup>(
-      (ref, taxiGroup) {
+    StateNotifierProvider.family<ChatMessagesNotifier, List<Chat>, TaxiGroup>(
+  (ref, taxiGroup) {
     final supabase = ref.watch(supabaseProvider);
     return ChatMessagesNotifier(supabase, taxiGroup);
   },

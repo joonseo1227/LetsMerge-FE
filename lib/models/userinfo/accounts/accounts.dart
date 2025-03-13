@@ -12,5 +12,6 @@ class Accounts with _$Accounts {
     @JsonKey(name: 'default') required bool isDefault,
   }) = _Accounts;
 
-  factory Accounts.fromJson(Map<String, dynamic> json) => _$AccountsFromJson(json);
+  factory Accounts.fromJson(Map<String, dynamic> json) =>
+      _$AccountsFromJson(json);
 }

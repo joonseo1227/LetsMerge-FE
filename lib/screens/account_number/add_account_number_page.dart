@@ -145,7 +145,8 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
                     return;
                   }
 
-                  userNotifier.insertUserAccount(context, ref, selectedBank.toString(), accountNumber, true);
+                  userNotifier.insertUserAccount(context, ref,
+                      selectedBank.toString(), accountNumber, true);
                   Navigator.pop(context);
                 },
                 size: CButtonSize.extraLarge,

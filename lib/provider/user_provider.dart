@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/models/userinfo/accounts/accounts.dart';
 import 'package:letsmerge/models/userinfo/userinfo.dart';
@@ -43,29 +42,28 @@ class UserNotifier extends StateNotifier<List<UserInfo>> {
     });
   }
 
-  Future<void> updateUserNickname(BuildContext context, WidgetRef ref, String nickname) =>
+  Future<void> updateUserNickname(
+          BuildContext context, WidgetRef ref, String nickname) =>
       _updateUserInfo(context, ref, 'nickname', nickname);
 
-  Future<void> updateUserProfileImg(BuildContext context, WidgetRef ref, String profileUrl) =>
+  Future<void> updateUserProfileImg(
+          BuildContext context, WidgetRef ref, String profileUrl) =>
       _updateUserInfo(context, ref, 'avatar_url', profileUrl);
 
-  Future<void> insertUserAccount(BuildContext context, WidgetRef ref, String bank, String account, bool isdefault) async {
+  Future<void> insertUserAccount(BuildContext context, WidgetRef ref,
+      String bank, String account, bool isdefault) async {
     if (user == null) {
       debugPrint('유저가 로그인되지 않았습니다.');
       return;
     }
 
     await runWithErrorHandling(context, ref, () async {
-      await _supabase
-          .from('accounts')
-          .insert(
-          {
-            'user_id': user!.id,
-            'bank': bank,
-            'account': account,
-            'default': isdefault
-          }
-      );
+      await _supabase.from('accounts').insert({
+        'user_id': user!.id,
+        'bank': bank,
+        'account': account,
+        'default': isdefault
+      });
 
       debugPrint('데이터 삽입 성공');
     });
@@ -89,13 +87,14 @@ class UserNotifier extends StateNotifier<List<UserInfo>> {
   }
 
   /// 특정 id의 닉네임을 가져오는 편의 메소드
-  Future<String?> getNicknameById(String userId) => getUserFieldById<String>(userId, 'nickname');
+  Future<String?> getNicknameById(String userId) =>
+      getUserFieldById<String>(userId, 'nickname');
 
   Future<T?> runWithErrorHandling<T>(
-      BuildContext context,
-      WidgetRef ref,
-      Future<T> Function() operation,
-      ) async {
+    BuildContext context,
+    WidgetRef ref,
+    Future<T> Function() operation,
+  ) async {
     try {
       return await operation();
     } on FormatException {
@@ -141,7 +140,6 @@ class UserNotifier extends StateNotifier<List<UserInfo>> {
   }
 }
 
-final userProvider =
-StateNotifierProvider<UserNotifier, List<UserInfo>>((ref) {
+final userProvider = StateNotifierProvider<UserNotifier, List<UserInfo>>((ref) {
   return UserNotifier();
 });

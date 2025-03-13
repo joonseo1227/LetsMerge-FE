@@ -236,7 +236,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                               padding: EdgeInsets.only(bottom: 16),
                               child: CInkWell(
                                 onTap: () {
-                                  if (group.remainingSeats == 0 ) {
+                                  if (group.remainingSeats == 0) {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
@@ -245,7 +245,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                           content: Text(
                                             '그룹 인원이 가득 찼어요.',
                                             style: TextStyle(
-                                              color: ThemeModel.text(isDarkMode),
+                                              color:
+                                                  ThemeModel.text(isDarkMode),
                                               fontSize: 16,
                                               fontWeight: FontWeight.w400,
                                             ),
@@ -267,8 +268,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                       CupertinoPageRoute(
                                         builder: (context) =>
                                             TaxiGroupPreviewPage(
-                                              taxiGroup: group,
-                                            ),
+                                          taxiGroup: group,
+                                        ),
                                       ),
                                     );
                                   }
