@@ -386,7 +386,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
         child: SafeArea(
           child: CButton(
             onTap: () {
-              if (_isParticipation==true && createdUser.userId == user!.id) {
+              if (_isParticipation==true || createdUser.userId == user!.id) {
                 Navigator.of(context).pushAndRemoveUntil(
                   CupertinoPageRoute(
                       builder: (context) =>
