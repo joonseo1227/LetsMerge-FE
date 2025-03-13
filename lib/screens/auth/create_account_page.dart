@@ -25,12 +25,14 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   final authService = AuthProvider();
 
   final _nameController = TextEditingController();
+  final _nicknameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
   final ValueNotifier<bool> _isButtonEnabled = ValueNotifier(false);
 
   String? _nameError;
+  String? _nicknameError;
   String? _emailError;
   String? _passwordError;
   String? _confirmPasswordError;
@@ -41,6 +43,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   void initState() {
     super.initState();
     _nameController.addListener(_updateButtonState);
+    _nicknameController.addListener(_updateButtonState);
     _emailController.addListener(_updateButtonState);
     _passwordController.addListener(_updateButtonState);
     _confirmPasswordController.addListener(_updateButtonState);
@@ -49,12 +52,14 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   // 버튼 활성화 상태 업데이트
   void _updateButtonState() {
     final isNameNotEmpty = _nameController.text.trim().isNotEmpty;
+    final isNicknameNotEmpty = _nicknameController.text.trim().isNotEmpty;
     final isEmailNotEmpty = _emailController.text.trim().isNotEmpty;
     final isPasswordNotEmpty = _passwordController.text.trim().isNotEmpty;
     final isConfirmPasswordNotEmpty =
         _confirmPasswordController.text.trim().isNotEmpty;
 
     _isButtonEnabled.value = isNameNotEmpty &&
+        isNicknameNotEmpty &&
         isEmailNotEmpty &&
         isPasswordNotEmpty &&
         isConfirmPasswordNotEmpty &&
@@ -65,6 +70,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
   void _clearError() {
     setState(() {
       _nameError = null;
+      _nicknameError = null;
       _emailError = null;
       _passwordError = null;
       _confirmPasswordError = null;
@@ -77,6 +83,10 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
 
     if (_nameController.text.isEmpty) {
       setState(() => _nameError = '이름을 입력하십시오.');
+      return false;
+    }
+    if (_nicknameController.text.isEmpty) {
+      setState(() => _nicknameError = '닉네임을 입력하십시오.');
       return false;
     }
     if (_emailController.text.isEmpty) {
@@ -98,6 +108,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
 
   Future<void> _signUp() async {
     final name = _nameController.text;
+    final nickname = _nicknameController.text;
     final email = _emailController.text;
     final password = _confirmPasswordController.text;
 
@@ -109,7 +120,7 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
 
     try {
       await authService.signUpWithEmailPassword(
-          email, password, name, "nickname");
+          email, password, name, nickname);
 
       if (!mounted) return;
       Navigator.pop(context);
@@ -148,6 +159,14 @@ class _CreateAccountPageState extends ConsumerState<CreateAccountPage> {
                   controller: _nameController,
                   errorText: _nameError,
                   hint: '홍길동',
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                CTextField(
+                  label: '닉네임',
+                  controller: _nicknameController,
+                  errorText: _nicknameError,
                 ),
                 const SizedBox(
                   height: 16,
