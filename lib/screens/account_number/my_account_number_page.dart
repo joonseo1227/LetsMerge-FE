@@ -3,21 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/bank_model.dart';
 import 'package:letsmerge/models/theme_model.dart';
-import 'package:letsmerge/provider/account_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/account_number/add_account_number_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MyAccountNumberPage extends ConsumerWidget {
-  const MyAccountNumberPage({super.key});
+  MyAccountNumberPage({super.key});
+  final User? user = Supabase.instance.client.auth.currentUser;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = ref.watch(themeProvider);
-    final accounts = ref.watch(userProvider)?.accounts ?? [];
+    final accounts = ref.watch(userAccountsProvider(user?.id ?? ''));
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +37,7 @@ class MyAccountNumberPage extends ConsumerWidget {
                 children: [
                   ...accounts.map((account) {
                     final bankInfo = bankList.firstWhere(
-                      (bank) => bank.name == account.bankName,
+                          (bank) => bank.name == account.bankName,
                     );
 
                     return CInkWell(
@@ -45,7 +47,7 @@ class MyAccountNumberPage extends ConsumerWidget {
                         child: Row(
                           children: [
                             Text(
-                              account.accountNumber,
+                              account.account,
                               style: TextStyle(
                                 color: ThemeModel.text(isDarkMode),
                                 fontSize: 18,
@@ -62,6 +64,7 @@ class MyAccountNumberPage extends ConsumerWidget {
                       ),
                     );
                   }),
+
                   CInkWell(
                     onTap: () {
                       showDialog(
@@ -94,7 +97,7 @@ class MyAccountNumberPage extends ConsumerWidget {
                                   Navigator.of(context).push(
                                     CupertinoPageRoute(
                                       builder: (_) =>
-                                          const AddAccountNumberPage(),
+                                      const AddAccountNumberPage(),
                                     ),
                                   );
                                 },

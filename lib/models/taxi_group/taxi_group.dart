@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'taxi_group.freezed.dart';
@@ -19,10 +17,7 @@ class TaxiGroup with _$TaxiGroup {
     @JsonKey(name: 'arrival_lat') required double arrivalLat,
     @JsonKey(name: 'arrival_lon') required double arrivalLon,
     @JsonKey(name: 'estimated_fare') required int? estimatedFare,
-    required int? seater,
     @JsonKey(name: 'departure_time') required DateTime? departureTime,
-    @JsonKey(name: 'host_clothes') required List<String> clothes,
-    required List<String> participants,
     @JsonKey(name: 'remaining_seats') required int remainingSeats,
   }) = _TaxiGroup;
 

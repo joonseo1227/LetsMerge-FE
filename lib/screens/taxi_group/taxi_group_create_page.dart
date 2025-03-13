@@ -177,10 +177,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       arrivalLat: destinationData.latitude,
       arrivalLon: destinationData.longitude,
       estimatedFare: taxiFare,
-      seater: selectedMemberCount,
       departureTime: selectedDateTime!,
-      clothes: _clothingTags,
-      participants: [],
       remainingSeats: selectedMemberCount!,
     );
 

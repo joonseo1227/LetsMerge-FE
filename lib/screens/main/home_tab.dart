@@ -6,13 +6,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
-import 'package:letsmerge/provider/group_provider.dart';
+import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/search/search_taxi_group_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_preview_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_select_place_page.dart';
+import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class HomeTab extends ConsumerStatefulWidget {
   const HomeTab({super.key});
@@ -22,26 +25,13 @@ class HomeTab extends ConsumerStatefulWidget {
 }
 
 class _HomeTabState extends ConsumerState<HomeTab> {
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      final notifier = ref.read(taxiGroupProvider.notifier);
-      notifier.fetchTaxiGroups();
-      notifier.initializeRealtimeSubscription();
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
+  final User? user = Supabase.instance.client.auth.currentUser;
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
     final selectedLocation = ref.watch(reverseGeocodingProvider);
-    final taxiGroups = ref.watch(taxiGroupProvider);
+    final taxiGroups = ref.watch(taxiGroupsProvider(user?.id ?? ''));
 
     return AnnotatedRegion(
       value: isDarkMode
@@ -246,14 +236,42 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                               padding: EdgeInsets.only(bottom: 16),
                               child: CInkWell(
                                 onTap: () {
-                                  Navigator.of(context).push(
-                                    CupertinoPageRoute(
-                                      builder: (context) =>
-                                          TaxiGroupPreviewPage(
-                                        taxiGroup: group,
+                                  if (group.remainingSeats == 0 ) {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return CDialog(
+                                          title: '안내',
+                                          content: Text(
+                                            '그룹 인원이 가득 찼어요.',
+                                            style: TextStyle(
+                                              color: ThemeModel.text(isDarkMode),
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                          buttons: [
+                                            CButton(
+                                              size: CButtonSize.extraLarge,
+                                              label: '확인',
+                                              onTap: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  } else {
+                                    Navigator.of(context).push(
+                                      CupertinoPageRoute(
+                                        builder: (context) =>
+                                            TaxiGroupPreviewPage(
+                                              taxiGroup: group,
+                                            ),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  }
                                 },
                                 child: TaxiGroupDetailCard(
                                   remainingSeats: group.remainingSeats,

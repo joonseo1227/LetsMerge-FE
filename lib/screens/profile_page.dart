@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/models/userinfo/userinfo.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ProfilePage extends ConsumerStatefulWidget {
   const ProfilePage({super.key});
@@ -19,16 +22,12 @@ class ProfilePage extends ConsumerStatefulWidget {
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final TextEditingController _nicknameController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  final User? user = Supabase.instance.client.auth.currentUser;
 
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-    final user = UserProvider();
+    final userInfo = ref.watch(userInfoProvider(user?.id ?? ''));
 
     final infoTextStyle = TextStyle(
       fontSize: 18,
@@ -55,10 +54,13 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               const SizedBox(height: 16),
               CListTile(
                 title: '이름',
-                trailing: Text(
-                  user.getUserName() ?? '',
-                  style: infoTextStyle,
-                ),
+                trailing: () {
+                  if (userInfo == null) {
+                    return Text('정보 없음', style: infoTextStyle);
+                  } else {
+                    return Text(userInfo.name, style: infoTextStyle);
+                  }
+                } (),
               ),
               CListTile(
                 title: '닉네임',
@@ -87,7 +89,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             size: CButtonSize.extraLarge,
                             label: '저장',
                             onTap: () {
-                              user.updateUserNickname(_nicknameController.text);
+                              ref.read(userProvider.notifier).updateUserNickname(context, ref, _nicknameController.text);
                               Navigator.pop(context);
                             },
                           ),
@@ -96,75 +98,38 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     },
                   );
                 },
-                trailing: FutureBuilder<String?>(
-                  future: user.getUserNickname(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                        width: 80,
-                        height: 20,
-                        child: CSkeleton(),
-                      );
-                    } else if (snapshot.hasError || !snapshot.hasData) {
-                      return Text('정보 없음', style: infoTextStyle);
-                    } else {
-                      return Text(
-                        snapshot.data ?? '정보 없음',
-                        style: infoTextStyle,
-                      );
-                    }
-                  },
-                ),
+                trailing: () {
+                  if (userInfo == null) {
+                    return Text('정보 없음', style: infoTextStyle);
+                  } else {
+                    return Text(userInfo.nickname, style: infoTextStyle);
+                  }
+                } (),
               ),
               CListTile(
                 title: '이메일',
-                trailing: FutureBuilder<String?>(
-                  future: user.getUserEmail(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                        width: 80,
-                        height: 20,
-                        child: CSkeleton(),
-                      );
-                    } else if (snapshot.hasError || !snapshot.hasData) {
-                      return Text('정보 없음', style: infoTextStyle);
-                    } else {
-                      return Text(
-                        snapshot.data ?? '정보 없음',
-                        style: infoTextStyle,
-                      );
-                    }
-                  },
-                ),
+                trailing: () {
+                  if (userInfo == null) {
+                    return Text('정보 없음', style: infoTextStyle);
+                  } else {
+                    return Text(userInfo.email, style: infoTextStyle);
+                  }
+                } (),
               ),
               CListTile(
                 title: '렛츠머지와 함께한지',
-                trailing: FutureBuilder<String?>(
-                  future: user.getUserCreatedAt(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return SizedBox(
-                        width: 80,
-                        height: 20,
-                        child: CSkeleton(),
-                      );
-                    } else if (snapshot.hasError ||
-                        !snapshot.hasData ||
-                        snapshot.data == null) {
-                      return Text('정보 없음', style: infoTextStyle);
-                    } else {
-                      try {
-                        DateTime createdDate = DateTime.parse(snapshot.data!);
-                        int days =
-                            DateTime.now().difference(createdDate).inDays;
-                        return Text('$days일', style: infoTextStyle);
-                      } catch (e) {
-                        return Text('날짜 오류', style: infoTextStyle);
-                      }
-                    }
-                  },
-                ),
+                trailing: () {
+                  if (userInfo == null) {
+                    return Text('정보 없음', style: infoTextStyle);
+                  }
+                  try {
+                    DateTime createdDate = DateTime.parse(userInfo.createdAt);
+                    int days = DateTime.now().difference(createdDate).inDays;
+                    return Text('$days일', style: infoTextStyle);
+                  } catch (e) {
+                    return Text('날짜 오류', style: infoTextStyle);
+                  }
+                } (),
               ),
             ],
           ),

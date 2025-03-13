@@ -3,9 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/bank_model.dart';
 import 'package:letsmerge/models/theme_model.dart';
-import 'package:letsmerge/models/user_model.dart';
-import 'package:letsmerge/provider/account_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_dropdown.dart';
@@ -60,6 +59,7 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
+    final userNotifier = ref.read(userProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -145,12 +145,7 @@ class _AddAccountNumberPageState extends ConsumerState<AddAccountNumberPage> {
                     return;
                   }
 
-                  ref.read(userProvider.notifier).addAccount(
-                        Account(
-                          accountNumber: accountController.text,
-                          bankName: selectedBank!.name,
-                        ),
-                      );
+                  userNotifier.insertUserAccount(context, ref, selectedBank.toString(), accountNumber, true);
                   Navigator.pop(context);
                 },
                 size: CButtonSize.extraLarge,

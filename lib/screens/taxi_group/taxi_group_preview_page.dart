@@ -9,7 +9,9 @@ import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/directions_provider.dart';
 import 'package:letsmerge/provider/group_provider.dart';
+import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/chat/taxi_group_page.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
@@ -17,6 +19,7 @@ import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TaxiGroupPreviewPage extends ConsumerStatefulWidget {
   final TaxiGroup taxiGroup;
@@ -32,9 +35,11 @@ class TaxiGroupPreviewPage extends ConsumerStatefulWidget {
 }
 
 class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
+  final User? user = Supabase.instance.client.auth.currentUser;
   NaverMapController? _mapController;
   Position? _currentPosition;
   bool _showSkeleton = true;
+  bool _isParticipation = false;
   final _mapKey = UniqueKey();
 
   @override
@@ -164,7 +169,8 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-    final taxiGroup = ref.watch(taxiGroupProvider);
+    final participants = ref.watch(participantsProvider(widget.taxiGroup));
+    final createdUser = ref.watch(userInfoProvider(widget.taxiGroup.creatorUserId ?? ""));
 
     return Scaffold(
       appBar: AppBar(
@@ -209,7 +215,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
 
                 /// 기본 정보
                 TaxiGroupDetailCard(
-                  remainingSeats: 3,
+                  remainingSeats: widget.taxiGroup.remainingSeats,
                   departurePlace: widget.taxiGroup.departurePlace,
                   departureAdress: widget.taxiGroup.departureAddress,
                   arrivalPlace: widget.taxiGroup.arrivalPlace,
@@ -221,7 +227,6 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                   height: 16,
                 ),
 
-                /// 참여자 정보
                 Container(
                   color: ThemeModel.surface(isDarkMode),
                   width: double.maxFinite,
@@ -230,21 +235,21 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              color: blue20,
-                              shape: CircleBorder(),
-                            ),
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: ShapeDecoration(
+                            color: blue20,
+                            shape: CircleBorder(),
                           ),
+                        ),
                           SizedBox(
                             width: 12,
                           ),
                           Text(
-                            '홍길동',
+                            createdUser.nickname,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -277,100 +282,61 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              color: blue20,
-                              shape: CircleBorder(),
+                      if (participants.isNotEmpty)
+                        SizedBox(
+                          height: 16,
+                        ),
+                      /// 참여자 정보
+                      ...participants.map((participant) {
+                        final userinfo = ref.watch(userInfoProvider(participant.userId));
+                        if (widget.taxiGroup.creatorUserId == user!.id || participant.userId == user!.id) {
+                          _isParticipation = true;
+                        }
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: ShapeDecoration(
+                                color: blue20,
+                                shape: CircleBorder(),
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            width: 12,
-                          ),
-                          Text(
-                            '홍길자',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.text(isDarkMode),
+                            SizedBox(
+                              width: 12,
                             ),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.star,
-                            size: 16,
-                            color: ThemeModel.sub2(isDarkMode),
-                          ),
-                          SizedBox(
-                            width: 4,
-                          ),
-                          Text(
-                            '4.5/5.0',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub4(isDarkMode),
+                            Text(
+                              userinfo.nickname,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: ThemeModel.text(isDarkMode),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 16,
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              color: blue20,
-                              shape: CircleBorder(),
+                            SizedBox(
+                              width: 8,
                             ),
-                          ),
-                          SizedBox(
-                            width: 12,
-                          ),
-                          Text(
-                            '홍동',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.text(isDarkMode),
+                            Spacer(),
+                            Icon(
+                              Icons.star,
+                              size: 16,
+                              color: ThemeModel.sub2(isDarkMode),
                             ),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.star,
-                            size: 16,
-                            color: ThemeModel.sub2(isDarkMode),
-                          ),
-                          SizedBox(
-                            width: 4,
-                          ),
-                          Text(
-                            '4.5/5.0',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub4(isDarkMode),
+                            SizedBox(
+                              width: 4,
                             ),
-                          ),
-                        ],
-                      ),
+                            Text(
+                              '4.5/5.0',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: ThemeModel.sub4(isDarkMode),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
                     ],
                   ),
                 ),
@@ -420,17 +386,29 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
         child: SafeArea(
           child: CButton(
             onTap: () {
-              ref.read(taxiGroupProvider.notifier).joinGroup(widget.taxiGroup);
-
-              Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(
-                    builder: (context) =>
-                        TaxiGroupPage(taxiGroup: widget.taxiGroup)),
-                (Route<dynamic> route) => false,
-              );
+              if (_isParticipation==true) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  CupertinoPageRoute(
+                      builder: (context) =>
+                          TaxiGroupPage(taxiGroup: widget.taxiGroup)),
+                      (Route<dynamic> route) => false,
+                );
+              } else if (_isParticipation==false && widget.taxiGroup.remainingSeats > 0) {
+                try {
+                  ref.read(taxiGroupProvider.notifier).joinGroup(widget.taxiGroup);
+                  Navigator.of(context).pushAndRemoveUntil(
+                    CupertinoPageRoute(
+                        builder: (context) =>
+                            TaxiGroupPage(taxiGroup: widget.taxiGroup)),
+                        (Route<dynamic> route) => false,
+                  );
+                } catch (e) {
+                  debugPrint("$e");
+                }
+              }
             },
             size: CButtonSize.extraLarge,
-            label: '참여 신청',
+            label: _isParticipation ? "채팅 입장" : "참여 신청",
             icon: Icons.navigate_next,
             width: double.maxFinite,
           ),
