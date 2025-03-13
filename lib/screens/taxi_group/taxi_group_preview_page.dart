@@ -9,7 +9,9 @@ import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/directions_provider.dart';
 import 'package:letsmerge/provider/group_provider.dart';
+import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/chat/taxi_group_page.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
@@ -17,6 +19,7 @@ import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TaxiGroupPreviewPage extends ConsumerStatefulWidget {
   final TaxiGroup taxiGroup;
@@ -32,9 +35,12 @@ class TaxiGroupPreviewPage extends ConsumerStatefulWidget {
 }
 
 class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
+  final User? user = Supabase.instance.client.auth.currentUser;
   NaverMapController? _mapController;
   Position? _currentPosition;
   bool _showSkeleton = true;
+  bool _isParticipation = false;
+  // final _mapKey = UniqueKey();
   final _mapKey = const ValueKey('naverMap');
 
   @override
@@ -166,9 +172,11 @@ void _addPolylineOverlay() async {
   }
 }
 
-@override
-Widget build(BuildContext context) {
-  final isDarkMode = ref.watch(themeProvider);
+  @override
+  Widget build(BuildContext context) {
+    final isDarkMode = ref.watch(themeProvider);
+    final participants = ref.watch(participantsProvider(widget.taxiGroup));
+    final createdUser = ref.watch(userInfoProvider(widget.taxiGroup.creatorUserId ?? ""));
 
   return Scaffold(
     appBar: AppBar(
@@ -207,149 +215,131 @@ Widget build(BuildContext context) {
 
               const SizedBox(height: 16),
 
-              /// 기본 정보
-              TaxiGroupDetailCard(
-                remainingSeats: 3,
-                departurePlace: widget.taxiGroup.departurePlace,
-                departureAdress: widget.taxiGroup.departureAddress,
-                arrivalPlace: widget.taxiGroup.arrivalPlace,
-                arrivalAddress: widget.taxiGroup.arrivalAddress,
-                startTime: widget.taxiGroup.departureTime!,
-              ),
+                /// 기본 정보
+                TaxiGroupDetailCard(
+                  remainingSeats: widget.taxiGroup.remainingSeats,
+                  departurePlace: widget.taxiGroup.departurePlace,
+                  departureAdress: widget.taxiGroup.departureAddress,
+                  arrivalPlace: widget.taxiGroup.arrivalPlace,
+                  arrivalAddress: widget.taxiGroup.arrivalAddress,
+                  startTime: widget.taxiGroup.departureTime!,
+                ),
 
               const SizedBox(height: 16),
 
-              /// 참여자 정보
-              Container(
-                color: ThemeModel.surface(isDarkMode),
-                width: double.maxFinite,
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
+                Container(
+                  color: ThemeModel.surface(isDarkMode),
+                  width: double.maxFinite,
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           width: 40,
                           height: 40,
-                          decoration: const ShapeDecoration(
+                          decoration: ShapeDecoration(
                             color: blue20,
                             shape: CircleBorder(),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        Text(
-                          '홍길동',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.text(isDarkMode),
+                          SizedBox(
+                            width: 12,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        CTag(
-                          text: '대표',
-                          color: TagColor.blue,
-                        ),
-                        const Spacer(),
-                        Icon(
-                          Icons.star,
-                          size: 16,
-                          color: ThemeModel.sub2(isDarkMode),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '4.5/5.0',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.sub4(isDarkMode),
+                          Text(
+                            createdUser.nickname,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: ThemeModel.text(isDarkMode),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: const ShapeDecoration(
-                            color: blue20,
-                            shape: CircleBorder(),
+                          SizedBox(
+                            width: 8,
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          '홍길자',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.text(isDarkMode),
+                          CTag(
+                            text: '대표',
+                            color: TagColor.blue,
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Spacer(),
-                        Icon(
-                          Icons.star,
-                          size: 16,
-                          color: ThemeModel.sub2(isDarkMode),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '4.5/5.0',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.sub4(isDarkMode),
+                          Spacer(),
+                          Icon(
+                            Icons.star,
+                            size: 16,
+                            color: ThemeModel.sub2(isDarkMode),
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: const ShapeDecoration(
-                            color: blue20,
-                            shape: CircleBorder(),
+                          SizedBox(
+                            width: 4,
                           ),
-                        ),
-                        const SizedBox(width: 12),
-                        Text(
-                          '홍동',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.text(isDarkMode),
+                          Text(
+                            '4.5/5.0',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: ThemeModel.sub4(isDarkMode),
+                            ),
                           ),
+                        ],
+                      ),
+                      if (participants.isNotEmpty)
+                        SizedBox(
+                          height: 16,
                         ),
-                        const SizedBox(width: 8),
-                        const Spacer(),
-                        Icon(
-                          Icons.star,
-                          size: 16,
-                          color: ThemeModel.sub2(isDarkMode),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          '4.5/5.0',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: ThemeModel.sub4(isDarkMode),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                      /// 참여자 정보
+                      ...participants.map((participant) {
+                        final userinfo = ref.watch(userInfoProvider(participant.userId));
+                        if (widget.taxiGroup.creatorUserId == user!.id || participant.userId == user!.id) {
+                          _isParticipation = true;
+                        }
+                        return Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 40,
+                              height: 40,
+                              decoration: ShapeDecoration(
+                                color: blue20,
+                                shape: CircleBorder(),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 12,
+                            ),
+                            Text(
+                              userinfo.nickname,
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: ThemeModel.text(isDarkMode),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 8,
+                            ),
+                            Spacer(),
+                            Icon(
+                              Icons.star,
+                              size: 16,
+                              color: ThemeModel.sub2(isDarkMode),
+                            ),
+                            SizedBox(
+                              width: 4,
+                            ),
+                            Text(
+                              '4.5/5.0',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: ThemeModel.sub4(isDarkMode),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    ],
+                  ),
                 ),
-              ),
 
               const SizedBox(height: 16),
 

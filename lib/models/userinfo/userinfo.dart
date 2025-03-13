@@ -1,18 +1,19 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'user.freezed.dart';
-part 'user.g.dart';
+part 'userinfo.freezed.dart';
+part 'userinfo.g.dart';
 
 @freezed
-class User with _$User {
-  const factory User({
+class UserInfo with _$UserInfo {
+  const factory UserInfo({
     @JsonKey(name: 'id') required String userId,
     @JsonKey(name: 'email') required String email,
     @JsonKey(name: 'name') required String name,
     @JsonKey(name: 'nickname') required String nickname,
-    @JsonKey(name: 'avatar_url') required String avatarUrl,
+    @JsonKey(name: 'avatar_url') required String? avatarUrl,
     @JsonKey(name: 'created_at') required String createdAt,
-  }) = _User;
+  }) = _UserInfo;
 
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  factory UserInfo.fromJson(Map<String, dynamic> json) => _$UserInfoFromJson(json);
 }
+

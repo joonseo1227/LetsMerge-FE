@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/screens/dev/button_gallery_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_request_money_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
@@ -240,7 +241,6 @@ class TaxiGroupListScreen extends ConsumerWidget {
           CButton(
             onTap: () {
               // 데이터 새로고침
-              ref.read(taxiGroupProvider.notifier).fetchTaxiGroups();
             },
             label: '새로고침',
           ),

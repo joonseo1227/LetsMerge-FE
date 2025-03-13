@@ -48,7 +48,7 @@ class AuthProvider {
         await _supabase.auth.signOut();
       }
     } catch (e) {
-      debugPrint("error: delete a user failure");
+      debugPrint("error: delete a userinfo failure");
       debugPrint("$e");
     }
   }

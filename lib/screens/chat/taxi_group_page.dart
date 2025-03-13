@@ -7,10 +7,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/location_model.dart';
+import 'package:letsmerge/models/taxi_group/chats/chat.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/group_provider.dart';
+import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/screens/chat/taxi_group_chat_widget.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
@@ -46,7 +49,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-    final taxiGroupNotifier = ref.read(taxiGroupProvider.notifier);
+    final messages = ref.watch(chatMessagesProvider(widget.taxiGroup));
 
     return Hero(
       tag: 'taxiGroup',
@@ -57,71 +60,52 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
             return Column(
               children: [
                 Expanded(
-                  child: StreamBuilder<List<Map<String, dynamic>>>(
-                    stream:
-                        taxiGroupNotifier.chatMessagesStream(widget.taxiGroup),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
-                      }
-                      if (!snapshot.hasData) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-                      final messages = snapshot.data!;
-                      debugPrint('${snapshot.data}');
-                      return messages.isNotEmpty
-                          ? Align(
-                              alignment: Alignment.topCenter,
-                              child: ListView.builder(
-                                controller: _scrollController,
-                                reverse: true,
-                                shrinkWrap: true,
-                                padding:
-                                    const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                                itemCount: messages.length,
-                                itemBuilder: (context, index) =>
-                                    _buildMessageItem(
-                                  context,
-                                  index,
-                                  isDarkMode,
-                                  message: messages[index],
-                                ),
-                              ),
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: Column(
-                                children: [
-                                  Text(
-                                    '택시팟 멤버들과 대화해보세요!',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      color:
-                                          ThemeModel.highlightText(isDarkMode),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16.0),
-                                    child: Text(
-                                      '아동, 청소년, 그리고 성인을 대상으로 한 성범죄, 전기통신 금융 사기, 불법 음란·도박 정보 유통 등 명백한 불법행위와 '
-                                      '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
-                                      '영구적으로 제한될 수 있습니다.',
-                                      textAlign: TextAlign.center,
-                                      softWrap: true,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: ThemeModel.sub5(isDarkMode),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                    },
+                  child: messages.isNotEmpty
+                      ? ListView.builder(
+                        controller: _scrollController,
+                        reverse: true,
+                        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                        itemCount: messages.length,
+                        itemBuilder: (context, index) =>
+                            _buildMessageItem(
+                              context,
+                              index,
+                              isDarkMode,
+                              message: messages[index],
+                            ),
+                      )
+                      : Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          '택시팟 멤버들과 대화해보세요!',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color:
+                            ThemeModel.highlightText(isDarkMode),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0),
+                          child: Text(
+                            '아동, 청소년, 그리고 성인을 대상으로 한 성범죄, 전기통신 금융 사기, 불법 음란·도박 정보 유통 등 명백한 불법행위와 '
+                                '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
+                                '영구적으로 제한될 수 있습니다.',
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: ThemeModel.sub5(isDarkMode),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 // 메시지 입력 영역
@@ -228,10 +212,10 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   }
 
   Widget _buildMessageItem(BuildContext context, int index, bool isDarkMode,
-      {required Map<String, dynamic> message}) {
-    final bool isUser = message['sender_id'] == user!.id;
+      {required Chat message}) {
+    final bool isUser = message.senderId == user!.id;
     debugPrint('$isUser');
-    final DateTime createdAt = DateTime.parse(message['created_at']);
+    final DateTime createdAt = DateTime.parse(message.createdAt);
     final String formattedTime =
         DateFormat('a hh:mm', 'ko_KR').format(createdAt);
     return Padding(
@@ -246,8 +230,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   }
 
   Widget _buildMyMessage(
-      Map<String, dynamic> message, String formattedTime, bool isDarkMode) {
-    final String messageType = message['message_type'] ?? 'text';
+      Chat message, String formattedTime, bool isDarkMode) {
+    final String messageType = message.messageType;
     switch (messageType) {
       case 'account':
         return MyMessage(
@@ -260,7 +244,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
           content: LocationMessage(
             locationModel: LocationModel.fromJson(
               json.decode(
-                message['content']!,
+                message.content,
               ),
             ),
           ),
@@ -269,51 +253,46 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
         return MyMessage(
           formattedTime: formattedTime,
           content: TextMessage(
-            content: message['content']!,
+            content: message.content,
           ),
         );
     }
   }
 
   Widget _buildOtherMessage(
-      Map<String, dynamic> message, String formattedTime, bool isDarkMode) {
-    final String messageType = message['message_type'] ?? 'text';
+      Chat message, String formattedTime, bool isDarkMode) {
+    final String messageType = message.messageType;
+    final senderUser = ref.watch(userInfoProvider(message.senderId));
+    final senderNickname = senderUser!.nickname;
 
-    return FutureBuilder<String?>(
-      future: UserProvider().getNicknameById(message['sender_id']),
-      builder: (context, snapshot) {
-        final senderNickname = snapshot.data ?? '알 수 없는 사용자';
-
-        switch (messageType) {
-          case 'account':
-            return OtherMessage(
-              senderNickname: senderNickname,
-              formattedTime: formattedTime,
-              content: RequestMoneyMessage(),
-            );
-          case 'location':
-            return OtherMessage(
-              senderNickname: senderNickname,
-              formattedTime: formattedTime,
-              content: LocationMessage(
-                locationModel: LocationModel.fromJson(
-                  json.decode(
-                    message['content']!,
-                  ),
-                ),
+    switch (messageType) {
+      case 'account':
+        return OtherMessage(
+          senderNickname: senderNickname,
+          formattedTime: formattedTime,
+          content: RequestMoneyMessage(),
+        );
+      case 'location':
+        return OtherMessage(
+          senderNickname: senderNickname,
+          formattedTime: formattedTime,
+          content: LocationMessage(
+            locationModel: LocationModel.fromJson(
+              json.decode(
+                message.content,
               ),
-            );
-          default:
-            return OtherMessage(
-              senderNickname: senderNickname,
-              formattedTime: formattedTime,
-              content: TextMessage(
-                content: message['content']!,
-              ),
-            );
-        }
-      },
-    );
+            ),
+          ),
+        );
+      default:
+        return OtherMessage(
+          senderNickname: senderNickname,
+          formattedTime: formattedTime,
+          content: TextMessage(
+            content: message.content,
+          ),
+        );
+    }
   }
 
   Widget _buildChatInput(bool isDarkMode) {

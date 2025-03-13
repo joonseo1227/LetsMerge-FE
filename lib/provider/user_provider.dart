@@ -1,80 +1,75 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:letsmerge/models/taxi_group/taxi_group.dart';
+import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/models/userinfo/accounts/accounts.dart';
+import 'package:letsmerge/models/userinfo/userinfo.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class UserProvider {
+class UserNotifier extends StateNotifier<List<UserInfo>> {
+  UserNotifier() : super([]);
   final SupabaseClient _supabase = Supabase.instance.client;
+  final User? user = Supabase.instance.client.auth.currentUser;
 
-  /// 지정한 필드의 데이터를 가져오는 공통 함수
-  Future<T?> _getUserField<T>(String field) async {
-    final User? user = _supabase.auth.currentUser;
-
-    if (user == null) {
-      debugPrint('유저가 로그인되지 않았습니다.');
-      return null;
-    }
-
-    try {
-      final response = await _supabase
-          .from('userinfo')
-          .select(field)
-          .eq('id', user.id)
-          .maybeSingle();
-
-      debugPrint('데이터 가져오기 성공: $response');
-
-      return response?[field] as T?;
-    } catch (error) {
-      debugPrint('데이터 가져오기 실패: $error');
-      return null;
-    }
+  Stream<List<Accounts>> watchUserAccounts() {
+    return Supabase.instance.client
+        .from('accounts')
+        .stream(primaryKey: ['id'])
+        .eq('user_id', user!.id)
+        .map((data) => data.map((e) => Accounts.fromJson(e)).toList());
   }
 
-  /// 이메일을 가져오는 함수
-  Future<String?> getUserEmail() => _getUserField<String>('email');
-
-  /// 이름을 가져오는 함수
-  String? getUserName() {
-    final User? user = _supabase.auth.currentUser;
-    return user?.userMetadata?['name'];
-  }
-
-  /// 닉네임을 가져오는 함수
-  Future<String?> getUserNickname() => _getUserField<String>('nickname');
-
-  /// 계정 생성 날짜를 가져오는 함수
-  Future<String?> getUserCreatedAt() => _getUserField<String>('created_at');
-
-  /// 프로필 이미지 URL을 가져오는 함수
-  Future<String?> getUserProfileImageUrl() =>
-      _getUserField<String>('avatar_url');
-
-  Future<void> _updateUserField(String field, String data) async {
-    final User? user = _supabase.auth.currentUser;
-
+  Future<void> _updateUserInfo(
+      BuildContext context, WidgetRef ref, String field, String data) async {
     if (user == null) {
       debugPrint('유저가 로그인되지 않았습니다.');
       return;
     }
 
-    try {
+    await runWithErrorHandling(context, ref, () async {
       await _supabase
           .from('userinfo')
-          .update({field: data})
-          .eq('id', user.id)
+          .upsert({field: data})
+          .eq('id', user!.id)
           .maybeSingle();
 
       debugPrint('데이터 업데이트 성공: {$field: $data}');
-    } catch (error) {
-      debugPrint('데이터 업데이트 실패: $error');
-      return;
-    }
+    });
   }
 
-  Future<void> updateUserNickname(String nickname) =>
-      _updateUserField('nickname', nickname);
+  Future<void> updateUserNickname(BuildContext context, WidgetRef ref, String nickname) =>
+      _updateUserInfo(context, ref, 'nickname', nickname);
 
-  Future<void> updateUserProfileImg(String profileUrl) =>
-      _updateUserField('avatar_url', profileUrl);
+  Future<void> updateUserProfileImg(BuildContext context, WidgetRef ref, String profileUrl) =>
+      _updateUserInfo(context, ref, 'avatar_url', profileUrl);
+
+  Future<void> insertUserAccount(BuildContext context, WidgetRef ref, String bank, String account, bool isdefault) async {
+    if (user == null) {
+      debugPrint('유저가 로그인되지 않았습니다.');
+      return;
+    }
+
+    await runWithErrorHandling(context, ref, () async {
+      await _supabase
+          .from('accounts')
+          .insert(
+          {
+            'user_id': user!.id,
+            'bank': bank,
+            'account': account,
+            'default': isdefault
+          }
+      );
+
+      debugPrint('데이터 삽입 성공');
+    });
+  }
 
   /// user id로 특정 사용자 정보를 가져오는 함수
   Future<T?> getUserFieldById<T>(String userId, String field) async {
@@ -94,6 +89,59 @@ class UserProvider {
   }
 
   /// 특정 id의 닉네임을 가져오는 편의 메소드
-  Future<String?> getNicknameById(String userId) =>
-      getUserFieldById<String>(userId, 'nickname');
+  Future<String?> getNicknameById(String userId) => getUserFieldById<String>(userId, 'nickname');
+
+  Future<T?> runWithErrorHandling<T>(
+      BuildContext context,
+      WidgetRef ref,
+      Future<T> Function() operation,
+      ) async {
+    try {
+      return await operation();
+    } on FormatException {
+      alertDialog(context, ref, "데이터 형식 오류");
+    } on SocketException {
+      alertDialog(context, ref, "네트워크 연결 상태를 확인하세요.");
+    } on PostgrestException catch (e) {
+      alertDialog(context, ref, "데이터 처리 오류: ${e.message}");
+    } on Exception catch (e) {
+      alertDialog(context, ref, "알 수 없는 오류가 발생했습니다: $e");
+    }
+    return null;
+  }
+
+  void alertDialog(BuildContext context, WidgetRef ref, String content) {
+    final isDarkMode = ref.watch(themeProvider);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CDialog(
+          title: '에러',
+          content: Text(
+            content,
+            style: TextStyle(
+              color: ThemeModel.text(isDarkMode),
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          buttons: [
+            CButton(
+              size: CButtonSize.extraLarge,
+              label: '확인',
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+
+final userProvider =
+StateNotifierProvider<UserNotifier, List<UserInfo>>((ref) {
+  return UserNotifier();
+});
