@@ -289,7 +289,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                       /// 참여자 정보
                       ...participants.map((participant) {
                         final userinfo = ref.watch(userInfoProvider(participant.userId));
-                        if (widget.taxiGroup.creatorUserId == user!.id || participant.userId == user!.id) {
+                        if (widget.taxiGroup.creatorUserId == user!.id || userinfo.userId == user!.id) {
                           _isParticipation = true;
                         }
                         return Row(
@@ -386,7 +386,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
         child: SafeArea(
           child: CButton(
             onTap: () {
-              if (_isParticipation==true) {
+              if (_isParticipation==true && createdUser.userId == user!.id) {
                 Navigator.of(context).pushAndRemoveUntil(
                   CupertinoPageRoute(
                       builder: (context) =>
