@@ -4,10 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
-import 'package:letsmerge/models/userinfo/userinfo.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
-import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/screens/account_number/my_account_number_page.dart';
 import 'package:letsmerge/screens/customer_support/customer_support_page.dart';
 import 'package:letsmerge/screens/dev/dev_page.dart';
@@ -83,7 +81,7 @@ class _AllTabState extends ConsumerState<AllTab> {
                         shape: CircleBorder(),
                       ),
                     ),
-                    title: userInfo?.nickname ?? '사용자 이름 없음',
+                    title: userInfo.nickname ?? '사용자 이름 없음',
                     onTap: () {
                       Navigator.of(context).push(
                         CupertinoPageRoute(

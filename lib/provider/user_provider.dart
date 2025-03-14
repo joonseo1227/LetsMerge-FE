@@ -3,9 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
-import 'package:letsmerge/models/userinfo/accounts/accounts.dart';
 import 'package:letsmerge/models/userinfo/userinfo.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
@@ -17,14 +15,6 @@ class UserNotifier extends StateNotifier<List<UserInfo>> {
   final SupabaseClient _supabase = Supabase.instance.client;
   final User? user = Supabase.instance.client.auth.currentUser;
 
-  Stream<List<Accounts>> watchUserAccounts() {
-    return Supabase.instance.client
-        .from('accounts')
-        .stream(primaryKey: ['id'])
-        .eq('user_id', user!.id)
-        .map((data) => data.map((e) => Accounts.fromJson(e)).toList());
-  }
-
   Future<void> _updateUserInfo(
       BuildContext context, WidgetRef ref, String field, String data) async {
     if (user == null) {
@@ -32,12 +22,14 @@ class UserNotifier extends StateNotifier<List<UserInfo>> {
       return;
     }
 
-    await runWithErrorHandling(context, ref, () async {
+    runWithErrorHandling(context, ref, () async {
       await _supabase
           .from('userinfo')
-          .upsert({field: data})
-          .eq('id', user!.id)
-          .maybeSingle();
+          .upsert({
+            'id': user!.id,
+            field: data
+          })
+          .single();
 
       debugPrint('데이터 업데이트 성공: {$field: $data}');
     });
@@ -71,26 +63,6 @@ class UserNotifier extends StateNotifier<List<UserInfo>> {
     });
   }
 
-  /// user id로 특정 사용자 정보를 가져오는 함수
-  Future<T?> getUserFieldById<T>(String userId, String field) async {
-    try {
-      final response = await _supabase
-          .from('userinfo')
-          .select(field)
-          .eq('id', userId)
-          .maybeSingle();
-
-      debugPrint('데이터 가져오기 성공: $response');
-      return response?[field] as T?;
-    } catch (error) {
-      debugPrint('데이터 가져오기 실패: $error');
-      return null;
-    }
-  }
-
-  /// 특정 id의 닉네임을 가져오는 편의 메소드
-  Future<String?> getNicknameById(String userId) => getUserFieldById<String>(userId, 'nickname');
-
   Future<T?> runWithErrorHandling<T>(
       BuildContext context,
       WidgetRef ref,
@@ -104,6 +76,8 @@ class UserNotifier extends StateNotifier<List<UserInfo>> {
       alertDialog(context, ref, "네트워크 연결 상태를 확인하세요.");
     } on PostgrestException catch (e) {
       alertDialog(context, ref, "데이터 처리 오류: ${e.message}");
+      debugPrint("$e");
+      debugPrint(user!.id);
     } on Exception catch (e) {
       alertDialog(context, ref, "알 수 없는 오류가 발생했습니다: $e");
     }

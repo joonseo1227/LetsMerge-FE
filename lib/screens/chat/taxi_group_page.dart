@@ -14,7 +14,6 @@ import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
-import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/screens/chat/taxi_group_chat_widget.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
@@ -263,7 +262,10 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       Chat message, String formattedTime, bool isDarkMode) {
     final String messageType = message.messageType;
     final senderUser = ref.watch(userInfoProvider(message.senderId));
-    final senderNickname = senderUser!.nickname;
+    final senderNickname = senderUser.nickname!;
+    if (senderNickname == null) {
+
+    }
 
     switch (messageType) {
       case 'account':

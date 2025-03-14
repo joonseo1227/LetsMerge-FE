@@ -249,7 +249,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                             width: 12,
                           ),
                           Text(
-                            createdUser.nickname,
+                            createdUser.nickname!,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -307,7 +307,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                               width: 12,
                             ),
                             Text(
-                              userinfo.nickname,
+                              userinfo.nickname!,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -408,7 +408,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
               }
             },
             size: CButtonSize.extraLarge,
-            label: _isParticipation ? "채팅 입장" : "참여 신청",
+            label: _isParticipation || createdUser.userId == user!.id ? "참여 신청" : "채팅 입장",
             icon: Icons.navigate_next,
             width: double.maxFinite,
           ),

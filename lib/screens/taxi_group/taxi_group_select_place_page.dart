@@ -172,7 +172,6 @@ class _TaxiGroupSelectPlacePageState
 
   void _showPlaceBottomSheet() async {
     final isDarkMode = ref.read(themeProvider);
-    final taxiGroup = ref.read(taxiGroupProvider);
 
     NCameraPosition cameraPosition = await _mapController!.getCameraPosition();
 
