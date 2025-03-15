@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +10,6 @@ import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/chat/taxi_group_chat_widget.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
@@ -274,8 +272,9 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   Widget _buildOtherMessage(
       Chat message, String formattedTime, bool isDarkMode) {
     final String messageType = message.messageType;
-    final senderUser = ref.watch(userInfoProvider(message.senderId));
-    final senderNickname = senderUser.nickname!;
+    final Map<String, dynamic>? userinfo = message.userinfo;
+    final String senderNickname = userinfo?['nickname'] ?? '알 수 없음';
+
     switch (messageType) {
       case 'account':
         return OtherMessage(
