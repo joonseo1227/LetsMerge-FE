@@ -11,7 +11,6 @@ import 'package:letsmerge/models/taxi_group/chats/chat.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/group_provider.dart';
-import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/chat/taxi_group_chat_widget.dart';
@@ -46,9 +45,16 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   final ScrollController _scrollController = ScrollController();
 
   @override
+  void dispose() {
+    _chatController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-    final messages = ref.watch(chatMessagesProvider(widget.taxiGroup));
+    final messagesAsync = ref.watch(chatMessagesProvider(widget.taxiGroup));
 
     return Hero(
       tag: 'taxiGroup',
@@ -59,8 +65,10 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
             return Column(
               children: [
                 Expanded(
-                  child: messages.isNotEmpty
-                      ? Align(
+                  child: messagesAsync.when(
+                    data: (messages) {
+                      if (messages.isNotEmpty) {
+                        return Align(
                           alignment: Alignment.topCenter,
                           child: ListView.builder(
                             controller: _scrollController,
@@ -75,10 +83,12 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                               message: messages[index],
                             ),
                           ),
-                        )
-                      : Padding(
+                        );
+                      } else {
+                        return Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Text(
                                 '택시팟 멤버들과 대화해보세요!',
@@ -90,13 +100,11 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                               ),
                               const SizedBox(height: 10),
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Text(
                                   '아동, 청소년, 그리고 성인을 대상으로 한 성범죄, 전기통신 금융 사기, 불법 음란·도박 정보 유통 등 명백한 불법행위와 '
-                                  '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
-                                  '영구적으로 제한될 수 있습니다.',
+                                      '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
+                                      '영구적으로 제한될 수 있습니다.',
                                   textAlign: TextAlign.center,
                                   softWrap: true,
                                   style: TextStyle(
@@ -108,7 +116,12 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                               ),
                             ],
                           ),
-                        ),
+                        );
+                      }
+                    },
+                    loading: () => Center(child: CircularProgressIndicator()),
+                    error: (error, stack) => Center(child: Text('Error: $error')),
+                  ),
                 ),
                 // 메시지 입력 영역
                 _buildChatInput(isDarkMode),
@@ -125,13 +138,14 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       titleSpacing: 0,
       leading: CInkWell(
         onTap: () {
+          FocusScope.of(context).unfocus();
           Navigator.pushAndRemoveUntil(
             context,
             PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
                   MainPage(),
             ),
-            (route) => false,
+                (route) => false,
           );
         },
         child: SizedBox(
@@ -218,7 +232,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     final bool isUser = message.senderId == user!.id;
     final DateTime createdAt = DateTime.parse(message.createdAt);
     final String formattedTime =
-        DateFormat('a hh:mm', 'ko_KR').format(createdAt);
+    DateFormat('a hh:mm', 'ko_KR').format(createdAt);
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: Align(
@@ -505,10 +519,10 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       curve: Curves.easeInOut,
     );
     await ref.read(taxiGroupProvider.notifier).sendChatMessage(
-          widget.taxiGroup,
-          text,
-          messageType,
-        );
+      widget.taxiGroup,
+      text,
+      messageType,
+    );
   }
 
   void _sendMessage() async {
@@ -521,10 +535,10 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
         curve: Curves.easeInOut,
       );
       await ref.read(taxiGroupProvider.notifier).sendChatMessage(
-            widget.taxiGroup,
-            text,
-            messageType,
-          );
+        widget.taxiGroup,
+        text,
+        messageType,
+      );
       _chatController.clear();
     }
   }

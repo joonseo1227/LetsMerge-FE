@@ -34,8 +34,11 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   final _mapKey = UniqueKey();
   final TextEditingController _clothingController = TextEditingController();
   final GlobalKey<CPopupMenuState> popupMenuKey = GlobalKey<CPopupMenuState>();
-  int? selectedMemberCount;
+  int selectedMemberCount = 3;
   DateTime? selectedDateTime;
+
+  // 에러 메시지 표시 여부 (출발 시각 미선택 시)
+  bool _showDateTimeError = false;
 
   // directionsProvider를 통해 경로 요청하는 함수
   void _fetchDirections() async {
@@ -159,7 +162,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       arrivalLon: destinationData.longitude,
       estimatedFare: taxiFare,
       departureTime: selectedDateTime!,
-      remainingSeats: selectedMemberCount!,
+      remainingSeats: selectedMemberCount,
     );
 
     await ref.read(taxiGroupProvider.notifier).createTaxiGroup(taxiGroup);
@@ -174,8 +177,12 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
     final formattedTaxiFare = taxiFare != null
         ? NumberFormat('#,###', 'ko_KR').format(taxiFare)
         : '-';
+    final fareMoney = (taxiFare != null)
+        ? NumberFormat('#,###', 'ko_KR')
+            .format((taxiFare / selectedMemberCount).round())
+        : '-';
 
-    // directionsProvider 상태 변경 시 지도 오버레이를 업데이트합니다.
+    // directionsProvider 상태 변경 시 지도 오버레이를 업데이트
     ref.listen<DirectionsState>(directionsProvider, (prev, next) {
       _addPolylineOverlay();
     });
@@ -380,14 +387,10 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                     color: ThemeModel.text(isDarkMode),
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                if (selectedMemberCount != null &&
-                                    taxiFare != null)
+                                const SizedBox(height: 4),
+                                if (taxiFare != null)
                                   Text(
-                                    // 인원수에 따라 택시비 분할
-                                    "1인당 ${NumberFormat('#,###', 'ko_KR').format((taxiFare / (selectedMemberCount! + 1)).round())}원",
+                                    "1인당 $fareMoney원",
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -424,7 +427,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     const SizedBox(height: 4),
                     CToggleButton(
                       buttonCount: 3,
-                      initialSelectedIndex: (selectedMemberCount ?? 0),
+                      initialSelectedIndex: selectedMemberCount - 1,
                       labels: ['1명', '2명', '3명'],
                       onToggle: (index) {
                         setState(() {
@@ -449,9 +452,12 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     ),
                     const SizedBox(height: 4),
                     CDateTimePicker(
+                      error: selectedDateTime == null && _showDateTimeError,
+                      errorText: "출발 시각을 선택해주세요.",
                       onDateTimeSelected: (dateTime) {
                         setState(() {
                           selectedDateTime = dateTime;
+                          _showDateTimeError = false;
                         });
                       },
                     ),
@@ -468,7 +474,13 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
         child: SafeArea(
           child: CButton(
             onTap: () async {
-              submitTaxiGroup(ref);
+              if (selectedDateTime == null) {
+                setState(() {
+                  _showDateTimeError = true;
+                });
+                return;
+              }
+              await submitTaxiGroup(ref);
               Navigator.of(context).pushAndRemoveUntil(
                 CupertinoPageRoute(
                   builder: (context) => MainPage(),
