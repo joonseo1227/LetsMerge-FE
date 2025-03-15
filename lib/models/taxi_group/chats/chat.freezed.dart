@@ -32,6 +32,8 @@ mixin _$Chat {
   String get messageType => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
   String get createdAt => throw _privateConstructorUsedError;
+  @JsonKey(name: 'message_id')
+  String get messageId => throw _privateConstructorUsedError;
 
   /// Serializes this Chat to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -53,7 +55,8 @@ abstract class $ChatCopyWith<$Res> {
       @JsonKey(name: 'content') String content,
       @JsonKey(name: 'is_read') bool isRead,
       @JsonKey(name: 'message_type') String messageType,
-      @JsonKey(name: 'created_at') String createdAt});
+      @JsonKey(name: 'created_at') String createdAt,
+      @JsonKey(name: 'message_id') String messageId});
 }
 
 /// @nodoc
@@ -77,6 +80,7 @@ class _$ChatCopyWithImpl<$Res, $Val extends Chat>
     Object? isRead = null,
     Object? messageType = null,
     Object? createdAt = null,
+    Object? messageId = null,
   }) {
     return _then(_value.copyWith(
       groupId: null == groupId
@@ -103,6 +107,10 @@ class _$ChatCopyWithImpl<$Res, $Val extends Chat>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
+      messageId: null == messageId
+          ? _value.messageId
+          : messageId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -120,7 +128,8 @@ abstract class _$$ChatImplCopyWith<$Res> implements $ChatCopyWith<$Res> {
       @JsonKey(name: 'content') String content,
       @JsonKey(name: 'is_read') bool isRead,
       @JsonKey(name: 'message_type') String messageType,
-      @JsonKey(name: 'created_at') String createdAt});
+      @JsonKey(name: 'created_at') String createdAt,
+      @JsonKey(name: 'message_id') String messageId});
 }
 
 /// @nodoc
@@ -141,6 +150,7 @@ class __$$ChatImplCopyWithImpl<$Res>
     Object? isRead = null,
     Object? messageType = null,
     Object? createdAt = null,
+    Object? messageId = null,
   }) {
     return _then(_$ChatImpl(
       groupId: null == groupId
@@ -167,6 +177,10 @@ class __$$ChatImplCopyWithImpl<$Res>
           ? _value.createdAt
           : createdAt // ignore: cast_nullable_to_non_nullable
               as String,
+      messageId: null == messageId
+          ? _value.messageId
+          : messageId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -180,7 +194,8 @@ class _$ChatImpl implements _Chat {
       @JsonKey(name: 'content') required this.content,
       @JsonKey(name: 'is_read') required this.isRead,
       @JsonKey(name: 'message_type') required this.messageType,
-      @JsonKey(name: 'created_at') required this.createdAt});
+      @JsonKey(name: 'created_at') required this.createdAt,
+      @JsonKey(name: 'message_id') required this.messageId});
 
   factory _$ChatImpl.fromJson(Map<String, dynamic> json) =>
       _$$ChatImplFromJson(json);
@@ -203,10 +218,13 @@ class _$ChatImpl implements _Chat {
   @override
   @JsonKey(name: 'created_at')
   final String createdAt;
+  @override
+  @JsonKey(name: 'message_id')
+  final String messageId;
 
   @override
   String toString() {
-    return 'Chat(groupId: $groupId, senderId: $senderId, content: $content, isRead: $isRead, messageType: $messageType, createdAt: $createdAt)';
+    return 'Chat(groupId: $groupId, senderId: $senderId, content: $content, isRead: $isRead, messageType: $messageType, createdAt: $createdAt, messageId: $messageId)';
   }
 
   @override
@@ -222,13 +240,15 @@ class _$ChatImpl implements _Chat {
             (identical(other.messageType, messageType) ||
                 other.messageType == messageType) &&
             (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt));
+                other.createdAt == createdAt) &&
+            (identical(other.messageId, messageId) ||
+                other.messageId == messageId));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, groupId, senderId, content, isRead, messageType, createdAt);
+  int get hashCode => Object.hash(runtimeType, groupId, senderId, content,
+      isRead, messageType, createdAt, messageId);
 
   /// Create a copy of Chat
   /// with the given fields replaced by the non-null parameter values.
@@ -253,7 +273,8 @@ abstract class _Chat implements Chat {
           @JsonKey(name: 'content') required final String content,
           @JsonKey(name: 'is_read') required final bool isRead,
           @JsonKey(name: 'message_type') required final String messageType,
-          @JsonKey(name: 'created_at') required final String createdAt}) =
+          @JsonKey(name: 'created_at') required final String createdAt,
+          @JsonKey(name: 'message_id') required final String messageId}) =
       _$ChatImpl;
 
   factory _Chat.fromJson(Map<String, dynamic> json) = _$ChatImpl.fromJson;
@@ -276,6 +297,9 @@ abstract class _Chat implements Chat {
   @override
   @JsonKey(name: 'created_at')
   String get createdAt;
+  @override
+  @JsonKey(name: 'message_id')
+  String get messageId;
 
   /// Create a copy of Chat
   /// with the given fields replaced by the non-null parameter values.
