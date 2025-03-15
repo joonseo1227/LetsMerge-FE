@@ -5,7 +5,7 @@ import 'package:letsmerge/models/location_model.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
-import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_map_widget.dart';
 
 Color getMessageTextColor(BuildContext context, bool isDarkMode) {
@@ -42,21 +42,32 @@ class _RequestMoneyMessageState extends ConsumerState<RequestMoneyMessage> {
             color: getMessageTextColor(context, isDarkMode),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
-          child: CButton(
-            label: '정산하기',
+        CInkWell(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+            padding: const EdgeInsets.all(12),
             width: double.maxFinite,
-            style: CButtonStyle.tertiary(isDarkMode),
-            size: CButtonSize.medium,
-            onTap: () {
-              Navigator.of(context).push(
-                CupertinoPageRoute(
-                  builder: (context) => TaxiGroupSplitMoneyPage(),
-                ),
-              );
-            },
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: getMessageTextColor(context, isDarkMode),
+                width: 1,
+              ),
+            ),
+            child: Text(
+              '정산하기',
+              style: TextStyle(
+                fontSize: 14,
+                color: getMessageTextColor(context, isDarkMode),
+              ),
+            ),
           ),
+          onTap: () {
+            Navigator.of(context).push(
+              CupertinoPageRoute(
+                builder: (context) => TaxiGroupSplitMoneyPage(),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -116,21 +127,26 @@ class _LocationMessageState extends ConsumerState<LocationMessage>
             color: getMessageTextColor(context, isDarkMode),
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
-          child: CButton(
-            label: '위치 공유 참여',
+        CInkWell(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+            padding: const EdgeInsets.all(12),
             width: double.maxFinite,
-            style: CButtonStyle.tertiary(isDarkMode),
-            size: CButtonSize.medium,
-            onTap: () {
-              Navigator.of(context).push(
-                CupertinoPageRoute(
-                  builder: (context) => TaxiGroupSplitMoneyPage(),
-                ),
-              );
-            },
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: getMessageTextColor(context, isDarkMode),
+                width: 1,
+              ),
+            ),
+            child: Text(
+              '위치 공유 참여',
+              style: TextStyle(
+                fontSize: 14,
+                color: getMessageTextColor(context, isDarkMode),
+              ),
+            ),
           ),
+          onTap: () {},
         ),
       ],
     );
