@@ -233,21 +233,27 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                           itemCount: taxiGroups.length,
                           itemBuilder: (context, index) {
                             final group = taxiGroups[index];
-                            final participants = ref.watch(participantsProvider(group));
+                            final participants =
+                                ref.watch(participantsProvider(group));
                             return Padding(
                               padding: EdgeInsets.only(bottom: 16),
                               child: CInkWell(
                                 onTap: () {
                                   if (group.remainingSeats == 0) {
-                                    bool isParticipant = participants.any((participant) {
-                                      final userinfo = ref.watch(userInfoProvider(participant.userId));
-                                      return userinfo.userId == user!.id || group.creatorUserId == user!.id;
+                                    bool isParticipant =
+                                        participants.any((participant) {
+                                      final userinfo = ref.watch(
+                                          userInfoProvider(participant.userId));
+                                      return userinfo.userId == user!.id ||
+                                          group.creatorUserId == user!.id;
                                     });
 
                                     if (isParticipant) {
                                       Navigator.of(context).push(
                                         CupertinoPageRoute(
-                                          builder: (context) => TaxiGroupPreviewPage(taxiGroup: group),
+                                          builder: (context) =>
+                                              TaxiGroupPreviewPage(
+                                                  taxiGroup: group),
                                         ),
                                       );
                                     } else {
@@ -259,7 +265,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                             content: Text(
                                               '그룹 인원이 가득 찼어요.',
                                               style: TextStyle(
-                                                color: ThemeModel.text(isDarkMode),
+                                                color:
+                                                    ThemeModel.text(isDarkMode),
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.w400,
                                               ),
@@ -280,7 +287,9 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                   } else {
                                     Navigator.of(context).push(
                                       CupertinoPageRoute(
-                                        builder: (context) => TaxiGroupPreviewPage(taxiGroup: group),
+                                        builder: (context) =>
+                                            TaxiGroupPreviewPage(
+                                                taxiGroup: group),
                                       ),
                                     );
                                   }

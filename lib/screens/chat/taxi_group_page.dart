@@ -260,9 +260,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     final String messageType = message.messageType;
     final senderUser = ref.watch(userInfoProvider(message.senderId));
     final senderNickname = senderUser.nickname!;
-    if (senderNickname == null) {
-
-    }
+    if (senderNickname == null) {}
 
     switch (messageType) {
       case 'account':

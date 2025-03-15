@@ -291,8 +291,10 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
 
                       /// 참여자 정보
                       ...participants.map((participant) {
-                        final userinfo = ref.watch(userInfoProvider(participant.userId));
-                        if (widget.taxiGroup.creatorUserId == user!.id || userinfo.userId == user!.id) {
+                        final userinfo =
+                            ref.watch(userInfoProvider(participant.userId));
+                        if (widget.taxiGroup.creatorUserId == user!.id ||
+                            userinfo.userId == user!.id) {
                           _isParticipation = true;
                         }
                         return Row(
@@ -385,21 +387,24 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
         child: SafeArea(
           child: CButton(
             onTap: () {
-              if (_isParticipation==true || createdUser.userId == user!.id) {
+              if (_isParticipation == true || createdUser.userId == user!.id) {
                 Navigator.of(context).pushAndRemoveUntil(
                   CupertinoPageRoute(
                       builder: (context) =>
                           TaxiGroupPage(taxiGroup: widget.taxiGroup)),
-                      (Route<dynamic> route) => false,
+                  (Route<dynamic> route) => false,
                 );
-              } else if (_isParticipation==false && widget.taxiGroup.remainingSeats > 0) {
+              } else if (_isParticipation == false &&
+                  widget.taxiGroup.remainingSeats > 0) {
                 try {
-                  ref.read(taxiGroupProvider.notifier).joinGroup(widget.taxiGroup);
+                  ref
+                      .read(taxiGroupProvider.notifier)
+                      .joinGroup(widget.taxiGroup);
                   Navigator.of(context).pushAndRemoveUntil(
                     CupertinoPageRoute(
                         builder: (context) =>
                             TaxiGroupPage(taxiGroup: widget.taxiGroup)),
-                        (Route<dynamic> route) => false,
+                    (Route<dynamic> route) => false,
                   );
                 } catch (e) {
                   debugPrint("$e");
@@ -407,7 +412,9 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
               }
             },
             size: CButtonSize.extraLarge,
-            label: _isParticipation || createdUser.userId == user!.id  ? "채팅 입장" : "참여 신청",
+            label: _isParticipation || createdUser.userId == user!.id
+                ? "채팅 입장"
+                : "참여 신청",
             icon: Icons.navigate_next,
             width: double.maxFinite,
           ),
