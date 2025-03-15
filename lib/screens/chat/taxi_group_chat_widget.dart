@@ -4,6 +4,7 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/location_model.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/chat/taxi_group_location_sharing_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_map_widget.dart';
@@ -146,7 +147,13 @@ class _LocationMessageState extends ConsumerState<LocationMessage>
               ),
             ),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).push(
+              CupertinoPageRoute(
+                builder: (context) => TaxiGroupLocationSharingPage(),
+              ),
+            );
+          },
         ),
       ],
     );
