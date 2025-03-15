@@ -62,24 +62,58 @@ class _RequestMoneyMessageState extends ConsumerState<RequestMoneyMessage> {
   }
 }
 
-/// 위치 메시지
+class LocationMessageGlobalKeys {
+  static final Map<String, GlobalKey<CMapWidgetState>> _keys = {};
+
+  static GlobalKey<CMapWidgetState> getKey(String messageId) {
+    if (!_keys.containsKey(messageId)) {
+      _keys[messageId] = GlobalKey<CMapWidgetState>();
+    }
+    return _keys[messageId]!;
+  }
+
+  static void removeKey(String messageId) {
+    _keys.remove(messageId);
+  }
+}
+
 class LocationMessage extends ConsumerStatefulWidget {
   final LocationModel locationModel;
+  final String messageId;
 
   const LocationMessage({
     super.key,
     required this.locationModel,
+    required this.messageId,
   });
 
   @override
   ConsumerState<LocationMessage> createState() => _LocationMessageState();
 }
 
-class _LocationMessageState extends ConsumerState<LocationMessage> {
+class _LocationMessageState extends ConsumerState<LocationMessage>
+    with AutomaticKeepAliveClientMixin {
+  late final GlobalKey<CMapWidgetState> _mapKey;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    _mapKey = LocationMessageGlobalKeys.getKey(widget.messageId);
+  }
+
+  @override
+  void dispose() {
+    LocationMessageGlobalKeys.removeKey(widget.messageId);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final isDarkMode = ref.watch(themeProvider);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -94,6 +128,7 @@ class _LocationMessageState extends ConsumerState<LocationMessage> {
           height: 8,
         ),
         CMapWidget(
+          key: _mapKey,
           height: 200,
           width: 300,
           initialLatitude: widget.locationModel.latitude,
@@ -122,7 +157,6 @@ class _TextMessageState extends ConsumerState<TextMessage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-
     return Text(
       widget.content,
       style: TextStyle(
@@ -152,7 +186,6 @@ class _MyMessageState extends ConsumerState<MyMessage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -269,7 +302,6 @@ class _OtherMessageState extends ConsumerState<OtherMessage> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // 메시지 전송 시각
                 Text(
                   widget.formattedTime,
                   style: TextStyle(

@@ -12,6 +12,7 @@ class Chat with _$Chat {
     @JsonKey(name: 'is_read') required bool isRead,
     @JsonKey(name: 'message_type') required String messageType,
     @JsonKey(name: 'created_at') required String createdAt,
+    @JsonKey(name: 'message_id') required String messageId,
   }) = _Chat;
 
   factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);

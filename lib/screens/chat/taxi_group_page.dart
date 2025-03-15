@@ -103,8 +103,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Text(
                                   '아동, 청소년, 그리고 성인을 대상으로 한 성범죄, 전기통신 금융 사기, 불법 음란·도박 정보 유통 등 명백한 불법행위와 '
-                                      '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
-                                      '영구적으로 제한될 수 있습니다.',
+                                  '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
+                                  '영구적으로 제한될 수 있습니다.',
                                   textAlign: TextAlign.center,
                                   softWrap: true,
                                   style: TextStyle(
@@ -256,11 +256,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
         return MyMessage(
           formattedTime: formattedTime,
           content: LocationMessage(
-            locationModel: LocationModel.fromJson(
-              json.decode(
-                message.content,
-              ),
-            ),
+            locationModel: LocationModel.fromJson(json.decode(message.content)),
+            messageId: message.messageId,
           ),
         );
       default:
@@ -278,7 +275,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     final String messageType = message.messageType;
     final senderUser = ref.watch(userInfoProvider(message.senderId));
     final senderNickname = senderUser.nickname!;
-
     switch (messageType) {
       case 'account':
         return OtherMessage(
@@ -291,11 +287,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
           senderNickname: senderNickname,
           formattedTime: formattedTime,
           content: LocationMessage(
-            locationModel: LocationModel.fromJson(
-              json.decode(
-                message.content,
-              ),
-            ),
+            locationModel: LocationModel.fromJson(json.decode(message.content)),
+            messageId: message.messageId,
           ),
         );
       default:
@@ -452,15 +445,12 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       );
       return;
     }
-
     final locationModel = LocationModel(
       latitude: pos.latitude,
       longitude: pos.longitude,
       address: '',
       place: '',
     );
-
-    // 팝업에서 위치 미리보기 + 공유 여부 확인
     bool? confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -474,7 +464,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                 '정확한 위치와 오차가 발생할 수 있으니 주의하세요.',
                 style: TextStyle(
                   fontSize: 12,
-                  color: white,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -505,9 +494,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
         );
       },
     );
-
     if (confirm == true) {
-      // LocationModel을 JSON으로 변환하여 전송
       _sendCustomMessage(jsonEncode(locationModel.toJson()), "location");
     }
   }
