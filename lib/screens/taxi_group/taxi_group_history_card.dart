@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 
@@ -11,14 +12,15 @@ class TaxiGroupHistoryCard extends ConsumerWidget {
   final String destinationTime;
   final int savedAmount;
 
-  const TaxiGroupHistoryCard(
-      {super.key,
-      required this.dateTime,
-      required this.startLocation,
-      required this.startTime,
-      required this.destinationLocation,
-      required this.destinationTime,
-      required this.savedAmount});
+  const TaxiGroupHistoryCard({
+    super.key,
+    required this.dateTime,
+    required this.startLocation,
+    required this.startTime,
+    required this.destinationLocation,
+    required this.destinationTime,
+    required this.savedAmount,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,9 +33,61 @@ class TaxiGroupHistoryCard extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
             children: [
+              Text(
+                '출발',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.sub4(isDarkMode),
+                ),
+              ),
+              Spacer(),
+              Text(
+                startLocation,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.text(isDarkMode),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Text(
+                '도착',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.sub4(isDarkMode),
+                ),
+              ),
+              Spacer(),
+              Text(
+                destinationLocation,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.text(isDarkMode),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Text(
+                '날짜',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.sub4(isDarkMode),
+                ),
+              ),
+              Spacer(),
               Text(
                 dateTime,
                 style: TextStyle(
@@ -42,128 +96,49 @@ class TaxiGroupHistoryCard extends ConsumerWidget {
                   color: ThemeModel.text(isDarkMode),
                 ),
               ),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    margin: const EdgeInsets.all(6),
-                    decoration: ShapeDecoration(
-                      color: ThemeModel.sub2(isDarkMode),
-                      shape: const CircleBorder(),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    startLocation,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.text(isDarkMode),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 32),
-                  Icon(
-                    Icons.access_time_filled,
-                    size: 14,
-                    color: ThemeModel.sub2(isDarkMode),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    startTime,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.sub4(isDarkMode),
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
-          const SizedBox(height: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          const SizedBox(height: 8),
+          Row(
             children: [
-              Row(
-                children: [
-                  Container(
-                    width: 8,
-                    height: 8,
-                    margin: const EdgeInsets.all(6),
-                    decoration: ShapeDecoration(
-                      color: ThemeModel.highlight(isDarkMode),
-                      shape: const CircleBorder(),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    destinationLocation,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.text(isDarkMode),
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 32),
-                  Icon(
-                    Icons.access_time_filled,
-                    size: 14,
-                    color: ThemeModel.sub2(isDarkMode),
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    destinationTime,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.sub4(isDarkMode),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
               Text(
-                '4,800원 - 3,200원',
+                '시간',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                   color: ThemeModel.sub4(isDarkMode),
                 ),
               ),
-              SizedBox(
-                height: 4,
+              Spacer(),
+              Text(
+                '$startTime - $destinationTime',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.text(isDarkMode),
+                ),
               ),
-              Row(
-                children: [
-                  Text(
-                    '절약한 금액 ',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.text(isDarkMode),
-                    ),
-                  ),
-                  Text(
-                    '$savedAmount원',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w500,
-                      color: ThemeModel.text(isDarkMode),
-                    ),
-                  ),
-                ],
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              Text(
+                '절약한 금액',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.sub4(isDarkMode),
+                ),
+              ),
+              Spacer(),
+              Text(
+                '${NumberFormat('#,###', 'ko_KR').format(savedAmount)}원',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: ThemeModel.text(isDarkMode),
+                ),
               ),
             ],
           ),
