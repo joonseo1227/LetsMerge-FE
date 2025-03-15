@@ -6,6 +6,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_tag.dart';
 
 class TaxiGroupSplitMoneyPage extends ConsumerStatefulWidget {
   const TaxiGroupSplitMoneyPage({super.key});
@@ -52,40 +53,147 @@ class _TaxiGroupSplitMoneyPageState
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      '홍길동 님에게 1,200원 송금해 주세요.',
-                      style: TextStyle(
-                        color: ThemeModel.text(isDarkMode),
+                    // 정산 정보 카드
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: ThemeModel.surface(isDarkMode),
                       ),
-                    ),
-                    Text(
-                      '토스뱅크 123456789012345',
-                      style: TextStyle(
-                        color: ThemeModel.text(isDarkMode),
-                      ),
-                    ),
-                    CButton(
-                      onTap: () {
-                        Clipboard.setData(
-                          ClipboardData(
-                            text: '토스뱅크 123456789012345',
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          SizedBox(height: 16),
+                          // 상단 아이콘
+                          Container(
+                            width: 64,
+                            height: 64,
+                            decoration: BoxDecoration(
+                              color: ThemeModel.highlightText(isDarkMode)
+                                  .withValues(
+                                alpha: 0.1,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.attach_money,
+                              size: 40,
+                              color: ThemeModel.highlightText(isDarkMode),
+                            ),
                           ),
-                        );
-                      },
-                      style: CButtonStyle.ghost(isDarkMode),
-                      size: CButtonSize.small,
-                      label: '계좌번호 복사',
-                      icon: Icons.copy,
+                          SizedBox(height: 20),
+                          // 정산 금액 정보
+                          Text(
+                            '홍길동 님에게',
+                            style: TextStyle(
+                              color: ThemeModel.text(isDarkMode),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            '1,200원',
+                            style: TextStyle(
+                              color: ThemeModel.highlightText(isDarkMode),
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            '송금해 주세요',
+                            style: TextStyle(
+                              color: ThemeModel.text(isDarkMode),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          SizedBox(height: 32),
+                          Divider(),
+                          SizedBox(height: 16),
+                          // 계좌 정보
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CTag(
+                                text: '토스뱅크',
+                                color: TagColor.blue,
+                              ),
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Text(
+                                '123456789012345',
+                                style: TextStyle(
+                                  color: ThemeModel.text(isDarkMode),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              Spacer(),
+                              CButton(
+                                onTap: () {
+                                  Clipboard.setData(
+                                    ClipboardData(
+                                      text: '토스뱅크 123456789012345',
+                                    ),
+                                  );
+                                },
+                                style: CButtonStyle(
+                                  backgroundColor: Colors.transparent,
+                                  labelColor: ThemeModel.sub4(isDarkMode),
+                                  iconColor: ThemeModel.sub4(isDarkMode),
+                                ),
+                                size: CButtonSize.medium,
+                                icon: Icons.copy,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    // 안내
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(top: 16),
+                      padding: EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: ThemeModel.highlightText(isDarkMode).withValues(
+                          alpha: 0.1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            color: ThemeModel.highlightText(isDarkMode),
+                            size: 24,
+                          ),
+                          SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              '송금 후 정산 완료 버튼을 눌러주세요.',
+                              style: TextStyle(
+                                color: ThemeModel.highlightText(isDarkMode),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
             ),
           ),
+
           // 버튼 영역
           Container(
             color: ThemeModel.highlight(isDarkMode),

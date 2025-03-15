@@ -79,7 +79,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
             SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -354,8 +354,8 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                         type: MaterialType.transparency,
                         child: Container(
                           width: double.maxFinite,
-                          color:
-                              ThemeModel.highlight(isDarkMode).withAlpha(204),
+                          color: ThemeModel.highlight(isDarkMode)
+                              .withValues(alpha: 0.9),
                           padding: EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

@@ -34,7 +34,7 @@ class SettingsPage extends ConsumerWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          padding: const EdgeInsets.all(16),
           child: SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
