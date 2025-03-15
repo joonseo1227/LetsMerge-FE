@@ -36,26 +36,27 @@ class _RequestMoneyMessageState extends ConsumerState<RequestMoneyMessage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '우리 정산해요💸',
+          '정산을 요청했습니다.',
           style: TextStyle(
             fontSize: 16,
             color: getMessageTextColor(context, isDarkMode),
           ),
         ),
-        SizedBox(
-          height: 8,
-        ),
-        CButton(
-          label: '정산하기',
-          width: double.maxFinite,
-          size: CButtonSize.medium,
-          onTap: () {
-            Navigator.of(context).push(
-              CupertinoPageRoute(
-                builder: (context) => TaxiGroupSplitMoneyPage(),
-              ),
-            );
-          },
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+          child: CButton(
+            label: '정산하기',
+            width: double.maxFinite,
+            style: CButtonStyle.tertiary(isDarkMode),
+            size: CButtonSize.medium,
+            onTap: () {
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => TaxiGroupSplitMoneyPage(),
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -93,20 +94,11 @@ class LocationMessage extends ConsumerStatefulWidget {
 
 class _LocationMessageState extends ConsumerState<LocationMessage>
     with AutomaticKeepAliveClientMixin {
-  late final GlobalKey<CMapWidgetState> _mapKey;
-
   @override
   bool get wantKeepAlive => true;
 
   @override
-  void initState() {
-    super.initState();
-    _mapKey = LocationMessageGlobalKeys.getKey(widget.messageId);
-  }
-
-  @override
   void dispose() {
-    LocationMessageGlobalKeys.removeKey(widget.messageId);
     super.dispose();
   }
 
@@ -118,22 +110,27 @@ class _LocationMessageState extends ConsumerState<LocationMessage>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '제 위치예요📍',
+          '위치를 공유했습니다.',
           style: TextStyle(
             fontSize: 16,
             color: getMessageTextColor(context, isDarkMode),
           ),
         ),
-        const SizedBox(
-          height: 8,
-        ),
-        CMapWidget(
-          key: _mapKey,
-          height: 200,
-          width: 300,
-          initialLatitude: widget.locationModel.latitude,
-          initialLongitude: widget.locationModel.longitude,
-          isDarkMode: isDarkMode,
+        Padding(
+          padding: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+          child: CButton(
+            label: '위치 공유 참여',
+            width: double.maxFinite,
+            style: CButtonStyle.tertiary(isDarkMode),
+            size: CButtonSize.medium,
+            onTap: () {
+              Navigator.of(context).push(
+                CupertinoPageRoute(
+                  builder: (context) => TaxiGroupSplitMoneyPage(),
+                ),
+              );
+            },
+          ),
         ),
       ],
     );
@@ -216,7 +213,7 @@ class _MyMessageState extends ConsumerState<MyMessage> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: ThemeModel.highlightText(isDarkMode),
+                  color: ThemeModel.highlight(isDarkMode),
                 ),
                 child: widget.content,
               ),
