@@ -1,18 +1,15 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/location_model.dart';
 import 'package:letsmerge/models/taxi_group/chats/chat.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
-import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/chat/taxi_group_chat_widget.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/report_page.dart';
@@ -100,7 +97,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                               ),
                               const SizedBox(height: 10),
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
                                 child: Text(
                                   '아동, 청소년, 그리고 성인을 대상으로 한 성범죄, 전기통신 금융 사기, 불법 음란·도박 정보 유통 등 명백한 불법행위와 '
                                   '렛츠머지 서비스의 안정성과 신뢰성을 위협하는 악의적인 이용 행위에 대해서는 즉시 렛츠머지 전체 서비스 이용이 '
@@ -120,7 +118,8 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                       }
                     },
                     loading: () => Center(child: CircularProgressIndicator()),
-                    error: (error, stack) => Center(child: Text('Error: $error')),
+                    error: (error, stack) =>
+                        Center(child: Text('Error: $error')),
                   ),
                 ),
                 // 메시지 입력 영역
@@ -145,7 +144,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
               pageBuilder: (context, animation, secondaryAnimation) =>
                   MainPage(),
             ),
-                (route) => false,
+            (route) => false,
           );
         },
         child: SizedBox(
@@ -232,7 +231,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     final bool isUser = message.senderId == user!.id;
     final DateTime createdAt = DateTime.parse(message.createdAt);
     final String formattedTime =
-    DateFormat('a hh:mm', 'ko_KR').format(createdAt);
+        DateFormat('a hh:mm', 'ko_KR').format(createdAt);
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: Align(
@@ -273,8 +272,9 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   Widget _buildOtherMessage(
       Chat message, String formattedTime, bool isDarkMode) {
     final String messageType = message.messageType;
-    final senderUser = ref.watch(userInfoProvider(message.senderId));
-    final senderNickname = senderUser.nickname!;
+    final Map<String, dynamic>? userinfo = message.userinfo;
+    final String senderNickname = userinfo?['nickname'] ?? '알 수 없음';
+
     switch (messageType) {
       case 'account':
         return OtherMessage(

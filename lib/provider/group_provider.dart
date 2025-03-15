@@ -138,11 +138,11 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
     Future<void> fetchMessages() async {
       final response = await _supabase
           .from('chats')
-          .select()
+          .select('*, userinfo(nickname, avatar_url)')
           .eq('group_id', taxiGroup.groupId!)
           .order('created_at', ascending: false);
       controller.add(response.cast<Map<String, dynamic>>());
-        }
+    }
 
     // 최초 메시지 로드
     fetchMessages();
@@ -151,20 +151,20 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
     final RealtimeChannel channel = _supabase
         .channel('chat_messages:${taxiGroup.groupId!}')
         .onPostgresChanges(
-      event: PostgresChangeEvent.all,
-      schema: 'public',
-      table: 'chats',
-      filter: PostgresChangeFilter(
-        type: PostgresChangeFilterType.eq,
-        column: 'group_id',
-        value: taxiGroup.groupId!,
-      ),
-      callback: (payload) async {
-        debugPrint('Realtime event received: ${payload.toString()}');
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'chats',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'group_id',
+            value: taxiGroup.groupId!,
+          ),
+          callback: (payload) async {
+            debugPrint('Realtime event received: ${payload.toString()}');
 
-        await fetchMessages();
-      },
-    )
+            await fetchMessages();
+          },
+        )
         .subscribe();
 
     controller.onCancel = () {
@@ -175,10 +175,10 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
   }
 
   Future<void> sendChatMessage(
-      TaxiGroup taxiGroup,
-      String content,
-      String messageType,
-      ) async {
+    TaxiGroup taxiGroup,
+    String content,
+    String messageType,
+  ) async {
     final User? user = _supabase.auth.currentUser;
     final String senderId = user!.id;
     try {
@@ -206,10 +206,10 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
   }
 
   Future<T?> runWithErrorHandling<T>(
-      BuildContext context,
-      WidgetRef ref,
-      Future<T> Function() operation,
-      ) async {
+    BuildContext context,
+    WidgetRef ref,
+    Future<T> Function() operation,
+  ) async {
     try {
       return await operation();
     } on FormatException {
@@ -256,13 +256,12 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
 }
 
 final taxiGroupProvider =
-StateNotifierProvider<TaxiGroupNotifier, List<TaxiGroup>>((ref) {
+    StateNotifierProvider<TaxiGroupNotifier, List<TaxiGroup>>((ref) {
   return TaxiGroupNotifier();
 });
 
-
 final chatMessagesProvider =
-StreamProvider.autoDispose.family<List<Chat>, TaxiGroup>((ref, taxiGroup) {
+    StreamProvider.autoDispose.family<List<Chat>, TaxiGroup>((ref, taxiGroup) {
   final taxiGroupNotifier = ref.watch(taxiGroupProvider.notifier);
   return taxiGroupNotifier
       .chatMessagesStream(taxiGroup)
