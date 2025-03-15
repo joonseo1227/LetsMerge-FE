@@ -9,6 +9,7 @@ import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
+import 'package:letsmerge/screens/chat/taxi_group_page.dart';
 import 'package:letsmerge/screens/search/search_taxi_group_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_preview_page.dart';
@@ -311,41 +312,76 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 ),
               ),
             ),
+
+            /// 참여 중인 택시팟 카드
             Align(
               alignment: AlignmentDirectional.bottomEnd,
-              child: GestureDetector(
-                onTap: () {},
-                child: Hero(
-                  tag: 'taxiGroup',
-                  child: Material(
-                    type: MaterialType.transparency,
-                    child: Container(
-                      width: double.maxFinite,
-                      color: ThemeModel.highlight(isDarkMode).withAlpha(204),
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            '참여 중',
-                            style: TextStyle(
-                              color: white,
-                              fontSize: 14,
-                            ),
+              child: Builder(
+                builder: (context) {
+                  // 사용자가 참여 중인 택시팟 가져오기
+                  final userTaxiGroups = taxiGroups.where((group) {
+                    final participants = ref.watch(participantsProvider(group));
+                    return participants.any(
+                            (participant) => participant.userId == user?.id) ||
+                        group.creatorUserId == user?.id;
+                  }).toList();
+
+                  // 참여 중인 택시팟이 없으면 카드를 표시하지 않음
+                  if (userTaxiGroups.isEmpty) {
+                    return SizedBox.shrink();
+                  }
+
+                  // 가장 최근 택시팟 가져오기
+                  final latestGroup = userTaxiGroups[0];
+
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  TaxiGroupPage(
+                            taxiGroup: latestGroup,
                           ),
-                          Text(
-                            '가천대역 수인분당선 -> 가천대학교 AI관',
-                            style: TextStyle(
-                              color: white,
-                              fontSize: 16,
-                            ),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                    child: Hero(
+                      tag: 'taxiGroup',
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: Container(
+                          width: double.maxFinite,
+                          color:
+                              ThemeModel.highlight(isDarkMode).withAlpha(204),
+                          padding: EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                '참여 중',
+                                style: TextStyle(
+                                  color: white,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              Text(
+                                '${latestGroup.departurePlace} -> ${latestGroup.arrivalPlace}',
+                                style: TextStyle(
+                                  color: white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
           ],
