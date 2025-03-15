@@ -407,7 +407,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
               }
             },
             size: CButtonSize.extraLarge,
-            label: _isParticipation || createdUser.userId == user!.id ? "참여 신청" : "채팅 입장",
+            label: _isParticipation || createdUser.userId == user!.id  ? "채팅 입장" : "참여 신청",
             icon: Icons.navigate_next,
             width: double.maxFinite,
           ),
