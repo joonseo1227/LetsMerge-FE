@@ -216,7 +216,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   Widget _buildMessageItem(BuildContext context, int index, bool isDarkMode,
       {required Chat message}) {
     final bool isUser = message.senderId == user!.id;
-    debugPrint('$isUser');
     final DateTime createdAt = DateTime.parse(message.createdAt);
     final String formattedTime =
         DateFormat('a hh:mm', 'ko_KR').format(createdAt);
