@@ -8,6 +8,7 @@ import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
 import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/search/search_taxi_group_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_preview_page.dart';
@@ -232,44 +233,54 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                           itemCount: taxiGroups.length,
                           itemBuilder: (context, index) {
                             final group = taxiGroups[index];
+                            final participants = ref.watch(participantsProvider(group));
                             return Padding(
                               padding: EdgeInsets.only(bottom: 16),
                               child: CInkWell(
                                 onTap: () {
                                   if (group.remainingSeats == 0) {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return CDialog(
-                                          title: '안내',
-                                          content: Text(
-                                            '그룹 인원이 가득 찼어요.',
-                                            style: TextStyle(
-                                              color:
-                                                  ThemeModel.text(isDarkMode),
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
+                                    bool isParticipant = participants.any((participant) {
+                                      final userinfo = ref.watch(userInfoProvider(participant.userId));
+                                      return userinfo.userId == user!.id || group.creatorUserId == user!.id;
+                                    });
+
+                                    if (isParticipant) {
+                                      Navigator.of(context).push(
+                                        CupertinoPageRoute(
+                                          builder: (context) => TaxiGroupPreviewPage(taxiGroup: group),
+                                        ),
+                                      );
+                                    } else {
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return CDialog(
+                                            title: '안내',
+                                            content: Text(
+                                              '그룹 인원이 가득 찼어요.',
+                                              style: TextStyle(
+                                                color: ThemeModel.text(isDarkMode),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
+                                              ),
                                             ),
-                                          ),
-                                          buttons: [
-                                            CButton(
-                                              size: CButtonSize.extraLarge,
-                                              label: '확인',
-                                              onTap: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
+                                            buttons: [
+                                              CButton(
+                                                size: CButtonSize.extraLarge,
+                                                label: '확인',
+                                                onTap: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
                                   } else {
                                     Navigator.of(context).push(
                                       CupertinoPageRoute(
-                                        builder: (context) =>
-                                            TaxiGroupPreviewPage(
-                                          taxiGroup: group,
-                                        ),
+                                        builder: (context) => TaxiGroupPreviewPage(taxiGroup: group),
                                       ),
                                     );
                                   }

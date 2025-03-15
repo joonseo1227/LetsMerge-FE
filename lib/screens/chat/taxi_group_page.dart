@@ -259,7 +259,10 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       Chat message, String formattedTime, bool isDarkMode) {
     final String messageType = message.messageType;
     final senderUser = ref.watch(userInfoProvider(message.senderId));
-    final senderNickname = senderUser!.nickname;
+    final senderNickname = senderUser.nickname!;
+    if (senderNickname == null) {
+
+    }
 
     switch (messageType) {
       case 'account':

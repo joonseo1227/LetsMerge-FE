@@ -8,6 +8,7 @@ import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/directions_provider.dart';
+import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
@@ -39,9 +40,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
   Position? _currentPosition;
   bool _showSkeleton = true;
   bool _isParticipation = false;
-
-  // final _mapKey = UniqueKey();
-  final _mapKey = const ValueKey('naverMap');
+  final _mapKey = UniqueKey();
 
   @override
   void initState() {
@@ -162,8 +161,13 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
 
       // 모든 좌표를 포함하는 bounds 계산 후 카메라 업데이트
       final bounds = NLatLngBounds.from(routePoints);
-      final cameraUpdate =
-          NCameraUpdate.fitBounds(bounds, padding: EdgeInsets.all(40));
+
+      // padding을 적용하여 bounds 내 영역을 온전히 보여주는 카메라 업데이트 생성
+      final cameraUpdate = NCameraUpdate.fitBounds(
+        bounds,
+        padding: EdgeInsets.all(40),
+      );
+
       await _mapController!.updateCamera(cameraUpdate);
 
       debugPrint("경로 오버레이 추가 및 카메라 업데이트");
@@ -247,7 +251,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                             width: 12,
                           ),
                           Text(
-                            createdUser.nickname,
+                            createdUser.nickname!,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -287,10 +291,8 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
 
                       /// 참여자 정보
                       ...participants.map((participant) {
-                        final userinfo =
-                            ref.watch(userInfoProvider(participant.userId));
-                        if (widget.taxiGroup.creatorUserId == user!.id ||
-                            participant.userId == user!.id) {
+                        final userinfo = ref.watch(userInfoProvider(participant.userId));
+                        if (widget.taxiGroup.creatorUserId == user!.id || userinfo.userId == user!.id) {
                           _isParticipation = true;
                         }
                         return Row(
@@ -308,7 +310,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                               width: 12,
                             ),
                             Text(
-                              userinfo.nickname,
+                              userinfo.nickname!,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,
@@ -383,16 +385,29 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
         child: SafeArea(
           child: CButton(
             onTap: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                CupertinoPageRoute(
-                  builder: (context) =>
-                      TaxiGroupPage(taxiGroup: widget.taxiGroup),
-                ),
-                (Route<dynamic> route) => false,
-              );
+              if (_isParticipation==true || createdUser.userId == user!.id) {
+                Navigator.of(context).pushAndRemoveUntil(
+                  CupertinoPageRoute(
+                      builder: (context) =>
+                          TaxiGroupPage(taxiGroup: widget.taxiGroup)),
+                      (Route<dynamic> route) => false,
+                );
+              } else if (_isParticipation==false && widget.taxiGroup.remainingSeats > 0) {
+                try {
+                  ref.read(taxiGroupProvider.notifier).joinGroup(widget.taxiGroup);
+                  Navigator.of(context).pushAndRemoveUntil(
+                    CupertinoPageRoute(
+                        builder: (context) =>
+                            TaxiGroupPage(taxiGroup: widget.taxiGroup)),
+                        (Route<dynamic> route) => false,
+                  );
+                } catch (e) {
+                  debugPrint("$e");
+                }
+              }
             },
             size: CButtonSize.extraLarge,
-            label: '참여 신청',
+            label: _isParticipation || createdUser.userId == user!.id ? "참여 신청" : "채팅 입장",
             icon: Icons.navigate_next,
             width: double.maxFinite,
           ),

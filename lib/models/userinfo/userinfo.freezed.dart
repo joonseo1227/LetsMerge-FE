@@ -27,7 +27,7 @@ mixin _$UserInfo {
   @JsonKey(name: 'name')
   String get name => throw _privateConstructorUsedError;
   @JsonKey(name: 'nickname')
-  String get nickname => throw _privateConstructorUsedError;
+  String? get nickname => throw _privateConstructorUsedError;
   @JsonKey(name: 'avatar_url')
   String? get avatarUrl => throw _privateConstructorUsedError;
   @JsonKey(name: 'created_at')
@@ -52,7 +52,7 @@ abstract class $UserInfoCopyWith<$Res> {
       {@JsonKey(name: 'id') String userId,
       @JsonKey(name: 'email') String email,
       @JsonKey(name: 'name') String name,
-      @JsonKey(name: 'nickname') String nickname,
+      @JsonKey(name: 'nickname') String? nickname,
       @JsonKey(name: 'avatar_url') String? avatarUrl,
       @JsonKey(name: 'created_at') String createdAt});
 }
@@ -75,7 +75,7 @@ class _$UserInfoCopyWithImpl<$Res, $Val extends UserInfo>
     Object? userId = null,
     Object? email = null,
     Object? name = null,
-    Object? nickname = null,
+    Object? nickname = freezed,
     Object? avatarUrl = freezed,
     Object? createdAt = null,
   }) {
@@ -92,10 +92,10 @@ class _$UserInfoCopyWithImpl<$Res, $Val extends UserInfo>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      nickname: null == nickname
+      nickname: freezed == nickname
           ? _value.nickname
           : nickname // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       avatarUrl: freezed == avatarUrl
           ? _value.avatarUrl
           : avatarUrl // ignore: cast_nullable_to_non_nullable
@@ -120,7 +120,7 @@ abstract class _$$UserInfoImplCopyWith<$Res>
       {@JsonKey(name: 'id') String userId,
       @JsonKey(name: 'email') String email,
       @JsonKey(name: 'name') String name,
-      @JsonKey(name: 'nickname') String nickname,
+      @JsonKey(name: 'nickname') String? nickname,
       @JsonKey(name: 'avatar_url') String? avatarUrl,
       @JsonKey(name: 'created_at') String createdAt});
 }
@@ -141,7 +141,7 @@ class __$$UserInfoImplCopyWithImpl<$Res>
     Object? userId = null,
     Object? email = null,
     Object? name = null,
-    Object? nickname = null,
+    Object? nickname = freezed,
     Object? avatarUrl = freezed,
     Object? createdAt = null,
   }) {
@@ -158,10 +158,10 @@ class __$$UserInfoImplCopyWithImpl<$Res>
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      nickname: null == nickname
+      nickname: freezed == nickname
           ? _value.nickname
           : nickname // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       avatarUrl: freezed == avatarUrl
           ? _value.avatarUrl
           : avatarUrl // ignore: cast_nullable_to_non_nullable
@@ -199,7 +199,7 @@ class _$UserInfoImpl implements _UserInfo {
   final String name;
   @override
   @JsonKey(name: 'nickname')
-  final String nickname;
+  final String? nickname;
   @override
   @JsonKey(name: 'avatar_url')
   final String? avatarUrl;
@@ -254,7 +254,7 @@ abstract class _UserInfo implements UserInfo {
           {@JsonKey(name: 'id') required final String userId,
           @JsonKey(name: 'email') required final String email,
           @JsonKey(name: 'name') required final String name,
-          @JsonKey(name: 'nickname') required final String nickname,
+          @JsonKey(name: 'nickname') required final String? nickname,
           @JsonKey(name: 'avatar_url') required final String? avatarUrl,
           @JsonKey(name: 'created_at') required final String createdAt}) =
       _$UserInfoImpl;
@@ -273,7 +273,7 @@ abstract class _UserInfo implements UserInfo {
   String get name;
   @override
   @JsonKey(name: 'nickname')
-  String get nickname;
+  String? get nickname;
   @override
   @JsonKey(name: 'avatar_url')
   String? get avatarUrl;

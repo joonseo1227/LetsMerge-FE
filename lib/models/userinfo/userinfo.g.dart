@@ -11,7 +11,7 @@ _$UserInfoImpl _$$UserInfoImplFromJson(Map<String, dynamic> json) =>
       userId: json['id'] as String,
       email: json['email'] as String,
       name: json['name'] as String,
-      nickname: json['nickname'] as String,
+      nickname: json['nickname'] as String?,
       avatarUrl: json['avatar_url'] as String?,
       createdAt: json['created_at'] as String,
     );

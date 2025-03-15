@@ -9,7 +9,7 @@ class UserInfo with _$UserInfo {
     @JsonKey(name: 'id') required String userId,
     @JsonKey(name: 'email') required String email,
     @JsonKey(name: 'name') required String name,
-    @JsonKey(name: 'nickname') required String nickname,
+    @JsonKey(name: 'nickname') required String? nickname,
     @JsonKey(name: 'avatar_url') required String? avatarUrl,
     @JsonKey(name: 'created_at') required String createdAt,
   }) = _UserInfo;

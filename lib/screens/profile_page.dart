@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -90,7 +88,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               CListTile(
                 title: '이름',
                 trailing: () {
-                  if (userInfo == null) {
+                  if (userInfo.name.isEmpty) {
                     return Text('정보 없음', style: infoTextStyle);
                   } else {
                     return Text(userInfo.name, style: infoTextStyle);
@@ -124,10 +122,8 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             size: CButtonSize.extraLarge,
                             label: '저장',
                             onTap: () {
-                              ref
-                                  .read(userProvider.notifier)
-                                  .updateUserNickname(
-                                      context, ref, _nicknameController.text);
+                              print(_nicknameController.text);
+                              ref.read(userProvider.notifier).updateUserNickname(context, ref, _nicknameController.text);
                               Navigator.pop(context);
                             },
                           ),
@@ -137,17 +133,17 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   );
                 },
                 trailing: () {
-                  if (userInfo == null) {
+                  if (userInfo.nickname == null) {
                     return Text('정보 없음', style: infoTextStyle);
                   } else {
-                    return Text(userInfo.nickname, style: infoTextStyle);
+                    return Text(userInfo.nickname!, style: infoTextStyle);
                   }
                 }(),
               ),
               CListTile(
                 title: '이메일',
                 trailing: () {
-                  if (userInfo == null) {
+                  if (userInfo.email.isEmpty) {
                     return Text('정보 없음', style: infoTextStyle);
                   } else {
                     return Text(userInfo.email, style: infoTextStyle);
@@ -157,7 +153,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
               CListTile(
                 title: '렛츠머지와 함께한지',
                 trailing: () {
-                  if (userInfo == null) {
+                  if (userInfo.createdAt.isEmpty) {
                     return Text('정보 없음', style: infoTextStyle);
                   }
                   try {
