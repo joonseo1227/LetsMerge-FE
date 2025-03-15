@@ -142,7 +142,6 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
     TaxiGroup taxiGroup,
     String content,
     String messageType,
-    String time,
   ) async {
     final User? user = _supabase.auth.currentUser;
     final String senderId = user!.id;
@@ -152,7 +151,6 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
         'sender_id': senderId,
         'content': content,
         'message_type': messageType,
-        'created_at': time,
       });
       debugPrint("Insert 성공");
     } catch (e) {

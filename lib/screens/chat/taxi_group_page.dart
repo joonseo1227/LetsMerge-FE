@@ -60,16 +60,20 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
               children: [
                 Expanded(
                   child: messages.isNotEmpty
-                      ? ListView.builder(
-                          controller: _scrollController,
-                          reverse: true,
-                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                          itemCount: messages.length,
-                          itemBuilder: (context, index) => _buildMessageItem(
-                            context,
-                            index,
-                            isDarkMode,
-                            message: messages[index],
+                      ? Align(
+                          alignment: Alignment.topCenter,
+                          child: ListView.builder(
+                            controller: _scrollController,
+                            reverse: true,
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            itemCount: messages.length,
+                            itemBuilder: (context, index) => _buildMessageItem(
+                              context,
+                              index,
+                              isDarkMode,
+                              message: messages[index],
+                            ),
                           ),
                         )
                       : Padding(
@@ -505,7 +509,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
           widget.taxiGroup,
           text,
           messageType,
-          DateTime.now().toIso8601String(),
         );
   }
 
@@ -519,10 +522,10 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
         curve: Curves.easeInOut,
       );
       await ref.read(taxiGroupProvider.notifier).sendChatMessage(
-          widget.taxiGroup,
-          text,
-          messageType,
-          DateTime.now().toIso8601String());
+            widget.taxiGroup,
+            text,
+            messageType,
+          );
       _chatController.clear();
     }
   }
