@@ -81,7 +81,7 @@ class _AllTabState extends ConsumerState<AllTab> {
                         shape: CircleBorder(),
                       ),
                     ),
-                    title: userInfo.nickname ?? '사용자 이름 없음',
+                    title: userInfo.nickname ?? '닉네임 없음',
                     onTap: () {
                       Navigator.of(context).push(
                         CupertinoPageRoute(

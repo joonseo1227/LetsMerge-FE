@@ -229,6 +229,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
 
                 const SizedBox(height: 16),
 
+                /// 참여자 정보
                 Container(
                   color: ThemeModel.surface(isDarkMode),
                   width: double.maxFinite,
@@ -284,12 +285,6 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                           ),
                         ],
                       ),
-                      if (participants.isNotEmpty)
-                        SizedBox(
-                          height: 16,
-                        ),
-
-                      /// 참여자 정보
                       ...participants.map((participant) {
                         final userinfo =
                             ref.watch(userInfoProvider(participant.userId));
@@ -297,49 +292,52 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                             userinfo.userId == user!.id) {
                           _isParticipation = true;
                         }
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: ShapeDecoration(
-                                color: blue20,
-                                shape: CircleBorder(),
+                        return Padding(
+                          padding: const EdgeInsets.only(top: 16),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 40,
+                                height: 40,
+                                decoration: ShapeDecoration(
+                                  color: blue20,
+                                  shape: CircleBorder(),
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              width: 12,
-                            ),
-                            Text(
-                              userinfo.nickname!,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: ThemeModel.text(isDarkMode),
+                              SizedBox(
+                                width: 12,
                               ),
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Spacer(),
-                            Icon(
-                              Icons.star,
-                              size: 16,
-                              color: ThemeModel.sub2(isDarkMode),
-                            ),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            Text(
-                              '4.5/5.0',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: ThemeModel.sub4(isDarkMode),
+                              Text(
+                                userinfo.nickname!,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: ThemeModel.text(isDarkMode),
+                                ),
                               ),
-                            ),
-                          ],
+                              SizedBox(
+                                width: 8,
+                              ),
+                              Spacer(),
+                              Icon(
+                                Icons.star,
+                                size: 16,
+                                color: ThemeModel.sub2(isDarkMode),
+                              ),
+                              SizedBox(
+                                width: 4,
+                              ),
+                              Text(
+                                '4.5/5.0',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                  color: ThemeModel.sub4(isDarkMode),
+                                ),
+                              ),
+                            ],
+                          ),
                         );
                       }),
                     ],
