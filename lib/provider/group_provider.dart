@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:letsmerge/models/taxi_group/chats/chat.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
@@ -130,19 +130,55 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
         .order('created_at', ascending: false);
   }
 
+  // 실시간 채팅 메시지 스트림 (Realtime 채널 구독)
   Stream<List<Map<String, dynamic>>> chatMessagesStream(TaxiGroup taxiGroup) {
-    return _supabase
-        .from('chats')
-        .stream(primaryKey: ['message_id'])
-        .eq('group_id', taxiGroup.groupId!)
-        .order('created_at', ascending: false);
+    final controller = StreamController<List<Map<String, dynamic>>>();
+
+    // 현재 채팅 메시지 목록을 가져오는 함수
+    Future<void> fetchMessages() async {
+      final response = await _supabase
+          .from('chats')
+          .select()
+          .eq('group_id', taxiGroup.groupId!)
+          .order('created_at', ascending: false);
+      controller.add(response.cast<Map<String, dynamic>>());
+        }
+
+    // 최초 메시지 로드
+    fetchMessages();
+
+    // 실시간 구독 설정
+    final RealtimeChannel channel = _supabase
+        .channel('chat_messages:${taxiGroup.groupId!}')
+        .onPostgresChanges(
+      event: PostgresChangeEvent.all,
+      schema: 'public',
+      table: 'chats',
+      filter: PostgresChangeFilter(
+        type: PostgresChangeFilterType.eq,
+        column: 'group_id',
+        value: taxiGroup.groupId!,
+      ),
+      callback: (payload) async {
+        debugPrint('Realtime event received: ${payload.toString()}');
+
+        await fetchMessages();
+      },
+    )
+        .subscribe();
+
+    controller.onCancel = () {
+      channel.unsubscribe();
+    };
+
+    return controller.stream;
   }
 
   Future<void> sendChatMessage(
-    TaxiGroup taxiGroup,
-    String content,
-    String messageType,
-  ) async {
+      TaxiGroup taxiGroup,
+      String content,
+      String messageType,
+      ) async {
     final User? user = _supabase.auth.currentUser;
     final String senderId = user!.id;
     try {
@@ -158,7 +194,7 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
     }
   }
 
-  //특정 채팅 메시지를 읽음 처리하는 함수
+  // 특정 채팅 메시지를 읽음 처리하는 함수
   Future<void> readChatMessage(String messageId) async {
     try {
       await _supabase.from('chats').update({
@@ -170,10 +206,10 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
   }
 
   Future<T?> runWithErrorHandling<T>(
-    BuildContext context,
-    WidgetRef ref,
-    Future<T> Function() operation,
-  ) async {
+      BuildContext context,
+      WidgetRef ref,
+      Future<T> Function() operation,
+      ) async {
     try {
       return await operation();
     } on FormatException {
@@ -220,6 +256,15 @@ class TaxiGroupNotifier extends StateNotifier<List<TaxiGroup>> {
 }
 
 final taxiGroupProvider =
-    StateNotifierProvider<TaxiGroupNotifier, List<TaxiGroup>>((ref) {
+StateNotifierProvider<TaxiGroupNotifier, List<TaxiGroup>>((ref) {
   return TaxiGroupNotifier();
+});
+
+
+final chatMessagesProvider =
+StreamProvider.autoDispose.family<List<Chat>, TaxiGroup>((ref, taxiGroup) {
+  final taxiGroupNotifier = ref.watch(taxiGroupProvider.notifier);
+  return taxiGroupNotifier
+      .chatMessagesStream(taxiGroup)
+      .map((data) => data.map((e) => Chat.fromJson(e)).toList());
 });
