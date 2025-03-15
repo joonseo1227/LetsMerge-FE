@@ -8,7 +8,6 @@ import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/account_number/my_account_number_page.dart';
 import 'package:letsmerge/screens/customer_support/customer_support_page.dart';
-import 'package:letsmerge/screens/dev/dev_page.dart';
 import 'package:letsmerge/screens/history_page.dart';
 import 'package:letsmerge/screens/profile_page.dart';
 import 'package:letsmerge/screens/settings_page.dart';
@@ -90,20 +89,20 @@ class _AllTabState extends ConsumerState<AllTab> {
                       );
                     },
                   ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  CListTile(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        CupertinoPageRoute(
-                          builder: (context) => DevPage(),
-                        ),
-                      );
-                    },
-                    title: 'DEV',
-                    icon: Icons.code,
-                  ),
+                  // SizedBox(
+                  //   height: 16,
+                  // ),
+                  // CListTile(
+                  //   onTap: () {
+                  //     Navigator.of(context).push(
+                  //       CupertinoPageRoute(
+                  //         builder: (context) => DevPage(),
+                  //       ),
+                  //     );
+                  //   },
+                  //   title: 'DEV',
+                  //   icon: Icons.code,
+                  // ),
                   SizedBox(
                     height: 16,
                   ),
