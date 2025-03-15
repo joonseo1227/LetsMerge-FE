@@ -4,7 +4,6 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/directions_provider.dart';
@@ -15,10 +14,10 @@ import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/chat/taxi_group_page.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_participant_card.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
-import 'package:letsmerge/widgets/c_tag.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TaxiGroupPreviewPage extends ConsumerStatefulWidget {
@@ -180,6 +179,17 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
     final participants = ref.watch(participantsProvider(widget.taxiGroup));
     final createdUser =
         ref.watch(userInfoProvider(widget.taxiGroup.creatorUserId ?? ""));
+    _isParticipation = widget.taxiGroup.creatorUserId == user!.id;
+
+    if (!_isParticipation) {
+      for (var participant in participants) {
+        final userInfo = ref.watch(userInfoProvider(participant.userId));
+        if (userInfo.userId == user!.id) {
+          _isParticipation = true;
+          break;
+        }
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -230,118 +240,12 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                 const SizedBox(height: 16),
 
                 /// 참여자 정보
-                Container(
-                  color: ThemeModel.surface(isDarkMode),
-                  width: double.maxFinite,
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: ShapeDecoration(
-                              color: blue20,
-                              shape: CircleBorder(),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 12,
-                          ),
-                          Text(
-                            createdUser.nickname!,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.text(isDarkMode),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          CTag(
-                            text: '대표',
-                            color: TagColor.blue,
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.star,
-                            size: 16,
-                            color: ThemeModel.sub2(isDarkMode),
-                          ),
-                          SizedBox(
-                            width: 4,
-                          ),
-                          Text(
-                            '4.5/5.0',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub4(isDarkMode),
-                            ),
-                          ),
-                        ],
-                      ),
-                      ...participants.map((participant) {
-                        final userinfo =
-                            ref.watch(userInfoProvider(participant.userId));
-                        if (widget.taxiGroup.creatorUserId == user!.id ||
-                            userinfo.userId == user!.id) {
-                          _isParticipation = true;
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 16),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                decoration: ShapeDecoration(
-                                  color: blue20,
-                                  shape: CircleBorder(),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              Text(
-                                userinfo.nickname!,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.text(isDarkMode),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 8,
-                              ),
-                              Spacer(),
-                              Icon(
-                                Icons.star,
-                                size: 16,
-                                color: ThemeModel.sub2(isDarkMode),
-                              ),
-                              SizedBox(
-                                width: 4,
-                              ),
-                              Text(
-                                '4.5/5.0',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: ThemeModel.sub4(isDarkMode),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ],
-                  ),
+                TaxiGroupParticipantCard(
+                  creatorUserId: widget.taxiGroup.creatorUserId!,
+                  createdUser: createdUser,
+                  participants: participants,
+                  isDarkMode: isDarkMode,
+                  isParticipation: _isParticipation,
                 ),
 
                 const SizedBox(height: 16),
