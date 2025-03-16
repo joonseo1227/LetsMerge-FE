@@ -87,6 +87,8 @@ class _TaxiGroupRequestMoneyPageState
                             child: CTextField(
                               focusNode: _focusNode,
                               keyboardType: TextInputType.number,
+                              backgroundColor:
+                                  ThemeModel.background(isDarkMode),
                               hint: '총 금액 입력(원)',
                             ),
                           ),
