@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
-import 'package:letsmerge/models/location_model.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/chat/taxi_group_location_sharing_page.dart';
@@ -91,13 +90,11 @@ class LocationMessageGlobalKeys {
 }
 
 class LocationMessage extends ConsumerStatefulWidget {
-  final LocationModel locationModel;
   final String messageId;
   final String groupId;
 
   const LocationMessage({
     super.key,
-    required this.locationModel,
     required this.messageId,
     required this.groupId,
   });

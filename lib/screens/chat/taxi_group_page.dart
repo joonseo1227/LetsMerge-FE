@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:letsmerge/models/location_model.dart';
 import 'package:letsmerge/models/taxi_group/chats/chat.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
@@ -254,7 +251,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
         return MyMessage(
           formattedTime: formattedTime,
           content: LocationMessage(
-            locationModel: LocationModel.fromJson(json.decode(message.content)),
             messageId: message.messageId,
             groupId: message.groupId,
           ),
@@ -287,7 +283,6 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
           senderNickname: senderNickname,
           formattedTime: formattedTime,
           content: LocationMessage(
-            locationModel: LocationModel.fromJson(json.decode(message.content)),
             messageId: message.messageId,
             groupId: message.groupId,
           ),
