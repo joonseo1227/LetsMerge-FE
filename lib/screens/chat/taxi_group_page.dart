@@ -1,8 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:letsmerge/models/location_model.dart';
 import 'package:letsmerge/models/taxi_group/chats/chat.dart';
@@ -19,7 +19,6 @@ import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
-import 'package:letsmerge/widgets/c_map_widget.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -257,6 +256,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
           content: LocationMessage(
             locationModel: LocationModel.fromJson(json.decode(message.content)),
             messageId: message.messageId,
+            groupId: message.groupId,
           ),
         );
       default:
@@ -289,6 +289,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
           content: LocationMessage(
             locationModel: LocationModel.fromJson(json.decode(message.content)),
             messageId: message.messageId,
+            groupId: message.groupId,
           ),
         );
       default:
@@ -416,7 +417,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                             ),
                             CListTile(
                               onTap: () {
-                                _showLocationInputDialog(isDarkMode);
+                                _showLocationSharingDialog(isDarkMode);
                               },
                               title: '실시간 위치 공유',
                               icon: Icons.location_on,
@@ -435,48 +436,19 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
   }
 
-  void _showLocationInputDialog(bool isDarkMode) async {
-    Position pos;
-    try {
-      pos = await Geolocator.getCurrentPosition();
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('위치 조회에 실패했습니다: $e')),
-      );
-      return;
-    }
-    final locationModel = LocationModel(
-      latitude: pos.latitude,
-      longitude: pos.longitude,
-      address: '',
-      place: '',
-    );
+  void _showLocationSharingDialog(bool isDarkMode) async {
     bool? confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return CDialog(
-          title: '실시간 위치 공유',
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '정확한 위치와 오차가 발생할 수 있으니 주의하세요.',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 8),
-              CMapWidget(
-                isDarkMode: isDarkMode,
-                width: double.maxFinite,
-                height: 200,
-                initialLatitude: locationModel.latitude,
-                initialLongitude: locationModel.longitude,
-              ),
-              const SizedBox(height: 8),
-            ],
+          title: '실시간 위치를 공유할까요?',
+          content: Text(
+            '멤버들과 서로의 실시간 위치를 지도에서 확인할 수 있어요.',
+            style: TextStyle(
+              color: ThemeModel.text(isDarkMode),
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+            ),
           ),
           buttons: [
             CButton(
@@ -495,11 +467,11 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
       },
     );
     if (confirm == true) {
-      _sendCustomMessage(jsonEncode(locationModel.toJson()), "location");
+      _sendCustomMessage("", "location");
     }
   }
 
-  void _sendCustomMessage(String text, String messageType) async {
+  void _sendCustomMessage(String content, String messageType) async {
     _scrollController.animateTo(
       0,
       duration: const Duration(milliseconds: 150),
@@ -507,7 +479,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     );
     await ref.read(taxiGroupProvider.notifier).sendChatMessage(
           widget.taxiGroup,
-          text,
+          content,
           messageType,
         );
   }

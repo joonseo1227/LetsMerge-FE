@@ -93,11 +93,13 @@ class LocationMessageGlobalKeys {
 class LocationMessage extends ConsumerStatefulWidget {
   final LocationModel locationModel;
   final String messageId;
+  final String groupId;
 
   const LocationMessage({
     super.key,
     required this.locationModel,
     required this.messageId,
+    required this.groupId,
   });
 
   @override
@@ -150,7 +152,9 @@ class _LocationMessageState extends ConsumerState<LocationMessage>
           onTap: () {
             Navigator.of(context).push(
               CupertinoPageRoute(
-                builder: (context) => TaxiGroupLocationSharingPage(),
+                builder: (context) => TaxiGroupLocationSharingPage(
+                  groupId: widget.groupId,
+                ),
               ),
             );
           },
