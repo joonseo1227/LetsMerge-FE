@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -182,7 +183,9 @@ class _TaxiGroupLocationSharingPageState
   }
 
   // 마커 업데이트
-  void _updateMarkers() {
+  Future<void> _updateMarkers() async {
+    final isDarkMode = ref.watch(themeProvider);
+
     if (_mapController == null) return;
 
     _markers.clear();
@@ -197,10 +200,28 @@ class _TaxiGroupLocationSharingPageState
       // 내 위치이면 다른 마커 스타일 적용
       if (participant.userId == _currentUser?.id) {
         marker.setIcon(
-            NOverlayImage.fromAssetImage('assets/imgs/my_location.png'));
+          await NOverlayImage.fromWidget(
+            widget: SizedBox.shrink(),
+            size: Size(48, 48),
+            context: context,
+          ),
+        );
       } else {
         marker.setIcon(
-            NOverlayImage.fromAssetImage('assets/imgs/other_location.png'));
+          await NOverlayImage.fromWidget(
+            widget: Container(
+              color: ThemeModel.surface(!isDarkMode).withValues(alpha: 0.9),
+              child: Text(
+                ref.watch(userInfoProvider(participant.userId)).nickname!,
+                style: TextStyle(
+                  color: ThemeModel.text(!isDarkMode),
+                ),
+              ),
+            ),
+            size: Size(80, 16),
+            context: context,
+          ),
+        );
       }
 
       // 마커에 정보창 추가
@@ -292,6 +313,17 @@ class _TaxiGroupLocationSharingPageState
     }
   }
 
+  void _moveToParticipantLocation(ParticipantLocation participant) {
+    if (_mapController == null) return;
+
+    _mapController!.updateCamera(
+      NCameraUpdate.withParams(
+        target: NLatLng(participant.latitude, participant.longitude),
+        zoom: 15,
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _positionStream?.cancel();
@@ -337,9 +369,7 @@ class _TaxiGroupLocationSharingPageState
               const Center(
                 child: CSkeleton(),
               ),
-
             if (_showSkeleton) const CSkeleton(),
-
             Positioned(
               right: 16,
               bottom: 16,
@@ -361,49 +391,62 @@ class _TaxiGroupLocationSharingPageState
                 ),
               ),
             ),
-
-            // 참여자 목록 표시
-            Positioned(
-              left: 16,
-              top: 0,
-              child: SafeArea(
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color:
-                        ThemeModel.surface(isDarkMode).withValues(alpha: 0.9),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '참여자 (${_participants.length})',
-                        style: TextStyle(
-                          color: ThemeModel.text(isDarkMode),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      ..._participants.values.map(
-                        (p) => Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 2,
-                          ),
-                          child: Text(
-                            p.userId,
-                            style: TextStyle(
-                              color: ThemeModel.text(isDarkMode),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+            Column(
+              children: [
+                Text(
+                  '참여자 목록',
+                  style: Theme.of(context).textTheme.titleLarge,
+                  textAlign: TextAlign.center,
                 ),
-              ),
-            ),
+                const SizedBox(height: 16),
+                ..._participants.entries.map(
+                  (entry) {
+                    final participant = entry.value;
+                    final isCurrentUser =
+                        participant.userId == _currentUser?.id;
+
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor:
+                            isCurrentUser ? Colors.blue : Colors.grey,
+                        child: Icon(Icons.person, color: Colors.white),
+                      ),
+                      title: Text(isCurrentUser
+                          ? '나'
+                          : ref
+                              .watch(userInfoProvider(participant.userId))
+                              .nickname!),
+                      subtitle: Text(
+                        '최근 위치 업데이트: ${_formatTimeAgo(participant.timestamp)}',
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(Icons.location_on),
+                        onPressed: () =>
+                            _moveToParticipantLocation(participant),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            )
           ],
         ),
       ),
     );
+  }
+}
+
+String _formatTimeAgo(DateTime time) {
+  final now = DateTime.now();
+  final difference = now.difference(time);
+
+  if (difference.inSeconds < 60) {
+    return '방금 전';
+  } else if (difference.inMinutes < 60) {
+    return '${difference.inMinutes}분 전';
+  } else if (difference.inHours < 24) {
+    return '${difference.inHours}시간 전';
+  } else {
+    return '${difference.inDays}일 전';
   }
 }

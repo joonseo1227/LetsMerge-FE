@@ -388,6 +388,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                           children: [
                             CListTile(
                               onTap: () {
+                                Navigator.pop(context);
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
                                     builder: (context) =>
@@ -400,6 +401,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                             ),
                             CListTile(
                               onTap: () {
+                                Navigator.pop(context);
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
                                     builder: (context) =>
@@ -412,6 +414,7 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                             ),
                             CListTile(
                               onTap: () {
+                                Navigator.pop(context);
                                 _showLocationSharingDialog(isDarkMode);
                               },
                               title: '실시간 위치 공유',
