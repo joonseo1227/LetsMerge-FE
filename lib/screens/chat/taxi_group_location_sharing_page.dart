@@ -5,11 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
+import 'package:letsmerge/widgets/c_tag.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 // 참여자 데이터를 위한 모델
@@ -331,9 +333,16 @@ class _TaxiGroupLocationSharingPageState
     super.dispose();
   }
 
+  double _bottomSheetSize = 0.1;
+
   @override
   Widget build(BuildContext context) {
+    final double bottomPadding =
+        MediaQuery.of(context).size.height * _bottomSheetSize -
+            MediaQuery.of(context).padding.bottom;
+
     final isDarkMode = ref.watch(themeProvider);
+
     return AnnotatedRegion(
       value: isDarkMode
           ? SystemUiOverlayStyle.light
@@ -356,6 +365,7 @@ class _TaxiGroupLocationSharingPageState
                 options: NaverMapViewOptions(
                   mapType: NMapType.navi,
                   nightModeEnable: isDarkMode,
+                  contentPadding: EdgeInsets.only(bottom: bottomPadding),
                   initialCameraPosition: NCameraPosition(
                     target: NLatLng(
                       _initialPosition!.latitude,
@@ -372,7 +382,7 @@ class _TaxiGroupLocationSharingPageState
             if (_showSkeleton) const CSkeleton(),
             Positioned(
               right: 16,
-              bottom: 16,
+              bottom: bottomPadding + 16,
               child: SafeArea(
                 child: Column(
                   children: [
@@ -391,44 +401,154 @@ class _TaxiGroupLocationSharingPageState
                 ),
               ),
             ),
-            Column(
-              children: [
-                Text(
-                  '참여자 목록',
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 16),
-                ..._participants.entries.map(
-                  (entry) {
-                    final participant = entry.value;
-                    final isCurrentUser =
-                        participant.userId == _currentUser?.id;
+            NotificationListener<DraggableScrollableNotification>(
+              onNotification: (notification) {
+                setState(() {
+                  _bottomSheetSize = notification.extent;
+                });
+                return true;
+              },
+              child: DraggableScrollableSheet(
+                initialChildSize: 0.2,
+                minChildSize: 0.2,
+                maxChildSize: 0.8,
+                builder:
+                    (BuildContext context, ScrollController scrollController) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: ThemeModel.surface(isDarkMode),
+                      boxShadow: [
+                        BoxShadow(
+                          color: black.withValues(alpha: 0.1),
+                          blurRadius: 10,
+                          spreadRadius: 0,
+                        ),
+                      ],
+                    ),
+                    child: CustomScrollView(
+                      controller: scrollController,
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: Column(
+                            children: [
+                              // 드래그 핸들
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                width: 40,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  color: ThemeModel.sub2(isDarkMode),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ),
+                              // 제목 부분
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '위치 공유 참여자',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600,
+                                        color: ThemeModel.text(isDarkMode),
+                                      ),
+                                    ),
+                                    Text(
+                                      '${_participants.length}명',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        color: ThemeModel.sub4(isDarkMode),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (_participants.isEmpty)
+                          SliverFillRemaining(
+                            child: Center(
+                              child: Text(
+                                '참여자 없음',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: ThemeModel.sub4(isDarkMode),
+                                ),
+                              ),
+                            ),
+                          )
+                        else
+                          SliverList(
+                            delegate: SliverChildBuilderDelegate(
+                              (context, index) {
+                                final participantId =
+                                    _participants.keys.elementAt(index);
+                                final participant =
+                                    _participants[participantId]!;
+                                final isCurrentUser =
+                                    participantId == _currentUser?.id;
 
-                    return ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor:
-                            isCurrentUser ? Colors.blue : Colors.grey,
-                        child: Icon(Icons.person, color: Colors.white),
-                      ),
-                      title: Text(isCurrentUser
-                          ? '나'
-                          : ref
-                              .watch(userInfoProvider(participant.userId))
-                              .nickname!),
-                      subtitle: Text(
-                        '최근 위치 업데이트: ${_formatTimeAgo(participant.timestamp)}',
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(Icons.location_on),
-                        onPressed: () =>
-                            _moveToParticipantLocation(participant),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            )
+                                final userInfo = ref.watch(
+                                  userInfoProvider(participantId),
+                                );
+
+                                return ListTile(
+                                  leading: CircleAvatar(
+                                    backgroundColor: blue30,
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  title: Row(
+                                    children: [
+                                      Text(
+                                        userInfo.nickname ?? '알 수 없음',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: ThemeModel.text(isDarkMode),
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      if (isCurrentUser)
+                                        Padding(
+                                          padding: EdgeInsets.only(left: 8),
+                                          child: CTag(
+                                            text: '나',
+                                            color: TagColor.blue,
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                  subtitle: Text(
+                                    '최근 위치 갱신: ${_formatTimeAgo(participant.timestamp)}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      color: ThemeModel.sub4(isDarkMode),
+                                    ),
+                                  ),
+                                  onTap: () => _moveToParticipantLocation(
+                                    participant,
+                                  ),
+                                );
+                              },
+                              childCount: _participants.length,
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
           ],
         ),
       ),
