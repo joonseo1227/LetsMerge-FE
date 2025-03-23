@@ -242,10 +242,12 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
   Widget _buildMyMessage(Chat message, String formattedTime, bool isDarkMode) {
     final String messageType = message.messageType;
     switch (messageType) {
-      case 'account':
+      case 'request_money':
         return MyMessage(
           formattedTime: formattedTime,
-          content: RequestMoneyMessage(),
+          content: RequestMoneyMessage(
+            messageContent: message.content,
+          ),
         );
       case 'location':
         return MyMessage(
@@ -272,11 +274,13 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
     final String senderNickname = userinfo?['nickname'] ?? '알 수 없음';
 
     switch (messageType) {
-      case 'account':
+      case 'request_money':
         return OtherMessage(
           senderNickname: senderNickname,
           formattedTime: formattedTime,
-          content: RequestMoneyMessage(),
+          content: RequestMoneyMessage(
+            messageContent: message.content,
+          ),
         );
       case 'location':
         return OtherMessage(

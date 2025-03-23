@@ -1,14 +1,15 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
+import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
-import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_checkbox.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
@@ -318,12 +319,30 @@ class _TaxiGroupRequestMoneyPageState
             child: SafeArea(
               top: false,
               child: CButton(
-                onTap: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    CupertinoPageRoute(builder: (context) => MainPage()),
-                    (Route<dynamic> route) => false,
-                  );
-                },
+                onTap: (selectedCount == 0 || amountController.text.isEmpty)
+                    ? null
+                    : () async {
+                        Map<String, dynamic> settlementInfo = {
+                          'totalAmount': int.parse(
+                              amountController.text.replaceAll(',', '')),
+                          'amountPerPerson': getAmountPerPerson(),
+                          'payers': selectedParticipants.entries
+                              .where((entry) => entry.value)
+                              .map((entry) => entry.key)
+                              .toList(),
+                          'requestedByUserId': user?.id,
+                          'settlementTime': DateTime.now().toIso8601String(),
+                        };
+
+                        await ref
+                            .read(taxiGroupProvider.notifier)
+                            .sendChatMessage(
+                              widget.taxiGroup,
+                              jsonEncode(settlementInfo),
+                              'request_money',
+                            );
+                        Navigator.pop(context);
+                      },
                 size: CButtonSize.extraLarge,
                 label: '정산 요청',
                 icon: Icons.navigate_next,

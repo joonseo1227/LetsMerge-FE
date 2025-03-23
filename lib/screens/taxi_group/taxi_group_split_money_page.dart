@@ -1,15 +1,24 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_tag.dart';
 
 class TaxiGroupSplitMoneyPage extends ConsumerStatefulWidget {
-  const TaxiGroupSplitMoneyPage({super.key});
+  final String settlementData;
+
+  const TaxiGroupSplitMoneyPage({
+    super.key,
+    required this.settlementData,
+  });
 
   @override
   ConsumerState<TaxiGroupSplitMoneyPage> createState() =>
@@ -19,16 +28,46 @@ class TaxiGroupSplitMoneyPage extends ConsumerStatefulWidget {
 class _TaxiGroupSplitMoneyPageState
     extends ConsumerState<TaxiGroupSplitMoneyPage> {
   late FocusNode _focusNode;
+  late Map<String, dynamic> settlementInfo;
+  late int totalAmount;
+  late double amountPerPerson;
+  late List<String> payers;
+  late String requestedByUserId;
+  late DateTime settlementTime;
 
   @override
   void initState() {
     super.initState();
-    // FocusNode 초기화
     _focusNode = FocusNode();
+
+    parseSettlementData();
+
     // 화면이 로드될 때 포커스 요청
     WidgetsBinding.instance.addPostFrameCallback((_) {
       FocusScope.of(context).requestFocus(_focusNode);
     });
+  }
+
+  void parseSettlementData() {
+    try {
+      // JSON 문자열을 Map으로 파싱
+      settlementInfo = jsonDecode(widget.settlementData);
+
+      // 데이터 추출
+      totalAmount = settlementInfo['totalAmount'];
+      amountPerPerson = settlementInfo['amountPerPerson'];
+      payers = List<String>.from(settlementInfo['payers']);
+      requestedByUserId = settlementInfo['requestedByUserId'];
+      settlementTime = DateTime.parse(settlementInfo['settlementTime']);
+    } catch (e) {
+      debugPrint('정산 데이터 파싱 오류: $e');
+      // 오류 처리 (기본값 설정 등)
+      totalAmount = 0;
+      amountPerPerson = 0;
+      payers = [];
+      requestedByUserId = '';
+      settlementTime = DateTime.now();
+    }
   }
 
   @override
@@ -87,7 +126,18 @@ class _TaxiGroupSplitMoneyPageState
                           SizedBox(height: 20),
                           // 정산 금액 정보
                           Text(
-                            '홍길동 님에게',
+                            () {
+                              final userInfo = ref
+                                  .watch(userInfoProvider(requestedByUserId));
+                              final nickname = userInfo.nickname;
+                              final name = userInfo.name;
+
+                              final maskedName = name.length > 1
+                                  ? '${name.substring(0, 1)}*${name.length > 2 ? name.substring(2) : ''}'
+                                  : name;
+
+                              return '$nickname($maskedName)님에게';
+                            }(),
                             style: TextStyle(
                               color: ThemeModel.text(isDarkMode),
                               fontSize: 16,
@@ -96,7 +146,7 @@ class _TaxiGroupSplitMoneyPageState
                           ),
                           SizedBox(height: 4),
                           Text(
-                            '1,200원',
+                            '${NumberFormat('#,###', 'ko_KR').format(amountPerPerson)}원',
                             style: TextStyle(
                               color: ThemeModel.highlightText(isDarkMode),
                               fontSize: 32,

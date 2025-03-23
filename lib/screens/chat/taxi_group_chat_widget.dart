@@ -20,7 +20,12 @@ Color getMessageTextColor(BuildContext context, bool isDarkMode) {
 
 /// 정산 메시지
 class RequestMoneyMessage extends ConsumerStatefulWidget {
-  const RequestMoneyMessage({super.key});
+  final String messageContent;
+
+  const RequestMoneyMessage({
+    super.key,
+    required this.messageContent,
+  });
 
   @override
   ConsumerState<RequestMoneyMessage> createState() =>
@@ -64,7 +69,9 @@ class _RequestMoneyMessageState extends ConsumerState<RequestMoneyMessage> {
           onTap: () {
             Navigator.of(context).push(
               CupertinoPageRoute(
-                builder: (context) => TaxiGroupSplitMoneyPage(),
+                builder: (context) => TaxiGroupSplitMoneyPage(
+                  settlementData: widget.messageContent,
+                ),
               ),
             );
           },
