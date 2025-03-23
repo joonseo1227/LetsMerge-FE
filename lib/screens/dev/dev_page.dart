@@ -263,7 +263,7 @@ class TaxiGroupListScreen extends ConsumerWidget {
                           '${group.departurePlace} → ${group.arrivalPlace}'),
                       subtitle: Text(
                         '예상 요금: ${group.estimatedFare}원\n'
-                        '출발 시간: ${group.departureTime ?? "미정"}',
+                        '출발 시간: ${group.departureTime}',
                       ),
                     );
                   },

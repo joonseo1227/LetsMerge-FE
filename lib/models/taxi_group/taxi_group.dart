@@ -16,8 +16,8 @@ class TaxiGroup with _$TaxiGroup {
     @JsonKey(name: 'arrival_address') required String arrivalAddress,
     @JsonKey(name: 'arrival_lat') required double arrivalLat,
     @JsonKey(name: 'arrival_lon') required double arrivalLon,
-    @JsonKey(name: 'estimated_fare') required int? estimatedFare,
-    @JsonKey(name: 'departure_time') required DateTime? departureTime,
+    @JsonKey(name: 'estimated_fare') required int estimatedFare,
+    @JsonKey(name: 'departure_time') required DateTime departureTime,
     @JsonKey(name: 'remaining_seats') required int remainingSeats,
   }) = _TaxiGroup;
 

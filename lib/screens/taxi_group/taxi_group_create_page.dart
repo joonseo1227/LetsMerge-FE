@@ -176,7 +176,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       arrivalAddress: destinationData.address,
       arrivalLat: destinationData.latitude,
       arrivalLon: destinationData.longitude,
-      estimatedFare: taxiFare,
+      estimatedFare: taxiFare!,
       departureTime: selectedDateTime!,
       remainingSeats: selectedMemberCount!,
     );

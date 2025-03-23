@@ -220,7 +220,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                   departureAdress: widget.taxiGroup.departureAddress,
                   arrivalPlace: widget.taxiGroup.arrivalPlace,
                   arrivalAddress: widget.taxiGroup.arrivalAddress,
-                  startTime: widget.taxiGroup.departureTime!,
+                  startTime: widget.taxiGroup.departureTime,
                 ),
 
                 SizedBox(

@@ -291,7 +291,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                   departureAdress: group.departureAddress,
                                   arrivalPlace: group.arrivalPlace,
                                   arrivalAddress: group.arrivalAddress,
-                                  startTime: group.departureTime!,
+                                  startTime: group.departureTime,
                                 ),
                               ),
                             );

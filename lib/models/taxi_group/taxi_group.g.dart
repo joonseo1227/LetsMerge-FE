@@ -18,10 +18,8 @@ _$TaxiGroupImpl _$$TaxiGroupImplFromJson(Map<String, dynamic> json) =>
       arrivalAddress: json['arrival_address'] as String,
       arrivalLat: (json['arrival_lat'] as num).toDouble(),
       arrivalLon: (json['arrival_lon'] as num).toDouble(),
-      estimatedFare: (json['estimated_fare'] as num?)?.toInt(),
-      departureTime: json['departure_time'] == null
-          ? null
-          : DateTime.parse(json['departure_time'] as String),
+      estimatedFare: (json['estimated_fare'] as num).toInt(),
+      departureTime: DateTime.parse(json['departure_time'] as String),
       remainingSeats: (json['remaining_seats'] as num).toInt(),
     );
 
@@ -38,6 +36,6 @@ Map<String, dynamic> _$$TaxiGroupImplToJson(_$TaxiGroupImpl instance) =>
       'arrival_lat': instance.arrivalLat,
       'arrival_lon': instance.arrivalLon,
       'estimated_fare': instance.estimatedFare,
-      'departure_time': instance.departureTime?.toIso8601String(),
+      'departure_time': instance.departureTime.toIso8601String(),
       'remaining_seats': instance.remainingSeats,
     };
