@@ -16,7 +16,6 @@ import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_popup_menu.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
-import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:letsmerge/widgets/c_toggle_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -35,26 +34,11 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
   final _mapKey = UniqueKey();
   final TextEditingController _clothingController = TextEditingController();
   final GlobalKey<CPopupMenuState> popupMenuKey = GlobalKey<CPopupMenuState>();
-  final List<String> _clothingTags = [];
-  int? selectedMemberCount;
+  int selectedMemberCount = 3;
   DateTime? selectedDateTime;
 
-  // 옷차림 태그 추가 함수
-  void _addClothingTag(String tag) {
-    if (tag.isNotEmpty && !_clothingTags.contains(tag)) {
-      setState(() {
-        _clothingTags.add(tag);
-      });
-      _clothingController.clear();
-    }
-  }
-
-  // 옷차림 태그 제거 함수
-  void _removeClothingTag(String tag) {
-    setState(() {
-      _clothingTags.remove(tag);
-    });
-  }
+  // 에러 메시지 표시 여부 (출발 시각 미선택 시)
+  bool _showDateTimeError = false;
 
   // directionsProvider를 통해 경로 요청하는 함수
   void _fetchDirections() async {
@@ -178,7 +162,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
       arrivalLon: destinationData.longitude,
       estimatedFare: taxiFare!,
       departureTime: selectedDateTime!,
-      remainingSeats: selectedMemberCount!,
+      remainingSeats: selectedMemberCount,
     );
 
     await ref.read(taxiGroupProvider.notifier).createTaxiGroup(taxiGroup);
@@ -193,8 +177,12 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
     final formattedTaxiFare = taxiFare != null
         ? NumberFormat('#,###', 'ko_KR').format(taxiFare)
         : '-';
+    final fareMoney = (taxiFare != null)
+        ? NumberFormat('#,###', 'ko_KR')
+            .format((taxiFare / selectedMemberCount).round())
+        : '-';
 
-    // directionsProvider 상태 변경 시 지도 오버레이를 업데이트합니다.
+    // directionsProvider 상태 변경 시 지도 오버레이를 업데이트
     ref.listen<DirectionsState>(directionsProvider, (prev, next) {
       _addPolylineOverlay();
     });
@@ -399,14 +387,10 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                                     color: ThemeModel.text(isDarkMode),
                                   ),
                                 ),
-                                const SizedBox(
-                                  height: 4,
-                                ),
-                                if (selectedMemberCount != null &&
-                                    taxiFare != null)
+                                const SizedBox(height: 4),
+                                if (taxiFare != null)
                                   Text(
-                                    // 인원수에 따라 택시비 분할
-                                    "1인당 ${NumberFormat('#,###', 'ko_KR').format((taxiFare / (selectedMemberCount! + 1)).round())}원",
+                                    "1인당 $fareMoney원",
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w500,
@@ -443,7 +427,7 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     const SizedBox(height: 4),
                     CToggleButton(
                       buttonCount: 3,
-                      initialSelectedIndex: (selectedMemberCount ?? 0),
+                      initialSelectedIndex: selectedMemberCount - 1,
                       labels: ['1명', '2명', '3명'],
                       onToggle: (index) {
                         setState(() {
@@ -468,98 +452,16 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
                     ),
                     const SizedBox(height: 4),
                     CDateTimePicker(
+                      error: selectedDateTime == null && _showDateTimeError,
+                      errorText: "출발 시각을 선택해주세요.",
                       onDateTimeSelected: (dateTime) {
                         setState(() {
                           selectedDateTime = dateTime;
+                          _showDateTimeError = false;
                         });
                       },
                     ),
                   ],
-                ),
-                const SizedBox(height: 16),
-
-                // 내 옷차림 입력 영역
-                Text(
-                  '내 옷차림',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: ThemeModel.sub6(isDarkMode),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: CTextField(
-                        hint: "예: 검정 코트, 청바지",
-                        controller: _clothingController,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    // 태그 추가 버튼
-                    CButton(
-                      onTap: () {
-                        _addClothingTag(_clothingController.text.trim());
-                      },
-                      style: CButtonStyle.secondary(isDarkMode),
-                      icon: Icons.add,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "옷차림은 다른 사람이 알아보기 쉽게 작성해 주세요.",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: ThemeModel.highlightText(isDarkMode),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                // 옷차림 태그 리스트
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 8,
-                    children: _clothingTags.map(
-                      (tag) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 8,
-                          ),
-                          decoration: ShapeDecoration(
-                            color: ThemeModel.surface(isDarkMode),
-                            shape: const StadiumBorder(),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                tag,
-                                style: TextStyle(
-                                  color: ThemeModel.text(isDarkMode),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 4,
-                              ),
-                              CInkWell(
-                                onTap: () => _removeClothingTag(tag),
-                                child: Icon(
-                                  Icons.close,
-                                  size: 18,
-                                  color: ThemeModel.text(isDarkMode),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ).toList(),
-                  ),
                 ),
               ],
             ),
@@ -572,7 +474,13 @@ class _TaxiGroupCreatePageState extends ConsumerState<TaxiGroupCreatePage> {
         child: SafeArea(
           child: CButton(
             onTap: () async {
-              submitTaxiGroup(ref);
+              if (selectedDateTime == null) {
+                setState(() {
+                  _showDateTimeError = true;
+                });
+                return;
+              }
+              await submitTaxiGroup(ref);
               Navigator.of(context).pushAndRemoveUntil(
                 CupertinoPageRoute(
                   builder: (context) => MainPage(),

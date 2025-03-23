@@ -4,7 +4,6 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
-import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/taxi_group/taxi_group.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/directions_provider.dart';
@@ -15,10 +14,10 @@ import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/screens/chat/taxi_group_page.dart';
 import 'package:letsmerge/screens/main/main_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_detail_card.dart';
+import 'package:letsmerge/screens/taxi_group/taxi_group_participant_card.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
-import 'package:letsmerge/widgets/c_tag.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class TaxiGroupPreviewPage extends ConsumerStatefulWidget {
@@ -80,56 +79,68 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
   }
 
   // directionsProvider를 통해 경로 요청하는 함수
-  void _fetchDirections() async {
+  Future<void> _fetchDirections() async {
     final directionsNotifier = ref.read(directionsProvider.notifier);
 
-    // 동일한 위치인지 확인 후 경로 요청
-    final checkFetchDirections = await directionsNotifier.checkFetchDirections(
-      widget.taxiGroup.departureLat,
-      widget.taxiGroup.departureLon,
-      widget.taxiGroup.arrivalLat,
-      widget.taxiGroup.arrivalLon,
-    );
-
-    if (!checkFetchDirections) {
-      if (!mounted) return;
-
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return CDialog(
-            title: '출발지와 목적지가 같아요',
-            content: Text(
-              '확인 후 다시 지정해주세요.',
-              style: TextStyle(
-                color: ThemeModel.text(ref.read(themeProvider)),
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-            buttons: [
-              CButton(
-                size: CButtonSize.extraLarge,
-                label: '확인',
-                onTap: () {
-                  Navigator.of(context).pushAndRemoveUntil(
-                    CupertinoPageRoute(builder: (context) => MainPage()),
-                    (Route<dynamic> route) => false,
-                  );
-                },
-              ),
-            ],
-          );
-        },
+    try {
+      // 동일한 위치인지 확인 후 경로 요청
+      final checkFetchDirections =
+          await directionsNotifier.checkFetchDirections(
+        widget.taxiGroup.departureLat,
+        widget.taxiGroup.departureLon,
+        widget.taxiGroup.arrivalLat,
+        widget.taxiGroup.arrivalLon,
       );
-      return;
-    }
 
-    // 정상적인 경우 경로 오버레이 추가
-    _addPolylineOverlay();
+      if (!checkFetchDirections) {
+        if (!mounted) return;
+
+        // 출발지와 목적지가 같은 경우
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return CDialog(
+              title: '출발지와 목적지가 같아요',
+              content: Text(
+                '확인 후 다시 지정해주세요.',
+                style: TextStyle(
+                  color: ThemeModel.text(ref.read(themeProvider)),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              buttons: [
+                CButton(
+                  size: CButtonSize.extraLarge,
+                  label: '확인',
+                  onTap: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      CupertinoPageRoute(builder: (context) => MainPage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  },
+                ),
+              ],
+            );
+          },
+        );
+        return;
+      }
+
+      // 정상적인 경우 경로 오버레이 추가
+      _addPolylineOverlay();
+    } catch (e) {
+      debugPrint('경로 요청 에러: $e');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _showSkeleton = false;
+        });
+      }
+    }
   }
 
-  // 지도에 경로 오버레이 추가 및 카메라 업데이트 함수
+  /// 지도에 경로 오버레이 추가 및 카메라 업데이트 함수
   void _addPolylineOverlay() async {
     final routePoints = ref.read(directionsProvider).routePoints;
 
@@ -142,12 +153,12 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
         NPolylineOverlay(
           id: "directions",
           coords: routePoints,
-          color: ThemeModel.text(ref.watch(themeProvider)),
+          color: ThemeModel.text(ref.read(themeProvider)),
           width: 4,
         ),
       );
 
-      // 모든 좌표를 포함하는 bounds 계산
+      // 모든 좌표를 포함하는 bounds 계산 후 카메라 업데이트
       final bounds = NLatLngBounds.from(routePoints);
 
       // padding을 적용하여 bounds 내 영역을 온전히 보여주는 카메라 업데이트 생성
@@ -158,10 +169,6 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
 
       await _mapController!.updateCamera(cameraUpdate);
 
-      setState(() {
-        _showSkeleton = false;
-      });
-
       debugPrint("경로 오버레이 추가 및 카메라 업데이트");
     }
   }
@@ -170,7 +177,19 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
     final participants = ref.watch(participantsProvider(widget.taxiGroup));
-    final createdUser = ref.watch(userInfoProvider(widget.taxiGroup.creatorUserId ?? ""));
+    final createdUser =
+        ref.watch(userInfoProvider(widget.taxiGroup.creatorUserId ?? ""));
+    _isParticipation = widget.taxiGroup.creatorUserId == user!.id;
+
+    if (!_isParticipation) {
+      for (var participant in participants) {
+        final userInfo = ref.watch(userInfoProvider(participant.userId));
+        if (userInfo.userId == user!.id) {
+          _isParticipation = true;
+          break;
+        }
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -179,7 +198,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -188,30 +207,25 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                   height: 400,
                   child: Stack(
                     children: [
-                      AnimatedOpacity(
-                        opacity: _showSkeleton ? 0.0 : 1.0,
-                        duration: const Duration(milliseconds: 200),
-                        child: NaverMap(
-                          key: _mapKey,
-                          options: NaverMapViewOptions(
-                            mapType: NMapType.navi,
-                            nightModeEnable: isDarkMode,
-                          ),
-                          onMapReady: (controller) async {
-                            debugPrint('Naver Map Ready');
-                            _mapController = controller;
-                            _fetchDirections();
-                          },
+                      NaverMap(
+                        key: _mapKey,
+                        options: NaverMapViewOptions(
+                          mapType: NMapType.navi,
+                          nightModeEnable: isDarkMode,
                         ),
+                        onMapReady: (controller) async {
+                          debugPrint('Naver Map Ready');
+                          _mapController = controller;
+                          _fetchDirections();
+                        },
                       ),
-                      if (_showSkeleton) const CSkeleton(),
+                      if (_showSkeleton)
+                        const Positioned.fill(child: CSkeleton()),
                     ],
                   ),
                 ),
 
-                SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
 
                 /// 기본 정보
                 TaxiGroupDetailCard(
@@ -223,133 +237,24 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                   startTime: widget.taxiGroup.departureTime,
                 ),
 
-                SizedBox(
-                  height: 16,
+                const SizedBox(height: 16),
+
+                /// 참여자 정보
+                TaxiGroupParticipantCard(
+                  creatorUserId: widget.taxiGroup.creatorUserId!,
+                  createdUser: createdUser,
+                  participants: participants,
+                  isDarkMode: isDarkMode,
+                  isParticipation: _isParticipation,
                 ),
 
-                Container(
-                  color: ThemeModel.surface(isDarkMode),
-                  width: double.maxFinite,
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 40,
-                          height: 40,
-                          decoration: ShapeDecoration(
-                            color: blue20,
-                            shape: CircleBorder(),
-                          ),
-                        ),
-                          SizedBox(
-                            width: 12,
-                          ),
-                          Text(
-                            createdUser.nickname!,
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.text(isDarkMode),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 8,
-                          ),
-                          CTag(
-                            text: '대표',
-                            color: TagColor.blue,
-                          ),
-                          Spacer(),
-                          Icon(
-                            Icons.star,
-                            size: 16,
-                            color: ThemeModel.sub2(isDarkMode),
-                          ),
-                          SizedBox(
-                            width: 4,
-                          ),
-                          Text(
-                            '4.5/5.0',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: ThemeModel.sub4(isDarkMode),
-                            ),
-                          ),
-                        ],
-                      ),
-                      if (participants.isNotEmpty)
-                        SizedBox(
-                          height: 16,
-                        ),
-                      /// 참여자 정보
-                      ...participants.map((participant) {
-                        final userinfo = ref.watch(userInfoProvider(participant.userId));
-                        if (widget.taxiGroup.creatorUserId == user!.id || userinfo.userId == user!.id) {
-                          _isParticipation = true;
-                        }
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 40,
-                              height: 40,
-                              decoration: ShapeDecoration(
-                                color: blue20,
-                                shape: CircleBorder(),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 12,
-                            ),
-                            Text(
-                              userinfo.nickname!,
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: ThemeModel.text(isDarkMode),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Spacer(),
-                            Icon(
-                              Icons.star,
-                              size: 16,
-                              color: ThemeModel.sub2(isDarkMode),
-                            ),
-                            SizedBox(
-                              width: 4,
-                            ),
-                            Text(
-                              '4.5/5.0',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: ThemeModel.sub4(isDarkMode),
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-
-                SizedBox(
-                  height: 16,
-                ),
+                const SizedBox(height: 16),
 
                 /// 비용 정보
                 Container(
                   color: ThemeModel.surface(isDarkMode),
                   width: double.maxFinite,
-                  padding: EdgeInsets.all(16),
+                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -361,9 +266,7 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
                           color: ThemeModel.sub4(isDarkMode),
                         ),
                       ),
-                      SizedBox(
-                        height: 4,
-                      ),
+                      const SizedBox(height: 4),
                       Text(
                         '?원 예상',
                         style: TextStyle(
@@ -382,25 +285,28 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
       ),
       bottomNavigationBar: Container(
         color: ThemeModel.highlight(isDarkMode),
-        padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
         child: SafeArea(
           child: CButton(
             onTap: () {
-              if (_isParticipation==true || createdUser.userId == user!.id) {
+              if (_isParticipation == true || createdUser.userId == user!.id) {
                 Navigator.of(context).pushAndRemoveUntil(
                   CupertinoPageRoute(
                       builder: (context) =>
                           TaxiGroupPage(taxiGroup: widget.taxiGroup)),
-                      (Route<dynamic> route) => false,
+                  (Route<dynamic> route) => false,
                 );
-              } else if (_isParticipation==false && widget.taxiGroup.remainingSeats > 0) {
+              } else if (_isParticipation == false &&
+                  widget.taxiGroup.remainingSeats > 0) {
                 try {
-                  ref.read(taxiGroupProvider.notifier).joinGroup(widget.taxiGroup);
+                  ref
+                      .read(taxiGroupProvider.notifier)
+                      .joinGroup(widget.taxiGroup);
                   Navigator.of(context).pushAndRemoveUntil(
                     CupertinoPageRoute(
                         builder: (context) =>
                             TaxiGroupPage(taxiGroup: widget.taxiGroup)),
-                        (Route<dynamic> route) => false,
+                    (Route<dynamic> route) => false,
                   );
                 } catch (e) {
                   debugPrint("$e");
@@ -408,7 +314,9 @@ class _TaxiGroupPreviewPageState extends ConsumerState<TaxiGroupPreviewPage> {
               }
             },
             size: CButtonSize.extraLarge,
-            label: _isParticipation || createdUser.userId == user!.id  ? "채팅 입장" : "참여 신청",
+            label: _isParticipation || createdUser.userId == user!.id
+                ? "채팅 입장"
+                : "참여 신청",
             icon: Icons.navigate_next,
             width: double.maxFinite,
           ),

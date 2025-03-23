@@ -24,9 +24,13 @@ class CMapWidget extends StatefulWidget {
   CMapWidgetState createState() => CMapWidgetState();
 }
 
-class CMapWidgetState extends State<CMapWidget> {
+class CMapWidgetState extends State<CMapWidget>
+    with AutomaticKeepAliveClientMixin {
   NaverMapController? _mapController;
   bool _showSkeleton = true;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -43,7 +47,6 @@ class CMapWidgetState extends State<CMapWidget> {
   void _onMapReady(NaverMapController controller) {
     _mapController = controller;
     controller.setLocationTrackingMode(NLocationTrackingMode.noFollow);
-
     if (widget.initialLatitude != null && widget.initialLongitude != null) {
       controller.updateCamera(
         NCameraUpdate.scrollAndZoomTo(
@@ -56,6 +59,7 @@ class CMapWidgetState extends State<CMapWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SizedBox(
       width: widget.width,
       height: widget.height,

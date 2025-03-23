@@ -14,11 +14,20 @@ import 'package:letsmerge/widgets/c_ink_well.dart';
 ///
 /// Parameter:
 /// - [onDateTimeSelected]: 선택된 날짜 및 시간을 반환하는 콜백 함수
+/// - [error]: 에러 상태를 표시할지 여부 (기본값 false)
+/// - [errorText]: 에러 상태일 때 표시할 텍스트 (optional)
 ///
 class CDateTimePicker extends ConsumerStatefulWidget {
   final Function(DateTime) onDateTimeSelected;
+  final bool error;
+  final String? errorText;
 
-  const CDateTimePicker({super.key, required this.onDateTimeSelected});
+  const CDateTimePicker({
+    super.key,
+    required this.onDateTimeSelected,
+    this.error = false,
+    this.errorText,
+  });
 
   @override
   ConsumerState<CDateTimePicker> createState() => _CDateTimePickerState();
@@ -32,9 +41,12 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
     _firstDate.month + 1,
     _firstDate.day,
   );
+
   late final ValueNotifier<int> _selectedHourNotifier;
   late final ValueNotifier<int> _selectedMinuteNotifier;
   late final ValueNotifier<int> _selectedPeriodNotifier;
+
+  bool _hasSelected = false;
 
   late DateTime _selectedDate;
   late int _selectedHour;
@@ -313,7 +325,9 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
               style: CButtonStyle.secondary(isDarkMode),
               size: CButtonSize.extraLarge,
               label: '취소',
-              onTap: () => Navigator.pop(context),
+              onTap: () {
+                if (mounted) Navigator.pop(context);
+              },
             ),
           ),
         ),
@@ -362,7 +376,9 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
             CButton(
               size: CButtonSize.extraLarge,
               label: '확인',
-              onTap: () => Navigator.of(context).pop(),
+              onTap: () {
+                if (mounted) Navigator.of(context).pop();
+              },
             ),
           ],
         ),
@@ -370,8 +386,15 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
       return;
     }
 
+    if (mounted) {
+      setState(() {
+        _hasSelected = true;
+      });
+    }
     widget.onDateTimeSelected(dateTime);
-    Navigator.pop(context);
+    if (mounted) {
+      Navigator.pop(context);
+    }
   }
 
   int _convertTo24Hour() {
@@ -394,7 +417,7 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
 
-    return CInkWell(
+    final content = CInkWell(
       onTap: () => _pickDateTime(context),
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -402,7 +425,10 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
           color: ThemeModel.surface(isDarkMode),
           border: Border(
             bottom: BorderSide(
-              color: ThemeModel.sub3(isDarkMode),
+              color: widget.error
+                  ? ThemeModel.danger(isDarkMode)
+                  : ThemeModel.sub3(isDarkMode),
+              width: widget.error ? 2 : 1,
             ),
           ),
         ),
@@ -414,16 +440,37 @@ class _CDateTimePickerState extends ConsumerState<CDateTimePicker> {
             ),
             const SizedBox(width: 8),
             Text(
-              _formatDateTime(),
+              _hasSelected ? _formatDateTime() : '시간 선택',
               style: TextStyle(
                 fontSize: 16,
-                color: ThemeModel.text(isDarkMode),
+                color: _hasSelected
+                    ? ThemeModel.text(isDarkMode)
+                    : ThemeModel.hintText(isDarkMode),
               ),
             ),
           ],
         ),
       ),
     );
+
+    if (widget.error) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          content,
+          const SizedBox(height: 4),
+          Text(
+            widget.errorText ?? "출발 시각을 선택해주세요.",
+            style: TextStyle(
+              fontSize: 14,
+              color: ThemeModel.danger(isDarkMode),
+            ),
+          ),
+        ],
+      );
+    } else {
+      return content;
+    }
   }
 
   @override

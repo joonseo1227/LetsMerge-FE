@@ -25,49 +25,44 @@ class UserNotifier extends StateNotifier<List<UserInfo>> {
     runWithErrorHandling(context, ref, () async {
       await _supabase
           .from('userinfo')
-          .upsert({
-            'id': user!.id,
-            field: data
-          })
-          .single();
+          .upsert({'id': user!.id, field: data}).single();
 
       debugPrint('데이터 업데이트 성공: {$field: $data}');
     });
   }
 
-  Future<void> updateUserNickname(BuildContext context, WidgetRef ref, String nickname) =>
+  Future<void> updateUserNickname(
+          BuildContext context, WidgetRef ref, String nickname) =>
       _updateUserInfo(context, ref, 'nickname', nickname);
 
-  Future<void> updateUserProfileImg(BuildContext context, WidgetRef ref, String profileUrl) =>
+  Future<void> updateUserProfileImg(
+          BuildContext context, WidgetRef ref, String profileUrl) =>
       _updateUserInfo(context, ref, 'avatar_url', profileUrl);
 
-  Future<void> insertUserAccount(BuildContext context, WidgetRef ref, String bank, String account, bool isdefault) async {
+  Future<void> insertUserAccount(BuildContext context, WidgetRef ref,
+      String bank, String account, bool isdefault) async {
     if (user == null) {
       debugPrint('유저가 로그인되지 않았습니다.');
       return;
     }
 
     await runWithErrorHandling(context, ref, () async {
-      await _supabase
-          .from('accounts')
-          .insert(
-          {
-            'user_id': user!.id,
-            'bank': bank,
-            'account': account,
-            'default': isdefault
-          }
-      );
+      await _supabase.from('accounts').insert({
+        'user_id': user!.id,
+        'bank': bank,
+        'account': account,
+        'default': isdefault
+      });
 
       debugPrint('데이터 삽입 성공');
     });
   }
 
   Future<T?> runWithErrorHandling<T>(
-      BuildContext context,
-      WidgetRef ref,
-      Future<T> Function() operation,
-      ) async {
+    BuildContext context,
+    WidgetRef ref,
+    Future<T> Function() operation,
+  ) async {
     try {
       return await operation();
     } on FormatException {
@@ -115,7 +110,6 @@ class UserNotifier extends StateNotifier<List<UserInfo>> {
   }
 }
 
-final userProvider =
-StateNotifierProvider<UserNotifier, List<UserInfo>>((ref) {
+final userProvider = StateNotifierProvider<UserNotifier, List<UserInfo>>((ref) {
   return UserNotifier();
 });

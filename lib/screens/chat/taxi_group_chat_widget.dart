@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
-import 'package:letsmerge/models/location_model.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/screens/chat/taxi_group_location_sharing_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_split_money_page.dart';
-import 'package:letsmerge/widgets/c_button.dart';
+import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_map_widget.dart';
 
 Color getMessageTextColor(BuildContext context, bool isDarkMode) {
@@ -36,19 +36,31 @@ class _RequestMoneyMessageState extends ConsumerState<RequestMoneyMessage> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '우리 정산해요💸',
+          '정산을 요청했습니다.',
           style: TextStyle(
             fontSize: 16,
             color: getMessageTextColor(context, isDarkMode),
           ),
         ),
-        SizedBox(
-          height: 8,
-        ),
-        CButton(
-          label: '정산하기',
-          width: double.maxFinite,
-          size: CButtonSize.medium,
+        CInkWell(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+            padding: const EdgeInsets.all(12),
+            width: double.maxFinite,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: getMessageTextColor(context, isDarkMode),
+                width: 1,
+              ),
+            ),
+            child: Text(
+              '정산하기',
+              style: TextStyle(
+                fontSize: 14,
+                color: getMessageTextColor(context, isDarkMode),
+              ),
+            ),
+          ),
           onTap: () {
             Navigator.of(context).push(
               CupertinoPageRoute(
@@ -62,43 +74,87 @@ class _RequestMoneyMessageState extends ConsumerState<RequestMoneyMessage> {
   }
 }
 
-/// 위치 메시지
+class LocationMessageGlobalKeys {
+  static final Map<String, GlobalKey<CMapWidgetState>> _keys = {};
+
+  static GlobalKey<CMapWidgetState> getKey(String messageId) {
+    if (!_keys.containsKey(messageId)) {
+      _keys[messageId] = GlobalKey<CMapWidgetState>();
+    }
+    return _keys[messageId]!;
+  }
+
+  static void removeKey(String messageId) {
+    _keys.remove(messageId);
+  }
+}
+
 class LocationMessage extends ConsumerStatefulWidget {
-  final LocationModel locationModel;
+  final String messageId;
+  final String groupId;
 
   const LocationMessage({
     super.key,
-    required this.locationModel,
+    required this.messageId,
+    required this.groupId,
   });
 
   @override
   ConsumerState<LocationMessage> createState() => _LocationMessageState();
 }
 
-class _LocationMessageState extends ConsumerState<LocationMessage> {
+class _LocationMessageState extends ConsumerState<LocationMessage>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final isDarkMode = ref.watch(themeProvider);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '제 위치예요📍',
+          '위치를 공유했습니다.',
           style: TextStyle(
             fontSize: 16,
             color: getMessageTextColor(context, isDarkMode),
           ),
         ),
-        const SizedBox(
-          height: 8,
-        ),
-        CMapWidget(
-          height: 200,
-          width: 300,
-          initialLatitude: widget.locationModel.latitude,
-          initialLongitude: widget.locationModel.longitude,
-          isDarkMode: isDarkMode,
+        CInkWell(
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(0, 8, 0, 4),
+            padding: const EdgeInsets.all(12),
+            width: double.maxFinite,
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: getMessageTextColor(context, isDarkMode),
+                width: 1,
+              ),
+            ),
+            child: Text(
+              '위치 공유 참여',
+              style: TextStyle(
+                fontSize: 14,
+                color: getMessageTextColor(context, isDarkMode),
+              ),
+            ),
+          ),
+          onTap: () {
+            Navigator.of(context).push(
+              CupertinoPageRoute(
+                builder: (context) => TaxiGroupLocationSharingPage(
+                  groupId: widget.groupId,
+                ),
+              ),
+            );
+          },
         ),
       ],
     );
@@ -122,7 +178,6 @@ class _TextMessageState extends ConsumerState<TextMessage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-
     return Text(
       widget.content,
       style: TextStyle(
@@ -152,7 +207,6 @@ class _MyMessageState extends ConsumerState<MyMessage> {
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
@@ -183,7 +237,7 @@ class _MyMessageState extends ConsumerState<MyMessage> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: ThemeModel.highlightText(isDarkMode),
+                  color: ThemeModel.highlight(isDarkMode),
                 ),
                 child: widget.content,
               ),
@@ -269,7 +323,6 @@ class _OtherMessageState extends ConsumerState<OtherMessage> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // 메시지 전송 시각
                 Text(
                   widget.formattedTime,
                   style: TextStyle(

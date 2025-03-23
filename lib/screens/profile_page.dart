@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
@@ -7,6 +10,7 @@ import 'package:letsmerge/provider/user_fetch_notifier.dart';
 import 'package:letsmerge/provider/user_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_dialog.dart';
+import 'package:letsmerge/widgets/c_ink_well.dart';
 import 'package:letsmerge/widgets/c_list_tile.dart';
 import 'package:letsmerge/widgets/c_text_field.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -20,7 +24,24 @@ class ProfilePage extends ConsumerStatefulWidget {
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final TextEditingController _nicknameController = TextEditingController();
+  final ImagePicker _picker = ImagePicker();
   final User? user = Supabase.instance.client.auth.currentUser;
+  String? _selectedImagePath;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _selectedImagePath = image.path;
+      });
+      // TODO: 선택된 이미지를 서버에 업로드하는 로직 추가
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,16 +58,34 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          padding: const EdgeInsets.all(16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                height: 64,
-                width: 64,
-                decoration: const ShapeDecoration(
-                  color: blue20,
-                  shape: CircleBorder(),
+              CInkWell(
+                onTap: _pickImage,
+                child: Container(
+                  height: 128,
+                  width: 128,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: blue20,
+                    image: _selectedImagePath != null
+                        ? DecorationImage(
+                            image: FileImage(
+                              File(_selectedImagePath!),
+                            ),
+                            fit: BoxFit.cover,
+                          )
+                        : null,
+                  ),
+                  child: _selectedImagePath == null
+                      ? const Icon(
+                          Icons.person,
+                          color: Colors.white,
+                          size: 64,
+                        )
+                      : null,
                 ),
               ),
               const SizedBox(height: 16),
@@ -58,7 +97,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   } else {
                     return Text(userInfo.name, style: infoTextStyle);
                   }
-                } (),
+                }(),
               ),
               CListTile(
                 title: '닉네임',
@@ -87,8 +126,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                             size: CButtonSize.extraLarge,
                             label: '저장',
                             onTap: () {
-                              print(_nicknameController.text);
-                              ref.read(userProvider.notifier).updateUserNickname(context, ref, _nicknameController.text);
+                              debugPrint(_nicknameController.text);
+                              ref
+                                  .read(userProvider.notifier)
+                                  .updateUserNickname(
+                                      context, ref, _nicknameController.text);
                               Navigator.pop(context);
                             },
                           ),
@@ -103,7 +145,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   } else {
                     return Text(userInfo.nickname!, style: infoTextStyle);
                   }
-                } (),
+                }(),
               ),
               CListTile(
                 title: '이메일',
@@ -113,7 +155,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   } else {
                     return Text(userInfo.email, style: infoTextStyle);
                   }
-                } (),
+                }(),
               ),
               CListTile(
                 title: '렛츠머지와 함께한지',
@@ -128,7 +170,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                   } catch (e) {
                     return Text('날짜 오류', style: infoTextStyle);
                   }
-                } (),
+                }(),
               ),
             ],
           ),

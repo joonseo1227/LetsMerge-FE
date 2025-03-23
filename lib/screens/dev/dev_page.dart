@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/models/theme_model.dart';
-import 'package:letsmerge/provider/group_provider.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/dev/button_gallery_page.dart';
 import 'package:letsmerge/screens/taxi_group/taxi_group_request_money_page.dart';
@@ -263,7 +262,7 @@ class TaxiGroupListScreen extends ConsumerWidget {
                           '${group.departurePlace} → ${group.arrivalPlace}'),
                       subtitle: Text(
                         '예상 요금: ${group.estimatedFare}원\n'
-                        '출발 시간: ${group.departureTime}',
+                        '출발 시간: ${group.departureTime ?? "미정"}',
                       ),
                     );
                   },

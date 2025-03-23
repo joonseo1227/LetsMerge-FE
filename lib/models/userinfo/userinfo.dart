@@ -14,6 +14,6 @@ class UserInfo with _$UserInfo {
     @JsonKey(name: 'created_at') required String createdAt,
   }) = _UserInfo;
 
-  factory UserInfo.fromJson(Map<String, dynamic> json) => _$UserInfoFromJson(json);
+  factory UserInfo.fromJson(Map<String, dynamic> json) =>
+      _$UserInfoFromJson(json);
 }
-

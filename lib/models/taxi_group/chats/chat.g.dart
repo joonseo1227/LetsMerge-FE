@@ -13,6 +13,8 @@ _$ChatImpl _$$ChatImplFromJson(Map<String, dynamic> json) => _$ChatImpl(
       isRead: json['is_read'] as bool,
       messageType: json['message_type'] as String,
       createdAt: json['created_at'] as String,
+      messageId: json['message_id'] as String,
+      userinfo: json['userinfo'] as Map<String, dynamic>?,
     );
 
 Map<String, dynamic> _$$ChatImplToJson(_$ChatImpl instance) =>
@@ -23,4 +25,6 @@ Map<String, dynamic> _$$ChatImplToJson(_$ChatImpl instance) =>
       'is_read': instance.isRead,
       'message_type': instance.messageType,
       'created_at': instance.createdAt,
+      'message_id': instance.messageId,
+      'userinfo': instance.userinfo,
     };

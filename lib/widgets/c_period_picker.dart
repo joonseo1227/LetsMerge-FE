@@ -212,7 +212,6 @@ class _CPeriodPickerState extends ConsumerState<CPeriodPicker> {
               "${_formatDate(_confirmedStartDate)} - ${_formatDate(_today)}",
               style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.w500,
                 color: ThemeModel.text(isDarkMode),
               ),
             ),

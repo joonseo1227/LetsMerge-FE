@@ -16,7 +16,7 @@ class AuthProvider {
   /// 계정 생성
   Future<AuthResponse> signUpWithEmailPassword(
       String email, String password, String name, String nickname) async {
-    return await _supabase.auth.signUp(
+    final response = await _supabase.auth.signUp(
       email: email,
       password: password,
       data: {
@@ -24,6 +24,23 @@ class AuthProvider {
         'nickname': nickname,
       },
     );
+
+    // 회원가입 성공 시 userinfo 테이블에 데이터 upsert
+    if (response.user != null) {
+      try {
+        await _supabase.from('userinfo').upsert({
+          'id': response.user!.id,
+          'email': email,
+          'name': name,
+          'nickname': nickname,
+        });
+        debugPrint('userinfo 테이블 데이터 업데이트 성공');
+      } catch (e) {
+        debugPrint('userinfo 테이블 데이터 업데이트 실패: $e');
+      }
+    }
+
+    return response;
   }
 
   /// 로그아웃
