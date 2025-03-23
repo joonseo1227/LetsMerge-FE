@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:letsmerge/config/color.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/geocoding_provider.dart';
+import 'package:letsmerge/provider/near_taxi_group_provider.dart';
 import 'package:letsmerge/provider/taxi_group_fetch_notifier.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/user_fetch_notifier.dart';
@@ -30,10 +31,18 @@ class _HomeTabState extends ConsumerState<HomeTab> {
   final User? user = Supabase.instance.client.auth.currentUser;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(nearbyTaxiGroupsProvider.notifier).getCurrentLocation();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
     final selectedLocation = ref.watch(reverseGeocodingProvider);
-    final taxiGroups = ref.watch(taxiGroupsProvider(user?.id ?? ''));
+    final taxiGroups = ref.watch(nearbyTaxiGroupsProvider);
 
     return AnnotatedRegion(
       value: isDarkMode
@@ -69,7 +78,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 16,
             ),
           ],
@@ -77,237 +86,250 @@ class _HomeTabState extends ConsumerState<HomeTab> {
         body: Stack(
           children: [
             SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        color: ThemeModel.surface(isDarkMode),
-                        width: double.maxFinite,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CInkWell(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  CupertinoPageRoute(
-                                    builder: (context) =>
-                                        TaxiGroupSelectPlacePage(
-                                      mode: GeocodingMode.departure,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 8,
-                                      height: 8,
-                                      margin: const EdgeInsets.all(6),
-                                      decoration: ShapeDecoration(
-                                        color: ThemeModel.sub2(isDarkMode),
-                                        shape: const CircleBorder(),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await ref.read(nearbyTaxiGroupsProvider.notifier).getCurrentLocation();
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          color: ThemeModel.surface(isDarkMode),
+                          width: double.maxFinite,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              CInkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (context) =>
+                                          TaxiGroupSelectPlacePage(
+                                        mode: GeocodingMode.departure,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        selectedLocation[
-                                                        GeocodingMode.departure]
-                                                    ?.place ==
-                                                null
-                                            ? "출발지 선택"
-                                            : selectedLocation[
-                                                    GeocodingMode.departure]!
-                                                .place,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          color: selectedLocation[GeocodingMode
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 8,
+                                        height: 8,
+                                        margin: const EdgeInsets.all(6),
+                                        decoration: ShapeDecoration(
+                                          color: ThemeModel.sub2(isDarkMode),
+                                          shape: const CircleBorder(),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          selectedLocation[GeocodingMode
                                                           .departure]
                                                       ?.place ==
                                                   null
-                                              ? ThemeModel.hintText(isDarkMode)
-                                              : ThemeModel.text(isDarkMode),
+                                              ? "출발지 선택"
+                                              : selectedLocation[
+                                                      GeocodingMode.departure]!
+                                                  .place,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                            color: selectedLocation[
+                                                            GeocodingMode
+                                                                .departure]
+                                                        ?.place ==
+                                                    null
+                                                ? ThemeModel.hintText(
+                                                    isDarkMode)
+                                                : ThemeModel.text(isDarkMode),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            Divider(
-                              indent: 48,
-                              endIndent: 16,
-                            ),
-                            CInkWell(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  CupertinoPageRoute(
-                                    builder: (context) =>
-                                        TaxiGroupSelectPlacePage(
-                                      mode: GeocodingMode.destination,
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.all(16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 8,
-                                      height: 8,
-                                      margin: const EdgeInsets.all(6),
-                                      decoration: ShapeDecoration(
-                                        color: ThemeModel.highlight(isDarkMode),
-                                        shape: const CircleBorder(),
+                              const Divider(
+                                indent: 48,
+                                endIndent: 16,
+                              ),
+                              CInkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    CupertinoPageRoute(
+                                      builder: (context) =>
+                                          TaxiGroupSelectPlacePage(
+                                        mode: GeocodingMode.destination,
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        selectedLocation[GeocodingMode
-                                                        .destination]
-                                                    ?.place ==
-                                                null
-                                            ? "목적지 선택"
-                                            : selectedLocation[
-                                                    GeocodingMode.destination]!
-                                                .place,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          color: selectedLocation[GeocodingMode
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        width: 8,
+                                        height: 8,
+                                        margin: const EdgeInsets.all(6),
+                                        decoration: ShapeDecoration(
+                                          color:
+                                              ThemeModel.highlight(isDarkMode),
+                                          shape: const CircleBorder(),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                        child: Text(
+                                          selectedLocation[GeocodingMode
                                                           .destination]
                                                       ?.place ==
                                                   null
-                                              ? ThemeModel.hintText(isDarkMode)
-                                              : ThemeModel.text(isDarkMode),
+                                              ? "목적지 선택"
+                                              : selectedLocation[GeocodingMode
+                                                      .destination]!
+                                                  .place,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                            color: selectedLocation[
+                                                            GeocodingMode
+                                                                .destination]
+                                                        ?.place ==
+                                                    null
+                                                ? ThemeModel.hintText(
+                                                    isDarkMode)
+                                                : ThemeModel.text(isDarkMode),
+                                          ),
                                         ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 40),
+                        Text(
+                          '내 근처 택시팟',
+                          style: TextStyle(
+                            color: ThemeModel.text(isDarkMode),
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // 택시 그룹 리스트
+                        taxiGroups.isEmpty
+                            ? Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(32.0),
+                                  child: Text(
+                                    '아직 모집 중인 택시팟이 없습니다',
+                                    style: TextStyle(
+                                      color: ThemeModel.text(isDarkMode),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: taxiGroups.length,
+                                itemBuilder: (context, index) {
+                                  final group = taxiGroups[index];
+                                  final participants =
+                                      ref.watch(participantsProvider(group));
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 16),
+                                    child: CInkWell(
+                                      onTap: () {
+                                        if (group.remainingSeats == 0) {
+                                          final bool isParticipant =
+                                              participants.any((participant) {
+                                            final userinfo = ref.watch(
+                                                userInfoProvider(
+                                                    participant.userId));
+                                            return userinfo.userId ==
+                                                    user!.id ||
+                                                group.creatorUserId == user!.id;
+                                          });
+
+                                          if (isParticipant) {
+                                            Navigator.of(context).push(
+                                              CupertinoPageRoute(
+                                                builder: (context) =>
+                                                    TaxiGroupPreviewPage(
+                                                        taxiGroup: group),
+                                              ),
+                                            );
+                                          } else {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return CDialog(
+                                                  title: '안내',
+                                                  content: Text(
+                                                    '그룹 인원이 가득 찼어요.',
+                                                    style: TextStyle(
+                                                      color: ThemeModel.text(
+                                                          isDarkMode),
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                    ),
+                                                  ),
+                                                  buttons: [
+                                                    CButton(
+                                                      size: CButtonSize
+                                                          .extraLarge,
+                                                      label: '확인',
+                                                      onTap: () {
+                                                        Navigator.of(context)
+                                                            .pop();
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          }
+                                        } else {
+                                          Navigator.of(context).push(
+                                            CupertinoPageRoute(
+                                              builder: (context) =>
+                                                  TaxiGroupPreviewPage(
+                                                      taxiGroup: group),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                      child: TaxiGroupDetailCard(
+                                        remainingSeats: group.remainingSeats,
+                                        departurePlace: group.departurePlace,
+                                        departureAdress: group.departureAddress,
+                                        arrivalPlace: group.arrivalPlace,
+                                        arrivalAddress: group.arrivalAddress,
+                                        startTime: group.departureTime!,
                                       ),
                                     ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 40,
-                      ),
-                      Text(
-                        '내 근처 택시팟',
-                        style: TextStyle(
-                          color: ThemeModel.text(isDarkMode),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      // 택시 그룹 리스트
-                      if (taxiGroups.isEmpty)
-                        Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(32.0),
-                            child: Text(
-                              '아직 모집 중인 택시팟이 없습니다',
-                              style: TextStyle(
-                                color: ThemeModel.text(isDarkMode),
-                              ),
-                            ),
-                          ),
-                        )
-                      else
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: taxiGroups.length,
-                          itemBuilder: (context, index) {
-                            final group = taxiGroups[index];
-                            final participants =
-                                ref.watch(participantsProvider(group));
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: 16),
-                              child: CInkWell(
-                                onTap: () {
-                                  if (group.remainingSeats == 0) {
-                                    bool isParticipant =
-                                        participants.any((participant) {
-                                      final userinfo = ref.watch(
-                                          userInfoProvider(participant.userId));
-                                      return userinfo.userId == user!.id ||
-                                          group.creatorUserId == user!.id;
-                                    });
-
-                                    if (isParticipant) {
-                                      Navigator.of(context).push(
-                                        CupertinoPageRoute(
-                                          builder: (context) =>
-                                              TaxiGroupPreviewPage(
-                                                  taxiGroup: group),
-                                        ),
-                                      );
-                                    } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return CDialog(
-                                            title: '안내',
-                                            content: Text(
-                                              '그룹 인원이 가득 찼어요.',
-                                              style: TextStyle(
-                                                color:
-                                                    ThemeModel.text(isDarkMode),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                            buttons: [
-                                              CButton(
-                                                size: CButtonSize.extraLarge,
-                                                label: '확인',
-                                                onTap: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    }
-                                  } else {
-                                    Navigator.of(context).push(
-                                      CupertinoPageRoute(
-                                        builder: (context) =>
-                                            TaxiGroupPreviewPage(
-                                                taxiGroup: group),
-                                      ),
-                                    );
-                                  }
+                                  );
                                 },
-                                child: TaxiGroupDetailCard(
-                                  remainingSeats: group.remainingSeats,
-                                  departurePlace: group.departurePlace,
-                                  departureAdress: group.departureAddress,
-                                  arrivalPlace: group.arrivalPlace,
-                                  arrivalAddress: group.arrivalAddress,
-                                  startTime: group.departureTime!,
-                                ),
                               ),
-                            );
-                          },
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -328,7 +350,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
 
                   // 참여 중인 택시팟이 없으면 카드를 표시하지 않음
                   if (userTaxiGroups.isEmpty) {
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   }
 
                   // 가장 최근 택시팟 가져오기
@@ -356,12 +378,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                           width: double.maxFinite,
                           color: ThemeModel.highlight(isDarkMode)
                               .withValues(alpha: 0.9),
-                          padding: EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Text(
+                              const Text(
                                 '참여 중',
                                 style: TextStyle(
                                   color: white,
@@ -370,7 +392,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                               ),
                               Text(
                                 '${latestGroup.departurePlace} -> ${latestGroup.arrivalPlace}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: white,
                                   fontSize: 16,
                                 ),

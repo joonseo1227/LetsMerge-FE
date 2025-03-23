@@ -6,6 +6,7 @@ import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
+import 'package:letsmerge/provider/near_taxi_group_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 
@@ -26,8 +27,10 @@ class _MapTabState extends ConsumerState<MapTab> {
   @override
   void initState() {
     super.initState();
-    _initializeInitialPosition();
-    _startLocationStream();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializeInitialPosition();
+      _startLocationStream();
+    });
   }
 
   Future<void> _initializeInitialPosition() async {
@@ -64,8 +67,10 @@ class _MapTabState extends ConsumerState<MapTab> {
     if (_initialPosition != null) {
       controller.updateCamera(
         NCameraUpdate.scrollAndZoomTo(
-          target:
-              NLatLng(_initialPosition!.latitude, _initialPosition!.longitude),
+          target: NLatLng(
+            _initialPosition!.latitude,
+            _initialPosition!.longitude,
+          ),
           zoom: 15.0,
         ),
       );
@@ -77,6 +82,7 @@ class _MapTabState extends ConsumerState<MapTab> {
         });
       }
     });
+    _updateMarkers();
   }
 
   Future<void> _goToCurrentLocation() async {
@@ -100,21 +106,51 @@ class _MapTabState extends ConsumerState<MapTab> {
     }
   }
 
+  // 택시 그룹 데이터를 NClusterableMarker로 변환하여 지도에 추가
+  Future<void> _updateMarkers() async {
+    if (_mapController == null) return;
+    final markers = (await ref
+        .read(nearbyTaxiGroupsProvider.notifier)
+        .buildTaxiGroupMarkers(context))
+        .toSet();
+    await _mapController!.clearOverlays();
+    await _mapController!.addOverlayAll(markers);
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDarkMode = ref.watch(themeProvider);
+    ref.listen(nearbyTaxiGroupsProvider, (previous, next) {
+      if (_mapController != null) {
+        _updateMarkers();
+      }
+    });
+
     return AnnotatedRegion(
       value: isDarkMode
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark.copyWith(
-              statusBarColor: Colors.transparent,
-            ),
+        statusBarColor: Colors.transparent,
+      ),
       child: Scaffold(
         body: Stack(
           children: [
             if (_initialPosition != null)
               NaverMap(
                 onMapReady: _onMapReady,
+                onCameraIdle: () async {
+                  if (_mapController != null) {
+                    final currentCameraPosition =
+                    await _mapController!.getCameraPosition();
+                    await ref
+                        .read(nearbyTaxiGroupsProvider.notifier)
+                        .updateGroups(
+                      currentCameraPosition.target.latitude,
+                      currentCameraPosition.target.longitude,
+                    );
+                    await _updateMarkers();
+                  }
+                },
                 options: NaverMapViewOptions(
                   mapType: NMapType.navi,
                   nightModeEnable: isDarkMode,
@@ -125,6 +161,10 @@ class _MapTabState extends ConsumerState<MapTab> {
                     ),
                     zoom: 15.0,
                   ),
+                ),
+                clusterOptions: NaverMapClusteringOptions(
+                  enableZoomRange: NInclusiveRange(0, 17),
+
                 ),
               ),
             if (_showSkeleton) const CSkeleton(),
