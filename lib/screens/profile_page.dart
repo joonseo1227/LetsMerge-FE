@@ -24,23 +24,61 @@ class ProfilePage extends ConsumerStatefulWidget {
 
 class _ProfilePageState extends ConsumerState<ProfilePage> {
   final TextEditingController _nicknameController = TextEditingController();
+  final supabase = Supabase.instance.client;
   final ImagePicker _picker = ImagePicker();
   final User? user = Supabase.instance.client.auth.currentUser;
-  String? _selectedImagePath;
+  bool _isLoading = false;
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  Future<void> _uploadImage() async {
+    final userId = user?.id;
+    final userInfo = ref.watch(userInfoProvider(user?.id ?? ''));
 
-  Future<void> _pickImage() async {
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      setState(() {
-        _selectedImagePath = image.path;
-      });
-      // TODO: 선택된 이미지를 서버에 업로드하는 로직 추가
+    final imageFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    if (imageFile == null) {
+      return;
     }
+
+    setState(() => _isLoading = true);
+
+    try {
+
+      final bytes = await imageFile.readAsBytes();
+      final fileExt = imageFile.path.split('.').last;
+      final fileName = '${DateTime.now().toString().replaceAll(RegExp(r'[-:. ]'), '')}.$fileExt';
+      final filePath = '$userId/$fileName';
+      await supabase.storage.from('profiles').uploadBinary(
+        filePath,
+        bytes,
+        fileOptions: FileOptions(contentType: imageFile.mimeType),
+      );
+
+      final imageUrl = supabase.storage.from('profiles').getPublicUrl(filePath);
+      
+      if (userInfo.avatarUrl != null) {
+        final originUrl = userInfo.avatarUrl;
+        final uri = Uri.parse(originUrl!);
+
+        final segments = uri.pathSegments;
+        final startIndex = segments.indexOf('profiles');
+
+        if (startIndex != -1 && startIndex + 1 < segments.length) {
+          final filePath = segments.sublist(startIndex + 1).join('/');
+          await supabase.storage.from('profiles').remove([filePath]);
+        } else {
+          debugPrint('profiles 경로를 찾을 수 없음');
+        }
+      }
+
+      ref.read(userProvider.notifier).updateUserProfileImg(context, ref, imageUrl);
+
+    } catch (error) {
+      if (mounted) {
+        debugPrint('Unexpected error occurred: $error');
+      }
+    }
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -63,23 +101,23 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CInkWell(
-                onTap: _pickImage,
+                onTap: _uploadImage,
                 child: Container(
                   height: 128,
                   width: 128,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: blue20,
-                    image: _selectedImagePath != null
+                    image: userInfo.avatarUrl != null
                         ? DecorationImage(
-                            image: FileImage(
-                              File(_selectedImagePath!),
+                            image: NetworkImage(
+                              userInfo.avatarUrl!,
                             ),
                             fit: BoxFit.cover,
                           )
                         : null,
                   ),
-                  child: _selectedImagePath == null
+                  child: userInfo.avatarUrl == null
                       ? const Icon(
                           Icons.person,
                           color: Colors.white,
