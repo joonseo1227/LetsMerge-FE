@@ -405,7 +405,9 @@ class _TaxiGroupPageState extends ConsumerState<TaxiGroupPage> {
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
                                     builder: (context) =>
-                                        TaxiGroupRequestMoneyPage(),
+                                        TaxiGroupRequestMoneyPage(
+                                      taxiGroup: widget.taxiGroup,
+                                    ),
                                   ),
                                 );
                               },
