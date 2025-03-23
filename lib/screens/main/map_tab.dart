@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/provider/near_taxi_group_provider.dart';
+import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/widgets/c_button.dart';
 import 'package:letsmerge/widgets/c_skeleton_loader.dart';
 
@@ -110,8 +110,8 @@ class _MapTabState extends ConsumerState<MapTab> {
   Future<void> _updateMarkers() async {
     if (_mapController == null) return;
     final markers = (await ref
-        .read(nearbyTaxiGroupsProvider.notifier)
-        .buildTaxiGroupMarkers(context))
+            .read(nearbyTaxiGroupsProvider.notifier)
+            .buildTaxiGroupMarkers(context))
         .toSet();
     await _mapController!.clearOverlays();
     await _mapController!.addOverlayAll(markers);
@@ -130,8 +130,8 @@ class _MapTabState extends ConsumerState<MapTab> {
       value: isDarkMode
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.transparent,
-      ),
+              statusBarColor: Colors.transparent,
+            ),
       child: Scaffold(
         body: Stack(
           children: [
@@ -141,13 +141,13 @@ class _MapTabState extends ConsumerState<MapTab> {
                 onCameraIdle: () async {
                   if (_mapController != null) {
                     final currentCameraPosition =
-                    await _mapController!.getCameraPosition();
+                        await _mapController!.getCameraPosition();
                     await ref
                         .read(nearbyTaxiGroupsProvider.notifier)
                         .updateGroups(
-                      currentCameraPosition.target.latitude,
-                      currentCameraPosition.target.longitude,
-                    );
+                          currentCameraPosition.target.latitude,
+                          currentCameraPosition.target.longitude,
+                        );
                     await _updateMarkers();
                   }
                 },
@@ -164,7 +164,6 @@ class _MapTabState extends ConsumerState<MapTab> {
                 ),
                 clusterOptions: NaverMapClusteringOptions(
                   enableZoomRange: NInclusiveRange(0, 17),
-
                 ),
               ),
             if (_showSkeleton) const CSkeleton(),

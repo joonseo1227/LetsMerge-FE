@@ -87,8 +87,12 @@ class _HomeTabState extends ConsumerState<HomeTab> {
           children: [
             SafeArea(
               child: RefreshIndicator(
+                backgroundColor: ThemeModel.surface(isDarkMode),
+                color: ThemeModel.text(isDarkMode),
                 onRefresh: () async {
-                  await ref.read(nearbyTaxiGroupsProvider.notifier).getCurrentLocation();
+                  await ref
+                      .read(nearbyTaxiGroupsProvider.notifier)
+                      .getCurrentLocation();
                 },
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
@@ -322,7 +326,7 @@ class _HomeTabState extends ConsumerState<HomeTab> {
                                         departureAdress: group.departureAddress,
                                         arrivalPlace: group.arrivalPlace,
                                         arrivalAddress: group.arrivalAddress,
-                                        startTime: group.departureTime!,
+                                        startTime: group.departureTime,
                                       ),
                                     ),
                                   );
