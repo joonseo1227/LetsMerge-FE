@@ -41,9 +41,9 @@ mixin _$TaxiGroup {
   @JsonKey(name: 'arrival_lon')
   double get arrivalLon => throw _privateConstructorUsedError;
   @JsonKey(name: 'estimated_fare')
-  int? get estimatedFare => throw _privateConstructorUsedError;
+  int get estimatedFare => throw _privateConstructorUsedError;
   @JsonKey(name: 'departure_time')
-  DateTime? get departureTime => throw _privateConstructorUsedError;
+  DateTime get departureTime => throw _privateConstructorUsedError;
   @JsonKey(name: 'remaining_seats')
   int get remainingSeats => throw _privateConstructorUsedError;
 
@@ -73,8 +73,8 @@ abstract class $TaxiGroupCopyWith<$Res> {
       @JsonKey(name: 'arrival_address') String arrivalAddress,
       @JsonKey(name: 'arrival_lat') double arrivalLat,
       @JsonKey(name: 'arrival_lon') double arrivalLon,
-      @JsonKey(name: 'estimated_fare') int? estimatedFare,
-      @JsonKey(name: 'departure_time') DateTime? departureTime,
+      @JsonKey(name: 'estimated_fare') int estimatedFare,
+      @JsonKey(name: 'departure_time') DateTime departureTime,
       @JsonKey(name: 'remaining_seats') int remainingSeats});
 }
 
@@ -103,8 +103,8 @@ class _$TaxiGroupCopyWithImpl<$Res, $Val extends TaxiGroup>
     Object? arrivalAddress = null,
     Object? arrivalLat = null,
     Object? arrivalLon = null,
-    Object? estimatedFare = freezed,
-    Object? departureTime = freezed,
+    Object? estimatedFare = null,
+    Object? departureTime = null,
     Object? remainingSeats = null,
   }) {
     return _then(_value.copyWith(
@@ -148,14 +148,14 @@ class _$TaxiGroupCopyWithImpl<$Res, $Val extends TaxiGroup>
           ? _value.arrivalLon
           : arrivalLon // ignore: cast_nullable_to_non_nullable
               as double,
-      estimatedFare: freezed == estimatedFare
+      estimatedFare: null == estimatedFare
           ? _value.estimatedFare
           : estimatedFare // ignore: cast_nullable_to_non_nullable
-              as int?,
-      departureTime: freezed == departureTime
+              as int,
+      departureTime: null == departureTime
           ? _value.departureTime
           : departureTime // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
       remainingSeats: null == remainingSeats
           ? _value.remainingSeats
           : remainingSeats // ignore: cast_nullable_to_non_nullable
@@ -183,8 +183,8 @@ abstract class _$$TaxiGroupImplCopyWith<$Res>
       @JsonKey(name: 'arrival_address') String arrivalAddress,
       @JsonKey(name: 'arrival_lat') double arrivalLat,
       @JsonKey(name: 'arrival_lon') double arrivalLon,
-      @JsonKey(name: 'estimated_fare') int? estimatedFare,
-      @JsonKey(name: 'departure_time') DateTime? departureTime,
+      @JsonKey(name: 'estimated_fare') int estimatedFare,
+      @JsonKey(name: 'departure_time') DateTime departureTime,
       @JsonKey(name: 'remaining_seats') int remainingSeats});
 }
 
@@ -211,8 +211,8 @@ class __$$TaxiGroupImplCopyWithImpl<$Res>
     Object? arrivalAddress = null,
     Object? arrivalLat = null,
     Object? arrivalLon = null,
-    Object? estimatedFare = freezed,
-    Object? departureTime = freezed,
+    Object? estimatedFare = null,
+    Object? departureTime = null,
     Object? remainingSeats = null,
   }) {
     return _then(_$TaxiGroupImpl(
@@ -256,14 +256,14 @@ class __$$TaxiGroupImplCopyWithImpl<$Res>
           ? _value.arrivalLon
           : arrivalLon // ignore: cast_nullable_to_non_nullable
               as double,
-      estimatedFare: freezed == estimatedFare
+      estimatedFare: null == estimatedFare
           ? _value.estimatedFare
           : estimatedFare // ignore: cast_nullable_to_non_nullable
-              as int?,
-      departureTime: freezed == departureTime
+              as int,
+      departureTime: null == departureTime
           ? _value.departureTime
           : departureTime // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
+              as DateTime,
       remainingSeats: null == remainingSeats
           ? _value.remainingSeats
           : remainingSeats // ignore: cast_nullable_to_non_nullable
@@ -325,10 +325,10 @@ class _$TaxiGroupImpl implements _TaxiGroup {
   final double arrivalLon;
   @override
   @JsonKey(name: 'estimated_fare')
-  final int? estimatedFare;
+  final int estimatedFare;
   @override
   @JsonKey(name: 'departure_time')
-  final DateTime? departureTime;
+  final DateTime departureTime;
   @override
   @JsonKey(name: 'remaining_seats')
   final int remainingSeats;
@@ -417,8 +417,8 @@ abstract class _TaxiGroup implements TaxiGroup {
       @JsonKey(name: 'arrival_address') required final String arrivalAddress,
       @JsonKey(name: 'arrival_lat') required final double arrivalLat,
       @JsonKey(name: 'arrival_lon') required final double arrivalLon,
-      @JsonKey(name: 'estimated_fare') required final int? estimatedFare,
-      @JsonKey(name: 'departure_time') required final DateTime? departureTime,
+      @JsonKey(name: 'estimated_fare') required final int estimatedFare,
+      @JsonKey(name: 'departure_time') required final DateTime departureTime,
       @JsonKey(name: 'remaining_seats')
       required final int remainingSeats}) = _$TaxiGroupImpl;
 
@@ -457,10 +457,10 @@ abstract class _TaxiGroup implements TaxiGroup {
   double get arrivalLon;
   @override
   @JsonKey(name: 'estimated_fare')
-  int? get estimatedFare;
+  int get estimatedFare;
   @override
   @JsonKey(name: 'departure_time')
-  DateTime? get departureTime;
+  DateTime get departureTime;
   @override
   @JsonKey(name: 'remaining_seats')
   int get remainingSeats;

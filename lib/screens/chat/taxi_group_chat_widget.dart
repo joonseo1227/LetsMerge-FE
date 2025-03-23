@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:letsmerge/config/color.dart';
-import 'package:letsmerge/models/location_model.dart';
 import 'package:letsmerge/models/theme_model.dart';
 import 'package:letsmerge/provider/theme_provider.dart';
 import 'package:letsmerge/screens/chat/taxi_group_location_sharing_page.dart';
@@ -21,7 +20,12 @@ Color getMessageTextColor(BuildContext context, bool isDarkMode) {
 
 /// 정산 메시지
 class RequestMoneyMessage extends ConsumerStatefulWidget {
-  const RequestMoneyMessage({super.key});
+  final String messageContent;
+
+  const RequestMoneyMessage({
+    super.key,
+    required this.messageContent,
+  });
 
   @override
   ConsumerState<RequestMoneyMessage> createState() =>
@@ -65,7 +69,9 @@ class _RequestMoneyMessageState extends ConsumerState<RequestMoneyMessage> {
           onTap: () {
             Navigator.of(context).push(
               CupertinoPageRoute(
-                builder: (context) => TaxiGroupSplitMoneyPage(),
+                builder: (context) => TaxiGroupSplitMoneyPage(
+                  settlementData: widget.messageContent,
+                ),
               ),
             );
           },
@@ -91,13 +97,13 @@ class LocationMessageGlobalKeys {
 }
 
 class LocationMessage extends ConsumerStatefulWidget {
-  final LocationModel locationModel;
   final String messageId;
+  final String groupId;
 
   const LocationMessage({
     super.key,
-    required this.locationModel,
     required this.messageId,
+    required this.groupId,
   });
 
   @override
@@ -150,7 +156,9 @@ class _LocationMessageState extends ConsumerState<LocationMessage>
           onTap: () {
             Navigator.of(context).push(
               CupertinoPageRoute(
-                builder: (context) => TaxiGroupLocationSharingPage(),
+                builder: (context) => TaxiGroupLocationSharingPage(
+                  groupId: widget.groupId,
+                ),
               ),
             );
           },

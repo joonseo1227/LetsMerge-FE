@@ -72,7 +72,9 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     color: blue20,
                     image: _selectedImagePath != null
                         ? DecorationImage(
-                            image: FileImage(File(_selectedImagePath!)),
+                            image: FileImage(
+                              File(_selectedImagePath!),
+                            ),
                             fit: BoxFit.cover,
                           )
                         : null,
