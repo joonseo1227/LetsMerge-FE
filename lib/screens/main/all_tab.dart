@@ -77,6 +77,12 @@ class _AllTabState extends ConsumerState<AllTab> {
                       width: 64,
                       decoration: ShapeDecoration(
                         color: blue20,
+                        image: DecorationImage(
+                          image: NetworkImage(
+                            userInfo.avatarUrl ?? "",
+                          ),
+                          fit: BoxFit.cover,
+                        ),
                         shape: CircleBorder(),
                       ),
                     ),

@@ -25,7 +25,7 @@ class UserNotifier extends StateNotifier<List<UserInfo>> {
     runWithErrorHandling(context, ref, () async {
       await _supabase
           .from('userinfo')
-          .upsert({'id': user!.id, field: data}).single();
+          .upsert({'id': user!.id, field: data});
 
       debugPrint('데이터 업데이트 성공: {$field: $data}');
     });
